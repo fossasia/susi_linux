@@ -10,7 +10,9 @@ To be added shortly.
 
 ## Setting Up (Language: en/us) (Arch Linux)
 
-* Python Version: 3.5+
+* Install Python Version: 3.5+ 
+    * ```sudo pacman -Sy python```
+    * ```sudo pacman -Sy python-pip```
 
 * Install Festival TTS and voices
     * Install Festival ```sudo pacman -S festival```
@@ -35,5 +37,5 @@ To be added shortly.
     
 ## Running Susi
 * Go to src directory
-* Run ./install.sh
-* After installtion of dependencies, run app.py
+* Run ```./install.sh```
+* After installtion of dependencies, run ```python3 app.py```
