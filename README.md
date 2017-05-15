@@ -19,4 +19,4 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 - Add hardware specific options like Susi Wake Button.
 
 **Setting Up**
-- Setup setup.md
+- Read [setup.md](setup.md)

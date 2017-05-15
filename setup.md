@@ -1,6 +1,6 @@
-#Setting up Susi Hardware
+# Setting up Susi Hardware
 
-##Minimal Requirements
+## Minimal Requirements
 * A hardware device capable to run Linux.
 * A Linux Based Distribution.
 * Microphone/Speaker for Input/Output 
@@ -33,4 +33,7 @@ To be added shortly.
 * Setup PyAudio 
     * Install PyAudio ```sudo pip3 install pyaudio```
     
-
+## Running Susi
+* Go to src directory
+* Run ./install.sh
+* After installtion of dependencies, run app.py
