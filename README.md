@@ -19,5 +19,79 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 - Add more/better voice/tts engines to give more realistic feel to Susi Voice.
 - Add hardware specific options like Susi Wake Button.
 
-**Setting Up**
-- Read [setup.md](setup.md)
+
+## Setting up Susi Hardware
+
+### Minimal Requirements
+* A hardware device capable to run Linux.
+* A Linux Based Distribution.
+* Microphone/Speaker for Input/Output 
+
+### Setting Up (Ubuntu/ Debian)
+* Install Python Version: 3.5+
+    * ```sudo apt install python3```
+    * ```sudo apt install python3-pip```
+
+* Install Festival TTS
+    * ```sudo apt install festival```
+    
+* Install CMU_US Voices
+     
+     This method uses a package from Arch Linux Repository to extract Voice Model. It works well on Ubuntu. 
+          
+     ```
+     $ wget http://archlinux.thaller.ws/community/os/i686/festival-us-2.4-1-any.pkg.tar.xz
+     $ tar xf festival-us-2.4-1-any.pkg.tar.xz
+     $ sudo cp -R ./usr/share/festival/voices/* /usr/share/festival/voices/
+     $ rm -rf ./usr
+     ```
+     
+* If you are using Sound Server like ALSA/PulseAudio (quite probable), configure festival to use Sound Server
+    * Edit your ~/.festivalrc and add these lines at the end
+        ```
+        (Parameter.set 'Audio_Required_Format 'aiff)
+        (Parameter.set 'Audio_Method 'Audio_Command)
+        (Parameter.set 'Audio_Command "paplay $FILE --client-name=Festival --stream-name=Speech")
+        ```
+
+* Set US English Female Voice for Output. Edit your ~/.festivalrc and add these lines at the end
+    ```
+    (set! voice_default voice_cmu_us_cg)
+    ```
+
+* Setup PyAudio
+    * Install PortAudio ```sudo apt-get install portaudio19-dev```
+    * Install PyAudio ```sudo pip3 install pyaudio```
+ 
+
+### Setting Up (Language: en/us) (Arch Linux)
+
+* Install Python Version: 3.5+ 
+    * ```sudo pacman -Sy python```
+    * ```sudo pacman -Sy python-pip```
+
+* Install Festival TTS and voices
+    * Install Festival ```sudo pacman -S festival```
+    * Install English Voices ```sudo pacman -S festival-english```
+    * Install English US voices ```sudo pacman -S festival-us```
+    
+* If you are using Sound Server like ALSA/PulseAudio (quite probable), configure festival to use Sound Server
+    * Edit your ~/.festivalrc and add these lines at the end
+        ```
+        (Parameter.set 'Audio_Required_Format 'aiff)
+        (Parameter.set 'Audio_Method 'Audio_Command)
+        (Parameter.set 'Audio_Command "paplay $FILE --client-name=Festival --stream-name=Speech")
+        ```
+
+* Set US English Female Voice for Output. Edit your ~/.festivalrc and add these lines at the end
+    ```
+    (set! voice_default voice_cmu_us_cg)
+    ```
+
+* Setup PyAudio 
+    * Install PyAudio ```sudo pip3 install pyaudio```
+    
+## Running Susi
+* Go to src directory
+* Run ```./install.sh```
+* After installtion of dependencies, run ```python3 app.py```
