@@ -16,6 +16,7 @@ def speak(text):
 
 
 def askSusi(input_query):
+    print(input_query)
     # get reply by Susi
     reply = susi.ask(input_query)
     print('Susi:' + reply)
