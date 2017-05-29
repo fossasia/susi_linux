@@ -22,10 +22,12 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 
 ## Setting up Susi Hardware
 
+Setting up Susi Hardware is pretty easy.
+
 ### Minimal Requirements
 * A hardware device capable to run Linux.
 * A Linux Based Distribution.
-* Microphone/Speaker for Input/Output 
+* Any Microphone/Speaker for Input/Output
 
 ### Setting Up (Ubuntu/ Debian)
 * Install Python Version: 3.5+
@@ -92,6 +94,9 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
     * Install PyAudio ```sudo pip3 install pyaudio```
     
 ## Running Susi
-* Go to src directory
+* Go to app directory
 * Run ```./install.sh```
-* After installtion of dependencies, run ```python3 app.py```
+* After installation of dependencies, run ```python3 main.py```
+* Say "Susi" to trigger speech recognition. You will see "Hotowrd Detected" on your console as an indicative message for detection. 
+* Once detection triggers, ask Susi any question by speech.
+* Susi will reply back with its answer using Festival TTS.

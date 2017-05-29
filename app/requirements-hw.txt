@@ -1,0 +1,2 @@
+speechRecognition==3.6.5
+pocketsphinx==0.1.3

@@ -1,1 +1,0 @@
-speechRecognition==3.6.5
