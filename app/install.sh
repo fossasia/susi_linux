@@ -17,4 +17,4 @@ rm -rf susi_api_wrapper
 
 echo "Setup Complete"
 
-echo "Run 'python3 app.py' to start"
+echo "Run 'python3 main.py' to start"
