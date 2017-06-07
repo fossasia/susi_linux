@@ -2,12 +2,20 @@ import susi_python as susi
 import subprocess
 import speech_recognition as sr
 
-from pocketsphinx.pocketsphinx import *
+from speech.SphinxRecognizer import SphinxRecognizer
 import pyaudio
 
-
 r = sr.Recognizer()
-m = sr.Microphone()
+r.dynamic_energy_threshold = False
+r.energy_threshold = 1000
+
+# TODO: Set parameters from environment variable.
+# Currently, please set the variables for microphone initialization below manually.
+# Refer following link for more information about parameters
+# https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst#microphonedevice_index--none-sample_rate--16000-chunk_size--1024
+
+m = sr.Microphone(device_index=2, sample_rate=48000, chunk_size=2048)
+
 
 def speak(text):
     filename = '.response'
@@ -30,16 +38,17 @@ def askSusi(input_query):
     else:
         speak("I don't have an answer to this")
 
-def start_speech_recognition():
 
+def start_speech_recognition():
     try:
-        print("A moment of silence, please...")
-        with m as source:
-            r.adjust_for_ambient_noise(source)
+        # print("A moment of silence, please...")
+        # with m as source:
+        #     r.adjust_for_ambient_noise(source)
 
         print("Say something!")
+        print("Energy Threshold " + str(r.energy_threshold))
         with m as source:
-            audio = r.listen(source)
+            audio = r.listen(source, phrase_time_limit=5)
         print("Got it! Now to recognize it...")
         try:
             # recognize speech using Google Speech Recognition
@@ -56,36 +65,36 @@ def start_speech_recognition():
         pass
 
 
-modeldir = "/usr/share/pocketsphinx/model"
-
-# Create a decoder with certain model
-config = Decoder.default_config()
-config.set_string('-hmm', os.path.join(modeldir, 'en-us/en-us'))
-config.set_string('-dict', os.path.join(modeldir, 'en-us/cmudict-en-us.dict'))
-config.set_string('-keyphrase', 'susi')
-# adjust threshold according to your device. Implementation to be optimized later.
-config.set_float('-kws_threshold', 1e-20)
-
 p = pyaudio.PyAudio()
-stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=1024)
-stream.start_stream()
 
-# Process audio chunk by chunk. On keyword detected perform action and restart search
-decoder = Decoder(config)
-decoder.start_utt()
+stream = None
+
+
+def open_stream():
+    global stream
+    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=30480)
+    stream.start_stream()
+
+
+def close_stream():
+    global stream
+    stream.stop_stream()
+    stream.close()
+
+
+open_stream()
+
+# TODO: Decide threshold by a training based system.
+# adjust threshold manually for now.
+sphinxRecognizer = SphinxRecognizer(threshold=1e-23)
 
 while True:
-    buf = stream.read(1024)
-    if buf:
-        decoder.process_raw(buf, False, False)
+    buffer = stream.read(30480, exception_on_overflow=False)
+    if buffer:
+        if sphinxRecognizer.is_recognized(buffer):
+            print("hotword detected")
+            close_stream()
+            start_speech_recognition()
+            open_stream()
     else:
         break
-    if decoder.hyp() is not None:
-        # uncomment following line if you wish to see more debug info
-        # print([(seg.word, seg.prob, seg.start_frame, seg.end_frame) for seg in decoder.seg()])
-        print("Hotword Detected")
-        decoder.end_utt()
-        start_speech_recognition()
-        decoder.start_utt()
-    else:
-        pass
