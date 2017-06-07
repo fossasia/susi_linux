@@ -5,9 +5,17 @@ import speech_recognition as sr
 from speech.SphinxRecognizer import SphinxRecognizer
 import pyaudio
 
-
 r = sr.Recognizer()
-m = sr.Microphone()
+r.dynamic_energy_threshold = False
+r.energy_threshold = 1000
+
+# TODO: Set parameters from environment variable.
+# Currently, please set the variables for microphone initialization below manually.
+# Refer following link for more information about parameters
+# https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst#microphonedevice_index--none-sample_rate--16000-chunk_size--1024
+
+m = sr.Microphone(device_index=2, sample_rate=48000, chunk_size=2048)
+
 
 def speak(text):
     filename = '.response'
@@ -32,15 +40,15 @@ def askSusi(input_query):
 
 
 def start_speech_recognition():
-
     try:
-        print("A moment of silence, please...")
-        with m as source:
-            r.adjust_for_ambient_noise(source)
+        # print("A moment of silence, please...")
+        # with m as source:
+        #     r.adjust_for_ambient_noise(source)
 
         print("Say something!")
+        print("Energy Threshold " + str(r.energy_threshold))
         with m as source:
-            audio = r.listen(source)
+            audio = r.listen(source, phrase_time_limit=5)
         print("Got it! Now to recognize it...")
         try:
             # recognize speech using Google Speech Recognition
@@ -58,15 +66,35 @@ def start_speech_recognition():
 
 
 p = pyaudio.PyAudio()
-stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=20480)
-stream.start_stream()
 
-sphinxRecognizer = SphinxRecognizer(threshold=1e-20)
+stream = None
+
+
+def open_stream():
+    global stream
+    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=30480)
+    stream.start_stream()
+
+
+def close_stream():
+    global stream
+    stream.stop_stream()
+    stream.close()
+
+
+open_stream()
+
+# TODO: Decide threshold by a training based system.
+# adjust threshold manually for now.
+sphinxRecognizer = SphinxRecognizer(threshold=1e-23)
 
 while True:
-    buffer = stream.read(20480, exception_on_overflow=False)
+    buffer = stream.read(30480, exception_on_overflow=False)
     if buffer:
         if sphinxRecognizer.is_recognized(buffer):
+            print("hotword detected")
+            close_stream()
             start_speech_recognition()
+            open_stream()
     else:
         break
