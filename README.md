@@ -92,7 +92,27 @@ Setting up Susi Hardware is pretty easy.
 
 * Setup PyAudio 
     * Install PyAudio ```sudo pip3 install pyaudio```
-    
+
+### Raspberry Pi setup
+
+- Distribution: Raspbian Jesse Lite
+
+* Install required tools
+    -    ```sudo apt install git swig portaudio19-dev pulseaudio libpulse-dev unzip```
+* Download zip packages for Pocketsphinx
+    -    ``` wget https://pypi.python.org/packages/0f/db/d830b477f97fdce5bf575dbf8abc090208e0b3e5956b533adb0f56c8f973/pocketsphinx-0.1.3.zip ```
+* unzip Package
+    - ```unzip pocketsphinx-0.1.3.zip```
+* Install package
+    - ``` cd pocketsphinx-0.1.3/ ```
+    - ``` sudo python3 setup.py install ```
+
+**Note**: If you get an error, reading a line in README.rst, just comment that line.
+
+* Check if your devices show up:
+    - For Recording Devices: ```arecord -l```
+    - For Playback Devices: ```aplay -l```
+
 ## Running Susi
 * Go to app directory
 * Run ```./install.sh```
