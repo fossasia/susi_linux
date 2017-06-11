@@ -34,32 +34,8 @@ Setting up Susi Hardware is pretty easy.
     * ```sudo apt install python3```
     * ```sudo apt install python3-pip```
 
-* Install Festival TTS
-    * ```sudo apt install festival```
-    
-* Install CMU_US Voices
-     
-     This method uses a package from Arch Linux Repository to extract Voice Model. It works well on Ubuntu. 
-          
-     ```
-     $ wget http://archlinux.thaller.ws/community/os/i686/festival-us-2.4-1-any.pkg.tar.xz
-     $ tar xf festival-us-2.4-1-any.pkg.tar.xz
-     $ sudo cp -R ./usr/share/festival/voices/* /usr/share/festival/voices/
-     $ rm -rf ./usr
-     ```
-     
-* If you are using Sound Server like ALSA/PulseAudio (quite probable), configure festival to use Sound Server
-    * Edit your ~/.festivalrc and add these lines at the end
-        ```
-        (Parameter.set 'Audio_Required_Format 'aiff)
-        (Parameter.set 'Audio_Method 'Audio_Command)
-        (Parameter.set 'Audio_Command "paplay $FILE --client-name=Festival --stream-name=Speech")
-        ```
-
-* Set US English Female Voice for Output. Edit your ~/.festivalrc and add these lines at the end
-    ```
-    (set! voice_default voice_cmu_us_cg)
-    ```
+* Install flite
+    * ```sudo apt install flite```
 
 * Setup PyAudio
     * Install PortAudio ```sudo apt-get install portaudio19-dev```
@@ -72,23 +48,8 @@ Setting up Susi Hardware is pretty easy.
     * ```sudo pacman -Sy python```
     * ```sudo pacman -Sy python-pip```
 
-* Install Festival TTS and voices
-    * Install Festival ```sudo pacman -S festival```
-    * Install English Voices ```sudo pacman -S festival-english```
-    * Install English US voices ```sudo pacman -S festival-us```
-    
-* If you are using Sound Server like ALSA/PulseAudio (quite probable), configure festival to use Sound Server
-    * Edit your ~/.festivalrc and add these lines at the end
-        ```
-        (Parameter.set 'Audio_Required_Format 'aiff)
-        (Parameter.set 'Audio_Method 'Audio_Command)
-        (Parameter.set 'Audio_Command "paplay $FILE --client-name=Festival --stream-name=Speech")
-        ```
-
-* Set US English Female Voice for Output. Edit your ~/.festivalrc and add these lines at the end
-    ```
-    (set! voice_default voice_cmu_us_cg)
-    ```
+* Install Flite TTS
+    * sudo pacman -Sy flite
 
 * Setup PyAudio 
     * Install PyAudio ```sudo pip3 install pyaudio```
@@ -99,4 +60,4 @@ Setting up Susi Hardware is pretty easy.
 * After installation of dependencies, run ```python3 main.py```
 * Say "Susi" to trigger speech recognition. You will see "Hotowrd Detected" on your console as an indicative message for detection. 
 * Once detection triggers, ask Susi any question by speech.
-* Susi will reply back with its answer using Festival TTS.
+* Susi will reply back with its answer using Flite TTS.
