@@ -14,11 +14,14 @@ r.energy_threshold = 1000
 # Refer following link for more information about parameters
 # https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst#microphonedevice_index--none-sample_rate--16000-chunk_size--1024
 
-m = sr.Microphone(device_index=2, sample_rate=48000, chunk_size=2048)
+#m = sr.Microphone(device_index=2, sample_rate=48000, chunk_size=2048)
+m = sr.Microphone()
 
 
 def speak(text):
+    # Switch tts service here
     TTS.speak_flite_tts(text)
+    # TTS.speak_watson_tts(text)
 
 
 def askSusi(input_query):
