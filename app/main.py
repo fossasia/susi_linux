@@ -1,21 +1,14 @@
-import susi_python as susi
-import speech.TTS as TTS
-import speech_recognition as sr
-import queue as queue
-
-from threading import Thread
-import asyncio
-import websockets
-
-from speech.SphinxRecognizer import SphinxRecognizer
 import pyaudio
+import speech_recognition as sr
+
+import speech.TTS as TTS
+import susi_python as susi
+import websocket_service
+from speech.SphinxRecognizer import SphinxRecognizer
 
 recognizer = sr.Recognizer()
 recognizer.dynamic_energy_threshold = False
 recognizer.energy_threshold = 1000
-
-# Make a queue for Storing queries by user
-queries_queue = queue.Queue()
 
 # TODO: Set parameters from environment variable.
 # Currently, please set the variables for microphone initialization below manually.
@@ -26,13 +19,39 @@ queries_queue = queue.Queue()
 microphone = sr.Microphone()
 
 
+# Websocket Callbacks
+def on_new_client(client, server):
+    server.send_message_to_all("Hey all, a new client has joined us")
+
+
+def on_client_left(client, server):
+    print("Client(%d) disconnected" % client['id'])
+
+
+def on_message_received(client, server, message):
+    if len(message) > 200:
+        message = message[:200] + '..'
+
+    speak(message)
+    print("Client(%d) said: %s" % (client['id'], message))
+    server.send_message_to_all("Ping back")
+
+
+websocketThread = websocket_service.WebsocketThread(
+    port=9001,
+    fn_message_received=on_message_received,
+    fn_client_left=on_client_left,
+    fn_new_client=on_new_client
+)
+
+
 def speak(text):
     # Switch tts service here
     TTS.speak_flite_tts(text)
     # TTS.speak_watson_tts(text)
 
 
-def askSusi(input_query):
+def ask_susi(input_query):
     print(input_query)
     # get reply by Susi
     reply = susi.ask(input_query)
@@ -47,10 +66,6 @@ def askSusi(input_query):
 
 def start_speech_recognition():
     try:
-        # print("A moment of silence, please...")
-        # with m as source:
-        #     r.adjust_for_ambient_noise(source)
-
         print("Say something!")
         print("Energy Threshold " + str(recognizer.energy_threshold))
         with microphone as source:
@@ -59,9 +74,8 @@ def start_speech_recognition():
         try:
             # recognize speech using Google Speech Recognition
             value = recognizer.recognize_google(audio)
-            queries_queue.put(value)
-            # query susi for the question
-            askSusi(value)
+            websocketThread.send_to_all(value)
+            ask_susi(value)
 
         except sr.UnknownValueError:
             print("Oops! Didn't catch that")
@@ -79,7 +93,7 @@ stream = None
 
 def open_stream():
     global stream
-    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=30480)
+    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=20480)
     stream.start_stream()
 
 
@@ -89,56 +103,16 @@ def close_stream():
     stream.close()
 
 
+websocketThread.start()
+
 open_stream()
-
-async def consumer(message):
-    print(message)
-
-
-async def consumer_handler(websocket):
-    while True:
-        message = await websocket.recv()
-        await consumer(message)
-
-
-async def producer():
-    return queries_queue.get()
-
-
-async def producer_handler(websocket):
-    while True:
-        message = await producer()
-        await websocket.send(message)
-
-async def handler(websocket, path):
-    consumer_task = asyncio.ensure_future(consumer_handler(websocket))
-    producer_task = asyncio.ensure_future(producer_handler(websocket))
-    done, pending = await asyncio.wait(
-        [consumer_task, producer_task],
-        return_when=asyncio.FIRST_COMPLETED,
-    )
-
-    for task in pending:
-        task.cancel()
-
-
-def start_server_thread(handler, loop):
-    start_server = websockets.serve(handler, '127.0.0.1', 5678)
-    asyncio.set_event_loop(loop)
-    asyncio.get_event_loop().run_until_complete(start_server)
-    asyncio.get_event_loop().run_forever()
-
 
 # TODO: Decide threshold by a training based system.
 # adjust threshold manually for now.
 sphinxRecognizer = SphinxRecognizer(threshold=1e-23)
 
-loop = asyncio.get_event_loop()
-thread = Thread(target=start_server_thread, args=(handler, loop,))
-thread.start()
-
 while True:
-    buffer = stream.read(30480, exception_on_overflow=False)
+    buffer = stream.read(20480, exception_on_overflow=False)
     if buffer:
         if sphinxRecognizer.is_recognized(buffer):
             print("hotword detected")
@@ -148,4 +122,4 @@ while True:
     else:
         break
 
-thread.join()
+websocketThread.join()

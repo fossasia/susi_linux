@@ -18,6 +18,7 @@ class SphinxRecognizer(object):
         config.set_string('-keyphrase', 'susi')
         config.set_string('-dict', os.path.join(modeldir, dict_name))
         config.set_float('-kws_threshold',self.threshold)
+        config.set_string('-logfn', '/dev/null')
         # TODO: Optimize use of following parameters
         #config.set_float('-samprate', self.sample_rate)
         #config.set_int('-nfft', 2048)
