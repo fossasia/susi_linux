@@ -120,10 +120,8 @@ while True:
         if sphinxRecognizer.is_recognized(buffer):
             print("hotword detected")
             play_thread = threading.Thread(target=detection_bell.play)
-            print("hi")
             close_stream()
             play_thread.start()
-            print("hi")
             start_speech_recognition()
             play_thread.join()
             open_stream()

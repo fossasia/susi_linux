@@ -19,9 +19,10 @@ sudo pip3 install -r requirements-hw.txt
 
 echo "Downloading Speech Data for flite TTS"
 
-if [ ! -f "cmu_us_slt.flitevox" ]
+if [ ! -f "extras/cmu_us_slt.flitevox" ]
 then
     wget "http://www.festvox.org/flite/packed/flite-2.0/voices/cmu_us_slt.flitevox"
+    mv cmu_us_slt.flitevox extras/
 fi
 
 echo "Setup Complete"
