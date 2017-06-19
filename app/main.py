@@ -1,21 +1,48 @@
-import susi_python as susi
-import speech.TTS as TTS
+import pyaudio
 import speech_recognition as sr
 
+import speech.TTS as TTS
+import susi_python as susi
+import websocket_service
 from speech.SphinxRecognizer import SphinxRecognizer
-import pyaudio
 
-r = sr.Recognizer()
-r.dynamic_energy_threshold = False
-r.energy_threshold = 1000
+recognizer = sr.Recognizer()
+recognizer.dynamic_energy_threshold = False
+recognizer.energy_threshold = 1000
 
 # TODO: Set parameters from environment variable.
 # Currently, please set the variables for microphone initialization below manually.
 # Refer following link for more information about parameters
 # https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst#microphonedevice_index--none-sample_rate--16000-chunk_size--1024
 
-#m = sr.Microphone(device_index=2, sample_rate=48000, chunk_size=2048)
-m = sr.Microphone()
+# microphone = sr.Microphone(device_index=2, sample_rate=48000, chunk_size=2048)
+microphone = sr.Microphone()
+
+
+# Websocket Callbacks
+def on_new_client(client, server):
+    server.send_message_to_all("Hey all, a new client has joined us")
+
+
+def on_client_left(client, server):
+    print("Client(%d) disconnected" % client['id'])
+
+
+def on_message_received(client, server, message):
+    if len(message) > 200:
+        message = message[:200] + '..'
+
+    speak(message)
+    print("Client(%d) said: %s" % (client['id'], message))
+    server.send_message_to_all("Ping back")
+
+
+websocketThread = websocket_service.WebsocketThread(
+    port=9001,
+    fn_message_received=on_message_received,
+    fn_client_left=on_client_left,
+    fn_new_client=on_new_client
+)
 
 
 def speak(text):
@@ -24,7 +51,7 @@ def speak(text):
     # TTS.speak_watson_tts(text)
 
 
-def askSusi(input_query):
+def ask_susi(input_query):
     print(input_query)
     # get reply by Susi
     reply = susi.ask(input_query)
@@ -39,20 +66,16 @@ def askSusi(input_query):
 
 def start_speech_recognition():
     try:
-        # print("A moment of silence, please...")
-        # with m as source:
-        #     r.adjust_for_ambient_noise(source)
-
         print("Say something!")
-        print("Energy Threshold " + str(r.energy_threshold))
-        with m as source:
-            audio = r.listen(source, phrase_time_limit=5)
+        print("Energy Threshold " + str(recognizer.energy_threshold))
+        with microphone as source:
+            audio = recognizer.listen(source, phrase_time_limit=5)
         print("Got it! Now to recognize it...")
         try:
             # recognize speech using Google Speech Recognition
-            value = r.recognize_google(audio)
-            # query susi for the question
-            askSusi(format(value))
+            value = recognizer.recognize_google(audio)
+            websocketThread.send_to_all(value)
+            ask_susi(value)
 
         except sr.UnknownValueError:
             print("Oops! Didn't catch that")
@@ -70,7 +93,7 @@ stream = None
 
 def open_stream():
     global stream
-    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=30480)
+    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=20480)
     stream.start_stream()
 
 
@@ -80,6 +103,8 @@ def close_stream():
     stream.close()
 
 
+websocketThread.start()
+
 open_stream()
 
 # TODO: Decide threshold by a training based system.
@@ -87,7 +112,7 @@ open_stream()
 sphinxRecognizer = SphinxRecognizer(threshold=1e-23)
 
 while True:
-    buffer = stream.read(30480, exception_on_overflow=False)
+    buffer = stream.read(20480, exception_on_overflow=False)
     if buffer:
         if sphinxRecognizer.is_recognized(buffer):
             print("hotword detected")
@@ -96,3 +121,5 @@ while True:
             open_stream()
     else:
         break
+
+websocketThread.join()
