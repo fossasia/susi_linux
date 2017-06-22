@@ -1,4 +1,4 @@
 speechRecognition==3.6.5
 pocketsphinx==0.1.3
 watson-developer-cloud
-websockets
+git+https://github.com/Pithikos/python-websocket-server

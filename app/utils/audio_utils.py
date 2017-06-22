@@ -1,7 +1,4 @@
-import asyncio
-import threading
 import wave
-
 import pyaudio
 
 

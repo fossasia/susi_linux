@@ -1,7 +1,8 @@
+import threading
+
 import pyaudio
 import speech_recognition as sr
 
-import threading
 import speech.TTS as TTS
 import susi_python as susi
 from speech.SphinxRecognizer import SphinxRecognizer
@@ -23,7 +24,8 @@ microphone = sr.Microphone()
 
 # Websocket Callbacks
 def on_new_client(client, server):
-    server.send_message_to_all("Hey all, a new client has joined us")
+    # server.send_message_to_all("Hey all, a new client has joined us")
+    pass
 
 
 def on_client_left(client, server):
