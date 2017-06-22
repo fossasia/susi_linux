@@ -10,6 +10,7 @@ class SphinxRecognizer(object):
         self.threshold = threshold
         dict_name = "cmudict-en-us.dict"
         self.decoder = Decoder(self.create_config(dict_name))
+        #self.decoder.set_search('keyphrase')
 
     def create_config(self, dict_name):
         modeldir = "/usr/lib/python3.6/site-packages/pocketsphinx/model"
@@ -19,6 +20,7 @@ class SphinxRecognizer(object):
         config.set_string('-dict', os.path.join(modeldir, dict_name))
         config.set_float('-kws_threshold',self.threshold)
         config.set_string('-logfn', '/dev/null')
+        config.set_string('-verbose', 'true')
         # TODO: Optimize use of following parameters
         #config.set_float('-samprate', self.sample_rate)
         #config.set_int('-nfft', 2048)

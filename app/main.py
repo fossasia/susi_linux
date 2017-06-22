@@ -1,10 +1,13 @@
+import threading
+
 import pyaudio
 import speech_recognition as sr
 
 import speech.TTS as TTS
 import susi_python as susi
-import websocket_service
 from speech.SphinxRecognizer import SphinxRecognizer
+from utils import websocket_utils
+from utils.audio_utils import detection_bell
 
 recognizer = sr.Recognizer()
 recognizer.dynamic_energy_threshold = False
@@ -21,7 +24,8 @@ microphone = sr.Microphone()
 
 # Websocket Callbacks
 def on_new_client(client, server):
-    server.send_message_to_all("Hey all, a new client has joined us")
+    # server.send_message_to_all("Hey all, a new client has joined us")
+    pass
 
 
 def on_client_left(client, server):
@@ -29,15 +33,16 @@ def on_client_left(client, server):
 
 
 def on_message_received(client, server, message):
-    if len(message) > 200:
-        message = message[:200] + '..'
+    # speak(message)
+    reply = susi.answer_from_json(message)
 
-    speak(message)
-    print("Client(%d) said: %s" % (client['id'], message))
-    server.send_message_to_all("Ping back")
+    if 'answer' in reply.keys():
+        print('Susi:' + reply['answer'])
+        # Call flite tts to reply the response by Susi
+        speak(reply['answer'])
 
 
-websocketThread = websocket_service.WebsocketThread(
+websocketThread = websocket_utils.WebsocketThread(
     port=9001,
     fn_message_received=on_message_received,
     fn_client_left=on_client_left,
@@ -52,7 +57,6 @@ def speak(text):
 
 
 def ask_susi(input_query):
-    print(input_query)
     # get reply by Susi
     reply = susi.ask(input_query)
 
@@ -75,7 +79,8 @@ def start_speech_recognition():
             # recognize speech using Google Speech Recognition
             value = recognizer.recognize_google(audio)
             websocketThread.send_to_all(value)
-            ask_susi(value)
+            print(value)
+            # ask_susi(value)
 
         except sr.UnknownValueError:
             print("Oops! Didn't catch that")
@@ -116,9 +121,13 @@ while True:
     if buffer:
         if sphinxRecognizer.is_recognized(buffer):
             print("hotword detected")
+            play_thread = threading.Thread(target=detection_bell.play)
             close_stream()
+            play_thread.start()
             start_speech_recognition()
+            play_thread.join()
             open_stream()
+
     else:
         break
 
