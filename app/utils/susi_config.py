@@ -1,3 +1,3 @@
-import jsoncfg
+import json_config
 
-config = jsoncfg.load_config("config.cfg")
+config = json_config.connect('config.json')

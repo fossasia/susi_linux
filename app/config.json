@@ -1,0 +1,15 @@
+{
+  "flite_speech_file_path": "extras/cmu_us_slt.flitevox",
+  "detection_bell_path": "extras/detection-bell.mp3",
+  "default_tts": "flite",
+  "default_stt": "google",
+  "watson_speech_config": {
+    "username": "ADD_HERE",
+    "password": "ADD_HERE"
+  },
+  "watson_tts_config": {
+    "username": "ADD_HERE",
+    "password": "ADD_HERE",
+    "voice": "en-US_AllisonVoice"
+  }
+}

@@ -13,7 +13,6 @@ class SphinxRecognizer(object):
     def create_config(self, dict_name):
         pocketsphinx_dir = os.path.dirname(pocketsphinx.__file__)
         model_dir = os.path.join(pocketsphinx_dir, "model")
-        print(model_dir)
         config = pocketsphinx.Decoder.default_config()
         config.set_string('-hmm', os.path.join(model_dir, 'en-us'))
         config.set_string('-keyphrase', 'susi')
