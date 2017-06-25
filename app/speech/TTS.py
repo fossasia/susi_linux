@@ -1,12 +1,13 @@
 import subprocess
-from utils.audio_utils import AudioFile
-from os.path import join, dirname
+
 from watson_developer_cloud import TextToSpeechV1
 
+from utils.audio_utils import AudioFile
+from utils.susi_config import config
+
 text_to_speech = TextToSpeechV1(
-    username='ADD_API_USERNAME_HERE',
-    password='ADD_API_PASSWORD HERE',
-    x_watson_learning_opt_out=True)  # Optional flag
+    username=config['watson_tts_config']['username'],
+    password=config['watson_tts_config']['password'])
 
 
 def speak_flite_tts(text):
@@ -15,16 +16,15 @@ def speak_flite_tts(text):
     file.write(text)
     file.close()
     # Call flite tts to reply the response by Susi
-    subprocess.call('flite -voice file://extras/cmu_us_slt.flitevox -f ' + filename, shell=True)
+    flite_speech_file = config['flite_speech_file_path']
+    subprocess.call('flite -voice {0} -f {1}'.format(flite_speech_file, filename), shell=True)
 
 
 def speak_watson_tts(text):
-
     with open('extras/output.wav', 'wb') as audio_file:
         audio_file.write(
             text_to_speech.synthesize(text, accept='audio/wav',
-                                      voice="en-US_AllisonVoice"))
+                                      voice=config['watson_tts_config']['voice']))
 
     a = AudioFile("extra/output.wav")
     a.play()
-    a.close()

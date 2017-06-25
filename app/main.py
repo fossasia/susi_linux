@@ -8,6 +8,7 @@ import susi_python as susi
 from speech.SphinxRecognizer import SphinxRecognizer
 from utils import websocket_utils
 from utils.audio_utils import detection_bell
+from utils.susi_config import config
 
 recognizer = sr.Recognizer()
 recognizer.dynamic_energy_threshold = False
@@ -68,16 +69,27 @@ def ask_susi(input_query):
         speak("I don't have an answer to this")
 
 
+def recognize_audio(audio):
+    if config['default_stt'] == 'google':
+        return recognizer.recognize_google(audio)
+
+    elif config['default_stt'] == 'watson':
+        username = config['watson_speech_config']['username']
+        password = config['watson_speech_config']['password']
+        return recognizer.recognize_ibm(
+            username=username,
+            password=password,
+            audio_data=audio)
+
+
 def start_speech_recognition():
     try:
         print("Say something!")
-        print("Energy Threshold " + str(recognizer.energy_threshold))
         with microphone as source:
             audio = recognizer.listen(source, phrase_time_limit=5)
         print("Got it! Now to recognize it...")
         try:
-            # recognize speech using Google Speech Recognition
-            value = recognizer.recognize_google(audio)
+            value = recognize_audio(audio)
             websocketThread.send_to_all(value)
             print(value)
             # ask_susi(value)
@@ -114,7 +126,7 @@ open_stream()
 
 # TODO: Decide threshold by a training based system.
 # adjust threshold manually for now.
-sphinxRecognizer = SphinxRecognizer(threshold=1e-23)
+sphinxRecognizer = SphinxRecognizer(threshold=1e-30)
 
 while True:
     buffer = stream.read(20480, exception_on_overflow=False)
@@ -132,3 +144,4 @@ while True:
         break
 
 websocketThread.join()
+
