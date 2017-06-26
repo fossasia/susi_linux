@@ -1,4 +1,4 @@
-import threading
+import os
 
 import pyaudio
 import speech_recognition as sr
@@ -7,7 +7,6 @@ import speech.TTS as TTS
 import susi_python as susi
 from speech.SphinxRecognizer import SphinxRecognizer
 from utils import websocket_utils
-from utils.audio_utils import detection_bell
 from utils.susi_config import config
 
 recognizer = sr.Recognizer()
@@ -53,8 +52,10 @@ websocketThread = websocket_utils.WebsocketThread(
 
 def speak(text):
     # Switch tts service here
-    TTS.speak_flite_tts(text)
-    # TTS.speak_watson_tts(text)
+    if config['default_tts'] == 'flite':
+        TTS.speak_flite_tts(text)
+    elif config['default_tts'] == 'watson':
+        TTS.speak_watson_tts(text)
 
 
 def ask_susi(input_query):
@@ -90,9 +91,9 @@ def start_speech_recognition():
         print("Got it! Now to recognize it...")
         try:
             value = recognize_audio(audio)
-            websocketThread.send_to_all(value)
+            # websocketThread.send_to_all(value)
             print(value)
-            # ask_susi(value)
+            ask_susi(value)
 
         except sr.UnknownValueError:
             print("Oops! Didn't catch that")
@@ -112,7 +113,7 @@ def open_stream():
     global stream
     stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=20480)
     stream.start_stream()
-
+    print("--------------- RECOGNITION STARTED -----------------")
 
 
 def close_stream():
@@ -134,15 +135,13 @@ while True:
     if buffer:
         if sphinxRecognizer.is_recognized(buffer):
             print("hotword detected")
-            play_thread = threading.Thread(target=detection_bell.play)
+            # play the detection bell
+            os.system('play extras/detection-bell.wav &')
             close_stream()
-            play_thread.start()
             start_speech_recognition()
-            play_thread.join()
             open_stream()
 
     else:
         break
 
 websocketThread.join()
-
