@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 from watson_developer_cloud import TextToSpeechV1
 
@@ -17,8 +18,9 @@ def speak_flite_tts(text):
     file.close()
     # Call flite tts to reply the response by Susi
     flite_speech_file = config['flite_speech_file_path']
-    subprocess.call('flite -voice {0} -f {1}'.format(flite_speech_file, filename), shell=True)
-
+    print('flite -voice file://{0} -f {1}'.format(flite_speech_file, filename))
+    os.system('flite -v -voice file://{0} -f {1} -o extras/output.wav'.format(flite_speech_file, filename))
+    os.system('play extras/output.wav')
 
 def speak_watson_tts(text):
     with open('extras/output.wav', 'wb') as audio_file:
@@ -26,5 +28,5 @@ def speak_watson_tts(text):
             text_to_speech.synthesize(text, accept='audio/wav',
                                       voice=config['watson_tts_config']['voice']))
 
-    a = AudioFile("extra/output.wav")
+    a = AudioFile("extras/output.wav")
     a.play()

@@ -9,11 +9,12 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 
 **Current Status**
 - Voice Detection working with Google Speech API.
-- Voice Output working with Festival TTS.
+- Voice Output working with Flite TTS.
 - Susi AI response working through Susi AI API Python Wrapper(https://github.com/fossasia/susi_api_wrapper)
+- Hotword Detection works for hotword 'Susi'
+- Susi Webchat connect mode works to connect Susi Hardware client to Webchat Client (in alpha stages)
 
 **Roadmap**
-- Enable "Susi" Hotword Detection
 - Offline Voice Detection (if possible with satisfactory results)
 - Provision of more services for online Voice Detection and make it a user choice.
 - Add more/better voice/tts engines to give more realistic feel to Susi Voice.
@@ -59,7 +60,7 @@ Setting up Susi Hardware is pretty easy.
 - Distribution: Raspbian Jesse Lite
 
 * Install required tools
-    -    ```sudo apt install git swig portaudio19-dev pulseaudio libpulse-dev unzip```
+    -    ```sudo apt install git swig portaudio19-dev pulseaudio libpulse-dev unzip sox```
 * Download zip packages for Pocketsphinx
     -    ``` wget https://pypi.python.org/packages/0f/db/d830b477f97fdce5bf575dbf8abc090208e0b3e5956b533adb0f56c8f973/pocketsphinx-0.1.3.zip ```
 * unzip Package
