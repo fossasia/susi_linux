@@ -1,11 +1,10 @@
 import os
 
-import pyaudio
 import speech_recognition as sr
+from pocketsphinx import LiveSpeech
 
 import speech.TTS as TTS
 import susi_python as susi
-from speech.SphinxRecognizer import SphinxRecognizer
 from utils import websocket_utils
 from utils.susi_config import config
 
@@ -104,44 +103,15 @@ def start_speech_recognition():
         pass
 
 
-p = pyaudio.PyAudio()
-
-stream = None
-
-
-def open_stream():
-    global stream
-    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=20480)
-    stream.start_stream()
-    print("--------------- RECOGNITION STARTED -----------------")
-
-
-def close_stream():
-    global stream
-    stream.stop_stream()
-    stream.close()
-
-
 websocketThread.start()
 
-open_stream()
+liveSpeech = LiveSpeech(lm=False, keyphrase='susi', kws_threshold=1e-15)
 
-# TODO: Decide threshold by a training based system.
-# adjust threshold manually for now.
-sphinxRecognizer = SphinxRecognizer(threshold=1e-30)
+for phrase in liveSpeech:
+    print(phrase)
+    if str(phrase) == 'susi':
+        os.system("play extras/detection-bell.wav &")
+        start_speech_recognition()
 
-while True:
-    buffer = stream.read(20480, exception_on_overflow=False)
-    if buffer:
-        if sphinxRecognizer.is_recognized(buffer):
-            print("hotword detected")
-            # play the detection bell
-            os.system('play extras/detection-bell.wav &')
-            close_stream()
-            start_speech_recognition()
-            open_stream()
-
-    else:
-        break
 
 websocketThread.join()
