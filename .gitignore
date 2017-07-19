@@ -6,5 +6,5 @@ requirements.txt
 speech/__pycache__/
 susi_python/
 utils/__pycache__/
-snowboy/_snowboydetect.so
-snowboy/snowboydetect.py
+hotword_engine/snowboy/_snowboydetect.so
+hotword_engine/snowboy/snowboydetect.py

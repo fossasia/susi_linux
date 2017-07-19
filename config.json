@@ -1,15 +1,15 @@
 {
   "flite_speech_file_path": "extras/cmu_us_slt.flitevox",
   "detection_bell_path": "extras/detection-bell.mp3",
-  "default_tts": "flite",
+  "default_tts": "watson",
   "default_stt": "google",
   "watson_speech_config": {
-    "username": "ADD_HERE",
-    "password": "ADD_HERE"
+    "username": "e86ec93d-2dc0-4d9d-b381-e13f36d87c5c",
+    "password": "xPzqq6u0HAH6"
   },
   "watson_tts_config": {
-    "username": "ADD_HERE",
-    "password": "ADD_HERE",
+    "username": "e86ec93d-2dc0-4d9d-b381-e13f36d87c5c",
+    "password": "xPzqq6u0HAH6",
     "voice": "en-US_AllisonVoice"
   }
 }

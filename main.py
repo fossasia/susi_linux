@@ -1,8 +1,6 @@
-import os
-
 import speech_recognition as sr
-from pocketsphinx import LiveSpeech
 
+import hotword_engine
 import speech.TTS as TTS
 import susi_python as susi
 from utils import websocket_utils
@@ -12,12 +10,6 @@ recognizer = sr.Recognizer()
 recognizer.dynamic_energy_threshold = False
 recognizer.energy_threshold = 1000
 
-# TODO: Set parameters from environment variable.
-# Currently, please set the variables for microphone initialization below manually.
-# Refer following link for more information about parameters
-# https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst#microphonedevice_index--none-sample_rate--16000-chunk_size--1024
-
-# microphone = sr.Microphone(device_index=2, sample_rate=48000, chunk_size=2048)
 microphone = sr.Microphone()
 
 
@@ -93,25 +85,24 @@ def start_speech_recognition():
             # websocketThread.send_to_all(value)
             print(value)
             ask_susi(value)
+            #hotword_detector.start_detection()
 
         except sr.UnknownValueError:
             print("Oops! Didn't catch that")
+            #hotword_detector.start_detection()
         except sr.RequestError as e:
             print("Uh oh! Couldn't request results from Google Speech Recognition service; {0}".format(e))
+            #hotword_detector.start_detection()
 
     except KeyboardInterrupt:
         pass
 
 
-websocketThread.start()
-
-liveSpeech = LiveSpeech(lm=False, keyphrase='susi', kws_threshold=1e-20)
-
-for phrase in liveSpeech:
-    print(phrase)
-    if str(phrase) == 'susi':
-        os.system("play extras/detection-bell.wav &")
-        start_speech_recognition()
+# websocketThread.start()
 
 
-websocketThread.join()
+hotword_detector = hotword_engine.PocketSphinxDetector(detection_callback=start_speech_recognition)
+hotword_detector.start()
+hotword_detector.start_detection()
+
+# websocketThread.join()
