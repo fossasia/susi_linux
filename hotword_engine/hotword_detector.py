@@ -1,10 +1,11 @@
 from abc import ABC, abstractclassmethod
 from threading import Thread
-
+from queue import Queue
 
 class HotwordDetector(ABC, Thread):
-    def __init__(self, detection_callback) -> None:
+    def __init__(self, callback_queue: Queue, detection_callback) -> None:
         Thread.__init__(self)
+        self.callback_queue = callback_queue
         self.detection_callback = detection_callback
         self.is_active = False
 
@@ -19,10 +20,3 @@ class HotwordDetector(ABC, Thread):
     @abstractclassmethod
     def pause_detection(self):
         pass
-
-
-
-
-
-
-

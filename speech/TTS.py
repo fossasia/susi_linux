@@ -1,9 +1,8 @@
-import subprocess
 import os
+from google_speech import Speech
 
 from watson_developer_cloud import TextToSpeechV1
 
-from utils.audio_utils import AudioFile
 from utils.susi_config import config
 
 text_to_speech = TextToSpeechV1(
@@ -29,5 +28,8 @@ def speak_watson_tts(text):
             text_to_speech.synthesize(text, accept='audio/wav',
                                       voice=config['watson_tts_config']['voice']))
 
-    a = AudioFile("extras/output.wav")
-    a.play()
+    os.system('play extras/output.wav')
+
+
+def speak_google_tts(text):
+    Speech(text=text, lang='en').play(sox_effects=None)
