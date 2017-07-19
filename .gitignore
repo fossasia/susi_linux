@@ -8,3 +8,4 @@ susi_python/
 utils/__pycache__/
 hotword_engine/snowboy/_snowboydetect.so
 hotword_engine/snowboy/snowboydetect.py
+/extras/output.wav

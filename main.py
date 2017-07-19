@@ -46,12 +46,12 @@ websocketThread = websocket_utils.WebsocketThread(
 
 
 def speak(text):
-    # Switch tts service here
-    TTS.speak_google_tts(text)
-    # if config['default_tts'] == 'flite':
-    #     TTS.speak_flite_tts(text)
-    # elif config['default_tts'] == 'watson':
-    #     TTS.speak_watson_tts(text)
+    if config['default_tts'] == 'google':
+        TTS.speak_google_tts(text)
+    if config['default_tts'] == 'flite':
+        TTS.speak_flite_tts(text)
+    elif config['default_tts'] == 'watson':
+        TTS.speak_watson_tts(text)
 
 
 def ask_susi(input_query):
