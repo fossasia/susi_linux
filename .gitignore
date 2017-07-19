@@ -1,0 +1,8 @@
+
+.idea/
+.response
+extras/cmu_us_slt.flitevox
+requirements.txt
+speech/__pycache__/
+susi_python/
+utils/__pycache__/
