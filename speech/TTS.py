@@ -22,6 +22,7 @@ def speak_flite_tts(text):
     os.system('flite -v -voice file://{0} -f {1} -o extras/output.wav'.format(flite_speech_file, filename))
     os.system('play extras/output.wav')
 
+
 def speak_watson_tts(text):
     with open('extras/output.wav', 'wb') as audio_file:
         audio_file.write(

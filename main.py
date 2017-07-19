@@ -105,7 +105,7 @@ def start_speech_recognition():
 
 websocketThread.start()
 
-liveSpeech = LiveSpeech(lm=False, keyphrase='susi', kws_threshold=1e-15)
+liveSpeech = LiveSpeech(lm=False, keyphrase='susi', kws_threshold=1e-20)
 
 for phrase in liveSpeech:
     print(phrase)

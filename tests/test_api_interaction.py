@@ -5,3 +5,4 @@ def test_response():
     response = susi.ask('Hi')
 
     assert response is not None
+
