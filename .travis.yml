@@ -5,15 +5,9 @@ python:
   - "3.6"
 install:
   - sudo apt install swig portaudio19-dev pulseaudio libpulse-dev unzip python3-setuptools python3-pip sox
-  - wget https://pypi.python.org/packages/0f/db/d830b477f97fdce5bf575dbf8abc090208e0b3e5956b533adb0f56c8f973/pocketsphinx-0.1.3.zip
-  - unzip pocketsphinx-0.1.3.zip
-  - cd pocketsphinx-0.1.3/
-  - python3 setup.py install
-  - cd ../app
   - ./install.sh
   - pip3 install -U pytest
   - pip3 install -r requirements.txt
   - pip3 install -r requirements-hw.txt
 script:
-  - pip list
   - python3 -m pytest tests/
