@@ -45,8 +45,8 @@ then
 fi
 
 echo "Downloading Python Dependencies"
-sudo pip3 install -r requirements.txt
-sudo pip3 install -r requirements-hw.txt
+pip3 install -r requirements.txt
+pip3 install -r requirements-hw.txt
 
 echo "Downloading Speech Data for flite TTS"
 

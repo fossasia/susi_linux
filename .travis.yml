@@ -2,10 +2,10 @@ sudo: required
 dist: trusty
 language: python
 python:
-  - "3.6"
+  - "3.5"
 install:
-  - sudo apt install swig portaudio19-dev pulseaudio libpulse-dev unzip python3-setuptools python3-pip sox
-  - ./install.sh
+  - sudo apt install swig3.0 portaudio19-dev libatlas-dev libatlas-base-dev pulseaudio libpulse-dev unzip python3-setuptools python3-pip sox
+  - ./.travis_scripts/install.sh
   - pip3 install -U pytest
   - pip3 install -r requirements.txt
   - pip3 install -r requirements-hw.txt
