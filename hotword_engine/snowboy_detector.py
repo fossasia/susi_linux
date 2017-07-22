@@ -1,3 +1,7 @@
+"""Implementation of SnowboyDetector using Snowboy Hotword Detection Engine.
+It provides excellent recognition of Hotword but all devices are not supported presently.
+Use PocketSphinx if you face errors with this Detector.
+"""
 from .hotword_detector import HotwordDetector
 from .snowboy import snowboydecoder
 from queue import Queue
@@ -8,20 +12,15 @@ RESOURCE_FILE = os.path.join(TOP_DIR, "snowboy/resources/susi.pmdl")
 
 
 class SnowboyDetector(HotwordDetector):
+    """This implements the Hotword Detector with Snowboy Hotword Detection Engine."""
+
     def __init__(self, callback_queue: Queue, detection_callback) -> None:
         super().__init__(callback_queue, detection_callback)
         self.detector = snowboydecoder.HotwordDetector(RESOURCE_FILE, sensitivity=0.5)
 
     def run(self):
-        self.detector.start(detected_callback=self.detected_callback)
-
-    def start_detection(self):
-        self.is_active = True
-
-    def pause_detection(self):
-        self.is_active = False
-
-    def detected_callback(self):
-        if self.is_active:
-            self.pause_detection()
-            self.callback_queue.put(self.detection_callback)
+        """ Implementation of run abstract method in HotwordDetector. This method is called when thread
+        is started for the first time. We start the Snowboy detection and declare detected callback as
+        detection_callback method declared in parent class.
+        """
+        self.detector.start(detected_callback=self.on_detected)
