@@ -5,7 +5,7 @@ function install_dependencies()
 {
     if /usr/bin/dpkg --search /usr/bin/dpkg
     then
-        sudo apt install swig libatlas-dev libatlas-base-dev
+        sudo apt install swig3.0 libatlas-dev libatlas-base-dev
     else
         ret 1;
     fi
