@@ -1,11 +1,22 @@
 #!/bin/bash
 set -e
 
+function install_swig_from_sources()
+{
+    wget https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz
+    tar xf swig-3.0.12.tar.gz
+    cd swig-3.0.12
+    ./configure
+    make
+    sudo make install
+    cd ..
+}
+
 function install_dependencies()
 {
     if /usr/bin/dpkg --search /usr/bin/dpkg
     then
-        sudo apt install swig3.0 libatlas-dev libatlas-base-dev
+        sudo apt install libatlas-dev libatlas-base-dev
     else
         ret 1;
     fi
@@ -15,7 +26,7 @@ function install_snowboy()
 {
     if install_dependencies
     then
-        root_dir=`pwd`
+        root_dir=$(pwd)
         git clone https://github.com/Kitt-AI/snowboy.git
         cd snowboy/swig/Python3
         make -j4
@@ -43,6 +54,8 @@ then
     mv susi_api_wrapper/python_wrapper/requirements.txt requirements.txt
     rm -rf susi_api_wrapper
 fi
+
+install_swig_from_sources
 
 echo "Downloading Python Dependencies"
 pip3 install -r requirements.txt

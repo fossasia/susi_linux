@@ -15,7 +15,7 @@ function install_snowboy()
 {
     if install_dependencies
     then
-        root_dir=`pwd`
+        root_dir=$(pwd)
         git clone https://github.com/Kitt-AI/snowboy.git
         cd snowboy/swig/Python3
         make -j4

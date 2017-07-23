@@ -16,14 +16,10 @@ class SnowboyDetector(HotwordDetector):
         self.detector.start(detected_callback=self.detected_callback)
 
     def start_detection(self):
-        print("started")
         self.is_active = True
-        pass
 
     def pause_detection(self):
-        print("paused")
         self.is_active = False
-        pass
 
     def detected_callback(self):
         if self.is_active:
