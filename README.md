@@ -8,16 +8,14 @@ This project aims at creating an implementation of Susi, capable to run on Hardw
 It will enable you to bring Susi AI intelligence to all devices you may think like a Speaker, Car etc.
 
 **Current Status**
-- Voice Detection working with Google Speech API.
-- Voice Output working with Flite TTS.
+- Voice Detection working with Google Speech API/ IBM Watson Speech to Text API.
+- Voice Output working with Google TTS/ IBM Watson TTS/ Flite TTS.
 - Susi AI response working through Susi AI API Python Wrapper(https://github.com/fossasia/susi_api_wrapper)
 - Hotword Detection works for hotword 'Susi'
 - Susi Webchat connect mode works to connect Susi Hardware client to Webchat Client (in alpha stages)
 
 **Roadmap**
 - Offline Voice Detection (if possible with satisfactory results)
-- Provision of more services for online Voice Detection and make it a user choice.
-- Add more/better voice/tts engines to give more realistic feel to Susi Voice.
 - Add hardware specific options like Susi Wake Button.
 
 
@@ -57,28 +55,18 @@ Setting up Susi Hardware is pretty easy.
 
 ### Raspberry Pi setup
 
-- Distribution: Raspbian Jesse Lite
+- Distribution: Raspbian Jessie
 
 * Install required tools
-    -    ```sudo apt install git swig portaudio19-dev pulseaudio libpulse-dev unzip sox```
-* Download zip packages for Pocketsphinx
-    -    ``` wget https://pypi.python.org/packages/0f/db/d830b477f97fdce5bf575dbf8abc090208e0b3e5956b533adb0f56c8f973/pocketsphinx-0.1.3.zip ```
-* unzip Package
-    - ```unzip pocketsphinx-0.1.3.zip```
-* Install package
-    - ``` cd pocketsphinx-0.1.3/ ```
-    - ``` sudo python3 setup.py install ```
+    -    ```sudo apt install git swig portaudio19-dev pulseaudio libpulse-dev unzip sox libatlas-dev libatlas-base-dev libsox-fmt-all```
 
-**Note**: If you get an error, reading a line in README.rst, just comment that line.
-
-* Check if your devices show up:
-    - For Recording Devices: ```arecord -l```
-    - For Playback Devices: ```aplay -l```
+* Check if your speaker and microphone devices show up:
+    - For Recording Devices (Microphone) : ```arecord -l```
+    - For Playback Devices (Speaker) : ```aplay -l```
 
 ## Running Susi
-* Go to app directory
 * Run ```./install.sh```
 * After installation of dependencies, run ```python3 main.py```
 * Say "Susi" to trigger speech recognition. You will see "Hotowrd Detected" on your console as an indicative message for detection. 
 * Once detection triggers, ask Susi any question by speech.
-* Susi will reply back with its answer using Flite TTS.
+* Susi will reply back with its answer.
