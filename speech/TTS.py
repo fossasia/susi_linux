@@ -1,8 +1,10 @@
+""" This module implements all Text to Speech Services.
+You may use any of the speech synthesis services by calling the
+respective method.
+"""
 import os
 from google_speech import Speech
-
 from watson_developer_cloud import TextToSpeechV1
-
 from utils.susi_config import config
 
 text_to_speech = TextToSpeechV1(
@@ -11,6 +13,12 @@ text_to_speech = TextToSpeechV1(
 
 
 def speak_flite_tts(text):
+    """ This method implements Text to Speech using the Flite TTS.
+    Flite TTS is completely offline. Usage of Flite is recommended if
+    good internet connection is not available"
+    :param text: Text which is needed to be spoken
+    :return: None
+    """
     filename = '.response'
     file = open(filename, 'w')
     file.write(text)
@@ -23,6 +31,11 @@ def speak_flite_tts(text):
 
 
 def speak_watson_tts(text):
+    """ This method implements Text to Speech using the IBM Watson TTS.
+    To use this, set username and password parameters in config file.
+    :param text: Text which is needed to be spoken
+    :return: None
+    """
     with open('extras/output.wav', 'wb') as audio_file:
         audio_file.write(
             text_to_speech.synthesize(text, accept='audio/wav',
@@ -32,4 +45,9 @@ def speak_watson_tts(text):
 
 
 def speak_google_tts(text):
+    """ This method implements Text to Speech using the Google Translate TTS.
+    It uses Google Speech Python Package.
+    :param text: Text which is needed to be spoken
+    :return: None
+    """
     Speech(text=text, lang='en').play(sox_effects=None)
