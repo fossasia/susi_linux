@@ -71,8 +71,8 @@ def recognize_audio(audio):
         return recognizer.recognize_google(audio)
 
     elif config['default_stt'] == 'watson':
-        username = config['watson_speech_config']['username']
-        password = config['watson_speech_config']['password']
+        username = config['watson_stt_config']['username']
+        password = config['watson_stt_config']['password']
         return recognizer.recognize_ibm(
             username=username,
             password=password,
@@ -106,7 +106,7 @@ def start_speech_recognition():
 # websocketThread.start()
 
 
-hotword_detector = hotword_engine.PocketSphinxDetector(callback_queue, detection_callback=start_speech_recognition)
+hotword_detector = hotword_engine.SnowboyDetector(callback_queue, detection_callback=start_speech_recognition)
 hotword_detector.start()
 hotword_detector.start_detection()
 

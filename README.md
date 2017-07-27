@@ -33,8 +33,8 @@ Setting up Susi Hardware is pretty easy.
     * ```sudo apt install python3```
     * ```sudo apt install python3-pip```
 
-* Install flite
-    * ```sudo apt install flite```
+* Install Required Tools
+    * ```sudo apt install git swig3.0 portaudio19-dev pulseaudio libpulse-dev unzip sox libatlas-dev libatlas-base-dev libsox-fmt-all```
 
 * Setup PyAudio
     * Install PortAudio ```sudo apt-get install portaudio19-dev```
@@ -58,7 +58,7 @@ Setting up Susi Hardware is pretty easy.
 - Distribution: Raspbian Jessie
 
 * Install required tools
-    -    ```sudo apt install git swig portaudio19-dev pulseaudio libpulse-dev unzip sox libatlas-dev libatlas-base-dev libsox-fmt-all```
+    -    ```sudo apt install git swig3.0 portaudio19-dev pulseaudio libpulse-dev unzip sox libatlas-dev libatlas-base-dev libsox-fmt-all```
 
 * Check if your speaker and microphone devices show up:
     - For Recording Devices (Microphone) : ```arecord -l```
@@ -66,7 +66,8 @@ Setting up Susi Hardware is pretty easy.
 
 ## Running Susi
 * Run ```./install.sh```
-* After installation of dependencies, run ```python3 main.py```
-* Say "Susi" to trigger speech recognition. You will see "Hotowrd Detected" on your console as an indicative message for detection. 
+* After installation of dependencies, generate a config file by running ```python3 config_generator.py```
+* After the creation of config.json file, run SUSI by ```python3 main.py```
+* Say "Susi" to trigger speech recognition. You will see "Hotword Detected" on your console as an indicative message for detection.
 * Once detection triggers, ask Susi any question by speech.
 * Susi will reply back with its answer.
