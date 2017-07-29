@@ -3,10 +3,11 @@ implemented in the app must inherit from this class.
 HotwordDetector subclasses from threading.Thread since Hotword Detection will run in a separate
 thread which will pass callback functions to main in a callback queue which main thread can execute.
 """
-
+import os
 from abc import ABC, abstractclassmethod
 from threading import Thread
 from queue import Queue
+from utils.susi_config import config
 
 
 class HotwordDetector(ABC, Thread):
@@ -53,4 +54,5 @@ class HotwordDetector(ABC, Thread):
         """
         if self.is_active:
             self.pause_detection()
+            os.system('play {0} &'.format(config['detection_bell_sound']))
             self.callback_queue.put(self.detection_callback)
