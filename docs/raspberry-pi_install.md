@@ -20,10 +20,15 @@ http://rohankapoor.com/2012/04/americanizing-the-raspberry-pi/
 You just need to change locale. Timezone and other changes illustrated in article are not needed.
 
 ## Steps
-#### **Install Dependencies**
-- Install Packages from apt
+#### **Clone repository and install dependencies**
+- Clone the repository for SUSI Linux and move into the folder
 ```
-sudo -E apt install swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev python-dev python3-dev sox libsox-fmt-all flac
+$ git clone https://github.com/fossasia/susi_linux.git
+$ cd susi_linux
+```
+- Run the install script by running 
+```
+$ ./install.sh
 ```
 
 #### Configure Microphone and Speaker
@@ -50,18 +55,9 @@ If you face an error in running above 2 commands, it is quite probable the Pulse
 Start it by running the command
 ```pulseaudio -D```
 
-#### Download and setup SUSI Linux
+#### Configure and Run SUSI Linux
 
-- Clone the repository for SUSI Linux and move into the folder
-```
-$ git clone https://github.com/fossasia/susi_linux.git
-$ cd susi_linux
-```
-- Run the install script by running 
-```
-$ ./install.sh
-```
-- After setup script finishes executing, run the configuration generator script. This will allow you to customize the
+- Run the configuration generator script. This will allow you to customize the
 setup according to your needs.
 ```
 $ python3 config_generator.py

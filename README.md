@@ -30,6 +30,7 @@ Setting up Susi Hardware is pretty easy.
 * Any Microphone/Speaker for Input/Output
 
 ### Setting Up (Ubuntu/ Debian)
+
 * Install Python Version: 3.5+
     * ```sudo apt install python3```
     * ```sudo apt install python3-pip```
@@ -59,9 +60,7 @@ Setting up Susi Hardware is pretty easy.
 For setting up SUSI on Raspberry Pi, [see Raspberry Pi Install Guide](docs/raspberry-pi_install.md)
 
 ## Running Susi
-* Run ```./install.sh```
-* After installation of dependencies, generate a config file by running ```python3 config_generator.py```
-* After the creation of config.json file, run SUSI by ```python3 main.py```
+* After the setup is complete, run SUSI by ```python3 main.py```
 * Say "Susi" to trigger speech recognition. You will see "Hotword Detected" on your console as an indicative message for detection.
 * Once detection triggers, ask Susi any question by speech.
 * Susi will reply back with its answer.

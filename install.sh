@@ -1,6 +1,49 @@
 #!/bin/bash
 set -e
 
+install_debian_dependencies()
+{
+    sudo -E apt install swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
+    libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev \
+    python-dev python3-dev sox libsox-fmt-all flac
+}
+
+# Implementation from https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
+vercomp()
+{
+    if [[ $1 == $2 ]]
+    then
+        echo 0;
+        return 0;
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            echo 1;
+            return 0;
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            echo 2;
+            return 0;
+        fi
+    done
+    echo 0;
+}
+
 function install_swig_from_sources()
 {
     wget https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz
@@ -9,6 +52,7 @@ function install_swig_from_sources()
     ./configure
     make
     sudo make install
+    rm -rf swig-3.0.12*
     cd ..
 }
 
@@ -20,6 +64,7 @@ function install_flite_from_source()
     ./configure
     make
     sudo make install
+    rm -rf flite-2.0.0-release*
     cd ..
 }
 
@@ -27,10 +72,24 @@ function install_dependencies()
 {
     if /usr/bin/dpkg --search /usr/bin/dpkg
     then
-        install_swig_from_sources
+        if ! [ -x "$(command -v swig)" ]
+        then
+            install_swig_from_sources
+        else
+            installed_version=$(swig -version | perl -nae 'print "$F[2]\n" if /SWIG Version/i;')
+            minimum_version="3.0.10"
+            result=$(vercomp ${installed_version} ${minimum_version})
+            if [ ${result} -eq 2 ]
+            then
+                echo "Installing SWIG 3.0.12 from sources"
+                install_swig_from_sources
+            else
+                echo "SWIG version is up to date"
+            fi
+        fi
         sudo -E apt install libatlas-dev libatlas-base-dev
     else
-        ret 1;
+        return 1;
     fi
 }
 
@@ -67,12 +126,18 @@ then
     rm -rf susi_api_wrapper
 fi
 
+echo "Installing required Debian Packages"
+install_debian_dependencies
+
 echo "Downloading Python Dependencies"
 sudo -E pip3 install -r requirements.txt
 sudo -E pip3 install -r requirements-hw.txt
 
-echo "Downloading and Installing Flite TTS"
-install_flite_from_source
+if ! [ -x "$(command -v flite)" ]
+then
+    echo "Downloading and Installing Flite TTS"
+    install_flite_from_source
+fi
 
 echo "Downloading Speech Data for flite TTS"
 
