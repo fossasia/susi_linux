@@ -1,11 +1,11 @@
-# Susi Hardware
+# Susi Linux
 
 [![Build Status](https://travis-ci.org/fossasia/susi_hardware.svg?branch=master)](https://travis-ci.org/fossasia/susi_hardware) 
 [![Join the chat at https://gitter.im/fossasia/susi_hardware](https://badges.gitter.im/fossasia/susi_hardware.svg)](https://gitter.im/fossasia/susi_hardware?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Hardware for SUSI AI
+SUSI AI on Linux
 
-This project aims at creating an implementation of Susi, capable to run on Hardware Devices in a headless mode.
+This project aims at creating an implementation of Susi, capable to run on Linux Devices in a headless mode.
 It will enable you to bring Susi AI intelligence to all devices you may think like a Speaker, Car etc.
 
 **Current Status**
@@ -56,14 +56,7 @@ Setting up Susi Hardware is pretty easy.
 
 ### Raspberry Pi setup
 
-- Distribution: Raspbian Jessie
-
-* Install required tools
-    -    ```sudo apt install git swig3.0 portaudio19-dev pulseaudio libpulse-dev unzip sox libatlas-dev libatlas-base-dev libsox-fmt-all```
-
-* Check if your speaker and microphone devices show up:
-    - For Recording Devices (Microphone) : ```arecord -l```
-    - For Playback Devices (Speaker) : ```aplay -l```
+For setting up SUSI on Raspberry Pi, [see Raspberry Pi Install Guide](docs/raspberry-pi_install.md)
 
 ## Running Susi
 * Run ```./install.sh```

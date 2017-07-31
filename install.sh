@@ -1,11 +1,34 @@
 #!/bin/bash
 set -e
 
+function install_swig_from_sources()
+{
+    wget https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz
+    tar xf swig-3.0.12.tar.gz
+    cd swig-3.0.12
+    ./configure
+    make
+    sudo make install
+    cd ..
+}
+
+function install_flite_from_source()
+{
+    wget http://www.festvox.org/flite/packed/flite-2.0/flite-2.0.0-release.tar.bz2
+    tar xf flite-2.0.0-release.tar.bz2
+    cd flite-2.0.0-release
+    ./configure
+    make
+    sudo make install
+    cd ..
+}
+
 function install_dependencies()
 {
     if /usr/bin/dpkg --search /usr/bin/dpkg
     then
-        sudo apt install swig3.0 libatlas-dev libatlas-base-dev
+        install_swig_from_sources
+        sudo -E apt install libatlas-dev libatlas-base-dev
     else
         ret 1;
     fi
@@ -45,8 +68,11 @@ then
 fi
 
 echo "Downloading Python Dependencies"
-sudo pip3 install -r requirements.txt
-sudo pip3 install -r requirements-hw.txt
+sudo -E pip3 install -r requirements.txt
+sudo -E pip3 install -r requirements-hw.txt
+
+echo "Downloading and Installing Flite TTS"
+install_flite_from_source
 
 echo "Downloading Speech Data for flite TTS"
 
