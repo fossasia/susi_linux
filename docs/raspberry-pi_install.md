@@ -1,5 +1,8 @@
 # Installation on Raspberry Pi
 
+Tested on
+- Raspberry Pi 3 with Raspbian Jessie full
+
 You will need to have access to Raspberry Pi Screen and terminal for the initial setup.
 You may start from ssh later.
 

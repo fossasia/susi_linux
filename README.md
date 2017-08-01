@@ -20,47 +20,25 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 - Add hardware specific options like Susi Wake Button.
 
 
-## Setting up Susi Hardware
+## Setting up Susi on Linux
 
-Setting up Susi Hardware is pretty easy.
+Setting up Susi on Linux is pretty easy.
 
 ### Minimal Requirements
-* A hardware device capable to run Linux.
-* A Linux Based Distribution.
-* Any Microphone/Speaker for Input/Output
+* A hardware device capable to run Linux. It included development boards like Raspberry Pi 
+and other generic machines.
+* A Debian based Linux Distribution. Tested on
+    - Raspbian on Raspberry Pi 3
+    - Ubuntu 64bit on x64 architecture
+* A microphone for input. If you are using a development board like Raspberry Pi which does not have microphone
+inbuilt, you can use a USB Microphone.
+* A Speaker for Output. On development boards like Raspberry Pi, you can use a portable speaker that connects through
+3.5mm audio jack.
 
-### Setting Up (Ubuntu/ Debian)
+### Installation on Raspberry Pi
 
-* Install Python Version: 3.5+
-    * ```sudo apt install python3```
-    * ```sudo apt install python3-pip```
+For installation on Raspberry Pi, read [Raspberry Pi setup guide.](docs/raspberry-pi_install.md)
 
-* Install Required Tools
-    * ```sudo apt install git swig3.0 portaudio19-dev pulseaudio libpulse-dev unzip sox libatlas-dev libatlas-base-dev libsox-fmt-all```
+### Installing on Ubuntu and other Debian based distributions
 
-* Setup PyAudio
-    * Install PortAudio ```sudo apt-get install portaudio19-dev```
-    * Install PyAudio ```sudo pip3 install pyaudio```
- 
-
-### Setting Up (Language: en/us) (Arch Linux)
-
-* Install Python Version: 3.5+ 
-    * ```sudo pacman -Sy python```
-    * ```sudo pacman -Sy python-pip```
-
-* Install Flite TTS
-    * sudo pacman -Sy flite
-
-* Setup PyAudio 
-    * Install PyAudio ```sudo pip3 install pyaudio```
-
-### Raspberry Pi setup
-
-For setting up SUSI on Raspberry Pi, [see Raspberry Pi Install Guide](docs/raspberry-pi_install.md)
-
-## Running Susi
-* After the setup is complete, run SUSI by ```python3 main.py```
-* Say "Susi" to trigger speech recognition. You will see "Hotword Detected" on your console as an indicative message for detection.
-* Once detection triggers, ask Susi any question by speech.
-* Susi will reply back with its answer.
+For installation on Ubuntu and other Debian based distributions, read [Ubuntu Setup Guide](docs/ubuntu_install.md)
