@@ -14,12 +14,17 @@ $ cd susi_linux
 ````bash
 $ ./install.sh
 ````
-- Verify that your Audio setup is done properly. For this first we need to check for recording devices.
-Run command ```rec a.wav```. Verify that it gives an output like below.
+- Verify that your Audio setup is done properly. For this, first we need to check for recording devices. Run command 
+```
+$ rec a.wav
+```
+Verify that it gives an output like below.
+
 ![Ubuntu Rec Command](images/ubuntu-rec.png)
 
-- After this, play your recorded by by running ```play a.wav```. It should give an output like below
+- After this, play your recorded audio by running ```play a.wav```. It should give an output like below
 and your audio must be audible to you.
+
 ![Ubuntu Play Command](images/ubuntu-play.png)
 
 If you hear your voice properly and output is similar to what shown in screenshots, setup is 
