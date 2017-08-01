@@ -1,11 +1,11 @@
-# Susi Hardware
+# Susi Linux
 
 [![Build Status](https://travis-ci.org/fossasia/susi_hardware.svg?branch=master)](https://travis-ci.org/fossasia/susi_hardware) 
 [![Join the chat at https://gitter.im/fossasia/susi_hardware](https://badges.gitter.im/fossasia/susi_hardware.svg)](https://gitter.im/fossasia/susi_hardware?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Hardware for SUSI AI
+SUSI AI on Linux
 
-This project aims at creating an implementation of Susi, capable to run on Hardware Devices in a headless mode.
+This project aims at creating an implementation of Susi, capable to run on Linux Devices in a headless mode.
 It will enable you to bring Susi AI intelligence to all devices you may think like a Speaker, Car etc.
 
 **Current Status**
@@ -20,55 +20,25 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 - Add hardware specific options like Susi Wake Button.
 
 
-## Setting up Susi Hardware
+## Setting up Susi on Linux
 
-Setting up Susi Hardware is pretty easy.
+Setting up Susi on Linux is pretty easy.
 
 ### Minimal Requirements
-* A hardware device capable to run Linux.
-* A Linux Based Distribution.
-* Any Microphone/Speaker for Input/Output
+* A hardware device capable to run Linux. It included development boards like Raspberry Pi 
+and other generic machines.
+* A Debian based Linux Distribution. Tested on
+    - Raspbian on Raspberry Pi 3
+    - Ubuntu 64bit on x64 architecture
+* A microphone for input. If you are using a development board like Raspberry Pi which does not have microphone
+inbuilt, you can use a USB Microphone.
+* A Speaker for Output. On development boards like Raspberry Pi, you can use a portable speaker that connects through
+3.5mm audio jack.
 
-### Setting Up (Ubuntu/ Debian)
-* Install Python Version: 3.5+
-    * ```sudo apt install python3```
-    * ```sudo apt install python3-pip```
+### Installation on Raspberry Pi
 
-* Install Required Tools
-    * ```sudo apt install git swig3.0 portaudio19-dev pulseaudio libpulse-dev unzip sox libatlas-dev libatlas-base-dev libsox-fmt-all```
+For installation on Raspberry Pi, read [Raspberry Pi setup guide.](docs/raspberry-pi_install.md)
 
-* Setup PyAudio
-    * Install PortAudio ```sudo apt-get install portaudio19-dev```
-    * Install PyAudio ```sudo pip3 install pyaudio```
- 
+### Installing on Ubuntu and other Debian based distributions
 
-### Setting Up (Language: en/us) (Arch Linux)
-
-* Install Python Version: 3.5+ 
-    * ```sudo pacman -Sy python```
-    * ```sudo pacman -Sy python-pip```
-
-* Install Flite TTS
-    * sudo pacman -Sy flite
-
-* Setup PyAudio 
-    * Install PyAudio ```sudo pip3 install pyaudio```
-
-### Raspberry Pi setup
-
-- Distribution: Raspbian Jessie
-
-* Install required tools
-    -    ```sudo apt install git swig3.0 portaudio19-dev pulseaudio libpulse-dev unzip sox libatlas-dev libatlas-base-dev libsox-fmt-all```
-
-* Check if your speaker and microphone devices show up:
-    - For Recording Devices (Microphone) : ```arecord -l```
-    - For Playback Devices (Speaker) : ```aplay -l```
-
-## Running Susi
-* Run ```./install.sh```
-* After installation of dependencies, generate a config file by running ```python3 config_generator.py```
-* After the creation of config.json file, run SUSI by ```python3 main.py```
-* Say "Susi" to trigger speech recognition. You will see "Hotword Detected" on your console as an indicative message for detection.
-* Once detection triggers, ask Susi any question by speech.
-* Susi will reply back with its answer.
+For installation on Ubuntu and other Debian based distributions, read [Ubuntu Setup Guide](docs/ubuntu_install.md)
