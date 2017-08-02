@@ -105,6 +105,12 @@ def start_speech_recognition():
 
 # websocketThread.start()
 
+if config['usage_mode'] == 'authenticated':
+    try:
+        susi.sign_in(email=config['login_credentials']['email'],
+                     password=config['login_credentials']['password'])
+    except Exception:
+        print('Some error occurred in login. Check you login details in config.json')
 
 hotword_detector = hotword_engine.SnowboyDetector(callback_queue, detection_callback=start_speech_recognition)
 hotword_detector.start()
