@@ -3,16 +3,9 @@
 """
 import json_config
 import requests
+from pathlib import Path
 
 config = json_config.connect('config.json')
-
-
-def set_extras():
-    """ Method for setting miscellaneous configuration parameters.
-    :return: None
-    """
-    config['flite_speech_file_path'] = 'extras/cmu_us_slt.flitevox'
-    config['detection_bell_sound'] = 'extras/detection-bell.wav'
 
 
 def is_valid(email, password):
@@ -33,6 +26,14 @@ def is_valid(email, password):
         return True
     else:
         return False
+
+
+def set_extras():
+    """ Method for setting miscellaneous configuration parameters.
+    :return: None
+    """
+    config['flite_speech_file_path'] = 'extras/cmu_us_slt.flitevox'
+    config['detection_bell_sound'] = 'extras/detection-bell.wav'
 
 
 def request_authentication():
@@ -62,6 +63,27 @@ def request_authentication():
         print('Invalid choice. Anonymous mode set as default. Run the configuration script again if you wish '
               'to change your choice.')
         config['usage_mode'] = 'anonymous'
+
+
+def request_hotword_choice():
+    """ Method to request user for default Hotword Engine and configure it in settings.
+    """
+    try:
+        print("Checking for Snowboy Availability...")
+        snowboyDetectFile = Path("hotword_engine/snowboy/_snowboydetect.so")
+        if snowboyDetectFile.exists():
+            print("Snowboy is available on this platform")
+            choice = input("Do you wish to use Snowboy as default Hotword Detection Engine (Recommended). (y/n) ")
+            if choice == 'y':
+                config['hotword_engine'] = 'Snowboy'
+                print('\nSnowboy set as default Hotword Detection Engine\n')
+            else:
+                config['hotword_engine'] = 'PocketSphinx'
+                print('\nPocketSphinx set as default Hotword Detection Engine\n')
+
+    except Exception:
+        print("Some Error Occurred. Using PocketSphinx as default engine for Hotword. Run this script again to change")
+        config['hotword_engine'] = 'PocketSphinx'
 
 
 def request_stt_choice():
@@ -137,11 +159,14 @@ def request_tts_choice():
 
 set_extras()
 
-print("Setup Speech to Text Service")
+print("Setup Speech to Text Service\n")
 request_stt_choice()
 
-print("Setup Text to Speech Service")
+print("Setup Text to Speech Service\n")
 request_tts_choice()
 
-print("Setup Authentication to SUSI.AI")
+print("Setup Hotword Detection Engine\n")
+request_hotword_choice()
+
+print("Setup Authentication to SUSI.AI\n")
 request_authentication()
