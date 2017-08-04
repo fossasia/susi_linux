@@ -1,6 +1,5 @@
 import speech_recognition as sr
 
-import hotword_engine
 import speech.TTS as TTS
 import susi_python as susi
 from utils import websocket_utils
@@ -112,7 +111,19 @@ if config['usage_mode'] == 'authenticated':
     except Exception:
         print('Some error occurred in login. Check you login details in config.json')
 
-hotword_detector = hotword_engine.SnowboyDetector(callback_queue, detection_callback=start_speech_recognition)
+hotword_detector = None
+
+""" Check the Hotword Engine selected as default and import it.
+"""
+if config['hotword_engine'] == 'Snowboy':
+    from hotword_engine import SnowboyDetector
+
+    hotword_detector = SnowboyDetector(callback_queue, detection_callback=start_speech_recognition)
+else:
+    from hotword_engine import PocketSphinxDetector
+
+    hotword_detector = PocketSphinxDetector(callback_queue, detection_callback=start_speech_recognition)
+
 hotword_detector.start()
 hotword_detector.start_detection()
 
