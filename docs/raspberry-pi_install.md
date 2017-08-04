@@ -1,7 +1,7 @@
 # Installation on Raspberry Pi
 
 Tested on
-- Raspberry Pi 3 with Raspbian Jessie full
+- Raspberry Pi 3 with Raspbian Jessie Full 
 
 You will need to have access to Raspberry Pi Screen and terminal for the initial setup.
 You may start from ssh later.
@@ -58,10 +58,33 @@ If you face an error in running above 2 commands, it is quite probable the Pulse
 Start it by running the command
 ```pulseaudio -D```
 
+### Optional Hardware Wake Button
+![Wake Button](images/pi_button.jpg)
+
+You may add an optional Push Switch to Wake Up SUSI without the need of speaking Hotword.
+For enabling this, you need:
+- A Push Switch
+- Two Male to Female jumper Wires
+- A Breadboard
+
+#### Steps:
+- Connect button to Raspberry Pi according to the following schematic diagram.
+
+![Button Connection](images/connection.png)
+- Install Raspberry Pi GPIO Python library: ```sudo -E pip3 install RPi.GPIO```
+- While running the configuration script below, select the option to enable Hardware Button when
+asked.
+
 #### Configure and Run SUSI Linux
 
 - Run the configuration generator script. This will allow you to customize the
-setup according to your needs.
+setup according to your needs. It can be used to modify:
+    - TTS service
+    - Speech Recognition service
+    - Authenticate to SUSI.AI
+    - Enable Hardware Wake Button.
+    
+Run the script using:
 ```
 $ python3 config_generator.py
 ```
@@ -73,6 +96,9 @@ $ python3 main.py
 This will start SUSI in always listening Hotword Detection Mode. To ask SUSI a question, say "Susi". If detection of
 hotword is successful, you will hear a small bell sound. Ask your query after the bell sound. Your query will be
 processed by SUSI and you will hear a voice reply.
+
+If you have additionally enabled the Wake Button, you may press the button anytime to invoke SUSI. You will hear a small
+bell after pressing button to confirm SUSI has started listening. Ask your query after that.
 
 #### Faced any errors?
 

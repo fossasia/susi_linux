@@ -28,6 +28,20 @@ def is_valid(email, password):
         return False
 
 
+def setup_wake_button():
+    try:
+        import RPi.GPIO
+        print("\nDevice supports RPi.GPIO")
+        choice = input("Do you wish to enable hardware wake button? (y/n) ")
+        if choice == 'y':
+            config['WakeButton'] = 'enabled'
+            config['Device'] = 'RaspberryPi'
+        else:
+            config['WakeButton'] = 'disabled'
+    except ImportError:
+        print("\nThis device does not support RPi.GPIO")
+        config['WakeButton'] = 'not available'
+
 def set_extras():
     """ Method for setting miscellaneous configuration parameters.
     :return: None
@@ -156,7 +170,6 @@ def request_tts_choice():
 
     print("\nSpeech to Text configured successfully\n")
 
-
 set_extras()
 
 print("Setup Speech to Text Service\n")
@@ -170,3 +183,6 @@ request_hotword_choice()
 
 print("Setup Authentication to SUSI.AI\n")
 request_authentication()
+
+print("Setup Wake Button\n")
+setup_wake_button()
