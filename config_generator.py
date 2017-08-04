@@ -2,6 +2,7 @@
  to generate a file for default services for your SUSI Hardware Device
 """
 import json_config
+import requests
 
 config = json_config.connect('config.json')
 
@@ -12,6 +13,55 @@ def set_extras():
     """
     config['flite_speech_file_path'] = 'extras/cmu_us_slt.flitevox'
     config['detection_bell_sound'] = 'extras/detection-bell.wav'
+
+
+def is_valid(email, password):
+    """ Method to Validate SUSI Login Details
+    :param email: SUSI Sign-in email
+    :param password: SUSI Sign-in password
+    :return: boolean to indicate if details are valid
+    """
+    print('Checking the validity of login details ....')
+    params = {
+        'login': email,
+        'password': password
+    }
+    sign_in_url = 'http://api.susi.ai/aaa/login.json?type=access-token'
+    api_response = requests.get(sign_in_url, params)
+
+    if api_response.status_code == 200:
+        return True
+    else:
+        return False
+
+
+def request_authentication():
+    """Method for setting authentication parameters in the configuration
+    :return: None
+    """
+    try:
+        choice = input('Do you wish to use SUSI in Authenticated Mode? (y/n)\n')
+        if choice == 'y':
+            email = input('Enter SUSI Sign-in Email Address: ')
+            password = input('Enter SUSI Sign-in Password: ')
+            if is_valid(email, password):
+                print('Login Details are valid. Saving details.')
+                config['usage_mode'] = 'authenticated'
+                config['login_credentials']['email'] = email
+                config['login_credentials']['password'] = password
+            else:
+                print('Login Details are invalid. Falling back to Anonymous Mode. Run the configuration script again '
+                      'if you wish to change your choice.')
+                config['usage_mode'] = 'anonymous'
+        elif choice == 'n':
+            print('Setting anonymous mode as default')
+            config['usage_mode'] = 'anonymous'
+        else:
+            raise ValueError
+    except ValueError:
+        print('Invalid choice. Anonymous mode set as default. Run the configuration script again if you wish '
+              'to change your choice.')
+        config['usage_mode'] = 'anonymous'
 
 
 def request_stt_choice():
@@ -92,3 +142,6 @@ request_stt_choice()
 
 print("Setup Text to Speech Service")
 request_tts_choice()
+
+print("Setup Authentication to SUSI.AI")
+request_authentication()
