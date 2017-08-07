@@ -14,6 +14,7 @@ recognizer.dynamic_energy_threshold = False
 recognizer.energy_threshold = 2000
 
 microphone = sr.Microphone()
+wake_button = None
 
 
 # Websocket Callbacks
@@ -90,13 +91,19 @@ def start_speech_recognition():
             print(value)
             ask_susi(value)
             hotword_detector.start_detection()
+            if wake_button is not None:
+                wake_button.is_active = True
 
         except sr.UnknownValueError:
             print("Oops! Didn't catch that")
             hotword_detector.start_detection()
+            if wake_button is not None:
+                wake_button.is_active = True
         except sr.RequestError as e:
             print("Uh oh! Couldn't request results from Google Speech Recognition service; {0}".format(e))
             hotword_detector.start_detection()
+            if wake_button is not None:
+                wake_button.is_active = True
 
     except KeyboardInterrupt:
         pass
@@ -123,6 +130,14 @@ else:
     from hotword_engine import PocketSphinxDetector
 
     hotword_detector = PocketSphinxDetector(callback_queue, detection_callback=start_speech_recognition)
+
+if config['wake_button'] == 'enabled':
+    if config['device'] == 'RaspberryPi':
+        from hardware_components import RaspberryPiWakeButton
+
+        wake_button = RaspberryPiWakeButton(callback_queue=callback_queue, detection_callback=start_speech_recognition)
+        wake_button.start()
+        wake_button.is_active = True
 
 hotword_detector.start()
 hotword_detector.start_detection()
