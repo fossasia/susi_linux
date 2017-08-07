@@ -2,10 +2,10 @@
 It provides excellent recognition of Hotword but all devices are not supported presently.
 Use PocketSphinx if you face errors with this Detector.
 """
+import os
+
 from .hotword_detector import HotwordDetector
 from .snowboy import snowboydecoder
-from queue import Queue
-import os
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCE_FILE = os.path.join(TOP_DIR, "snowboy/resources/susi.pmdl")
@@ -14,8 +14,8 @@ RESOURCE_FILE = os.path.join(TOP_DIR, "snowboy/resources/susi.pmdl")
 class SnowboyDetector(HotwordDetector):
     """This implements the Hotword Detector with Snowboy Hotword Detection Engine."""
 
-    def __init__(self, callback_queue: Queue, detection_callback) -> None:
-        super().__init__(callback_queue, detection_callback)
+    def __init__(self) -> None:
+        super().__init__()
         self.detector = snowboydecoder.HotwordDetector(RESOURCE_FILE, sensitivity=0.5)
 
     def run(self):

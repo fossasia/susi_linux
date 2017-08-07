@@ -3,11 +3,10 @@
 .response
 extras/cmu_us_slt.flitevox
 requirements.txt
-speech/__pycache__/
+**/__pycache__/
 /susi_python/
-utils/__pycache__/
-hotword_engine/snowboy/_snowboydetect.so
-hotword_engine/snowboy/snowboydetect.py
+main/hotword_engine/snowboy/_snowboydetect.so
+main/hotword_engine/snowboy/snowboydetect.py
 /extras/output.wav
 /snowboy/
 config.json

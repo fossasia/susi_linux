@@ -103,13 +103,14 @@ function install_snowboy()
         make -j4
         if [ -f _snowboydetect.so ]; then
             echo "Moving files"
-            cp _snowboydetect.so ${root_dir}/hotword_engine/snowboy
-            cp snowboydetect.py ${root_dir}/hotword_engine/snowboy
+            cp _snowboydetect.so ${root_dir}/main/hotword_engine/snowboy
+            cp snowboydetect.py ${root_dir}/main/hotword_engine/snowboy
         else
             echo "FAILED: Unable to make Snowboy Detect file. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
             echo "You may also use PocketSphinx Detector if you are unable to install snowboy on your machine"
         fi
         cd "$root_dir"
+        rm -rf snowboy
     else
         echo "FAILED: Installation of Snowboy on your system is not supported presently. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
     fi
@@ -158,4 +159,4 @@ install_snowboy
 
 echo "Setup Complete"
 
-echo "Run 'python3 main.py' to start"
+echo "Run configuration script by 'python3 config_generator.py"

@@ -5,3 +5,4 @@ watson-developer-cloud
 git+https://github.com/Pithikos/python-websocket-server
 json-config
 google_speech
+rx

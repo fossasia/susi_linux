@@ -84,7 +84,7 @@ def request_hotword_choice():
     """
     try:
         print("Checking for Snowboy Availability...")
-        snowboyDetectFile = Path("hotword_engine/snowboy/_snowboydetect.so")
+        snowboyDetectFile = Path("main/hotword_engine/snowboy/_snowboydetect.so")
         if snowboyDetectFile.exists():
             print("Snowboy is available on this platform")
             choice = input("Do you wish to use Snowboy as default Hotword Detection Engine (Recommended). (y/n) ")
@@ -186,3 +186,5 @@ request_authentication()
 
 print("Setup Wake Button\n")
 setup_wake_button()
+
+print("Run SUSI by 'python3 -m main'")
