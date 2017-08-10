@@ -3,9 +3,12 @@ You may use any of the speech synthesis services by calling the
 respective method.
 """
 import os
+
+import json_config
 from google_speech import Speech
 from watson_developer_cloud import TextToSpeechV1
-from utils.susi_config import config
+
+config = json_config.connect('config.json')
 
 text_to_speech = TextToSpeechV1(
     username=config['watson_tts_config']['username'],
