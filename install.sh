@@ -159,4 +159,4 @@ install_snowboy
 
 echo "Setup Complete"
 
-echo "Run configuration script by 'python3 config_generator.py"
+echo "Run configuration script by 'python3 config_generator.py'"

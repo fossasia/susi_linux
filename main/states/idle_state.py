@@ -16,7 +16,7 @@ class IdleState(State):
         self.components.hotword_detector.start()
         self.components.hotword_detector.subject.subscribe(on_next=lambda x: self.__detected())
         if self.components.wake_button is not None:
-            self.components.wake_button.subject.subscrible(on_next=lambda x: self.__detected())
+            self.components.wake_button.subject.subscribe(on_next=lambda x: self.__detected())
 
     def on_enter(self, payload=None):
         """Method to be executed on entry to Idle State. Detection is set to active.
