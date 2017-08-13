@@ -10,7 +10,12 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
         <child>
           <object class="GtkImage">
             <property name="width_request">400</property>
@@ -33,11 +38,9 @@
             <property name="can_focus">True</property>
             <property name="margin_left">40</property>
             <property name="margin_right">40</property>
-            <property name="margin_top">12</property>
-            <property name="margin_bottom">5</property>
             <property name="placeholder_text" translatable="yes">Email ID</property>
             <property name="input_purpose">email</property>
-            <signal name="changed" handler="email_changed" swapped="no"/>
+            <signal name="changed" handler="input_changed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -51,12 +54,11 @@
             <property name="can_focus">True</property>
             <property name="margin_left">40</property>
             <property name="margin_right">40</property>
-            <property name="margin_top">5</property>
-            <property name="margin_bottom">8</property>
             <property name="visibility">False</property>
             <property name="invisible_char">*</property>
             <property name="placeholder_text" translatable="yes">Password</property>
             <property name="input_purpose">password</property>
+            <signal name="changed" handler="input_changed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -87,7 +89,7 @@
             <property name="margin_left">40</property>
             <property name="margin_right">40</property>
             <property name="margin_top">30</property>
-            <property name="margin_bottom">27</property>
+            <property name="margin_bottom">20</property>
             <property name="border_width">0</property>
             <signal name="clicked" handler="signInButtonClicked" swapped="no"/>
           </object>
