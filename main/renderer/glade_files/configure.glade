@@ -38,6 +38,7 @@
   </object>
   <object class="GtkWindow" id="configuration_window">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Configure Settings for SUSI Linux</property>
     <signal name="delete-event" handler="on_delete_window" swapped="no"/>
     <child>
       <object class="GtkBox">
@@ -189,6 +190,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="margin_right">10</property>
+                <signal name="notify::active" handler="on_auth_switch_active_notify" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

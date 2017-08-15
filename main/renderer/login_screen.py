@@ -11,7 +11,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from gi.repository.Gdk import Color
 
-
+window = None
 def is_valid(email, password):
     """ Method to Validate SUSI Login Details
     :param email: SUSI Sign-in email
@@ -38,7 +38,9 @@ def show_successful_login_dialog():
     dialog.format_secondary_text("Saving Login Details in configuration file.")
     dialog.run()
     dialog.destroy()
+    print("Hi")
     Gtk.main_quit()
+    print("Bye")
 
 
 def show_failed_login_dialog():
@@ -58,71 +60,89 @@ def show_connection_error_dialog():
 
 
 class Handler:
+    def __init__(self, window, email_field, password_field, spinner, sign_in_button):
+        self.window = window
+        self.email_field = email_field
+        self.password_field = password_field
+        self.spinner = spinner
+        self.sign_in_button = sign_in_button
+
     def onDeleteWindow(self, *args):
         print('Exiting')
         Gtk.main_quit(*args)
 
     def signInButtonClicked(self, *args):
         COLOR_INVALID = Color(50000, 10000, 10000)
-        email = email_field.get_text()
-        password = password_field.get_text()
+        email = self.email_field.get_text()
+        password = self.password_field.get_text()
 
         result = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
 
         if result is None:
             print("None")
-            email_field.modify_fg(Gtk.StateFlags.NORMAL, COLOR_INVALID)
+            self.email_field.modify_fg(Gtk.StateFlags.NORMAL, COLOR_INVALID)
             return
         else:
-            email_field.modify_fg(Gtk.StateFlags.NORMAL, None)
+            self.email_field.modify_fg(Gtk.StateFlags.NORMAL, None)
 
-        spinner.start()
+        self.spinner.start()
         try:
             result = is_valid(email, password)
             if result:
-                spinner.stop()
+                self.spinner.stop()
                 show_successful_login_dialog()
                 config['usage_mode'] = 'authenticated'
                 config['login_credentials']['email'] = email
                 config['login_credentials']['password'] = password
             else:
-                spinner.stop()
+                self.spinner.stop()
                 show_failed_login_dialog()
                 config['usage_mode'] = 'anonymous'
 
         except ConnectionError:
-            spinner.stop()
+            self.spinner.stop()
             show_connection_error_dialog()
 
         finally:
-            spinner.stop()
+            self.spinner.stop()
 
     def input_changed(self, *args):
-        email = email_field.get_text()
-        password = password_field.get_text()
+        email = self.email_field.get_text()
+        password = self.password_field.get_text()
 
         result = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
 
         if result is not None and password is not '':
-            button.set_sensitive(True)
+            self.sign_in_button.set_sensitive(True)
         else:
-            button.set_sensitive(False)
+            self.sign_in_button.set_sensitive(False)
 
 
-builder = Gtk.Builder()
-builder.add_from_file(os.path.join(TOP_DIR, "glade_files/signin.glade"))
+def main():
+    builder = Gtk.Builder()
+    builder.add_from_file(os.path.join(TOP_DIR, "glade_files/signin.glade"))
 
-window = builder.get_object("login_window")
+    global window
+    window = builder.get_object("login_window")
 
-email_field = builder.get_object("email_field")
-password_field = builder.get_object("password_field")
-spinner = builder.get_object("signin_spinner")
-button = builder.get_object("signin_button")
-button.set_sensitive(False)
+    email_field = builder.get_object("email_field")
+    password_field = builder.get_object("password_field")
+    spinner = builder.get_object("signin_spinner")
+    sign_in_button = builder.get_object("signin_button")
+    sign_in_button.set_sensitive(False)
 
-builder.connect_signals(Handler())
+    builder.connect_signals(Handler(
+        window=window,
+        email_field=email_field,
+        password_field=password_field,
+        spinner=spinner,
+        sign_in_button=sign_in_button
+    ))
 
-window.set_resizable(False)
-window.show_all()
+    window.set_resizable(False)
+    window.show_all()
 
-Gtk.main()
+    Gtk.main()
+
+if __name__ == '__main__':
+    main()
