@@ -1,6 +1,6 @@
 # Susi Linux
 
-[![Build Status](https://travis-ci.org/fossasia/susi_hardware.svg?branch=master)](https://travis-ci.org/fossasia/susi_hardware) 
+[![Build Status](https://travis-ci.org/fossasia/susi_linux.svg?branch=master)](https://travis-ci.org/fossasia/susi_linux) 
 [![Join the chat at https://gitter.im/fossasia/susi_hardware](https://badges.gitter.im/fossasia/susi_hardware.svg)](https://gitter.im/fossasia/susi_hardware?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 SUSI AI on Linux
@@ -13,11 +13,10 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 - Voice Output working with Google TTS/ IBM Watson TTS/ Flite TTS.
 - Susi AI response working through Susi AI API Python Wrapper(https://github.com/fossasia/susi_api_wrapper)
 - Hotword Detection works for hotword 'Susi'
-- Susi Webchat connect mode works to connect Susi Hardware client to Webchat Client (in alpha stages)
+- SUSI Wake Button in Raspberry Pi is working.
 
 **Roadmap**
 - Offline Voice Detection (if possible with satisfactory results)
-- Add hardware specific options like Susi Wake Button.
 
 
 ## Setting up Susi on Linux
