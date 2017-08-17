@@ -2,13 +2,15 @@
 The SUSI State Machine works on the concept of Finite State Machine.
 """
 import json_config
+import logging
+import requests
 from speech_recognition import Recognizer, Microphone
 
 import susi_python as susi
 from .busy_state import BusyState
 from .error_state import ErrorState
-from .recognizing_state import RecognizingState
 from .idle_state import IdleState
+from .recognizing_state import RecognizingState
 
 
 class Components:
@@ -22,6 +24,14 @@ class Components:
         self.recognizer = recognizer
         self.microphone = Microphone()
         self.susi = susi
+
+        try:
+            res = requests.get('http://ip-api.com/json').json()
+            self.susi.update_location(longitude=res['lon'], latitude=res['lat'])
+
+        except ConnectionError as e:
+            logging.error(e)
+
         self.config = json_config.connect('config.json')
 
         if self.config['hotword_engine'] == 'Snowboy':
