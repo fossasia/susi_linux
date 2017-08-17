@@ -90,7 +90,7 @@ $ python3 config_generator.py
 ```
 - Once configured, you may run SUSI by executing the following command
 ```
-$ python3 main.py
+$ python3 -m main 
 ```
 
 This will start SUSI in always listening Hotword Detection Mode. To ask SUSI a question, say "Susi". If detection of
