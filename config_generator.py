@@ -42,6 +42,7 @@ def setup_wake_button():
         print("\nThis device does not support RPi.GPIO")
         config['WakeButton'] = 'not available'
 
+
 def set_extras():
     """ Method for setting miscellaneous configuration parameters.
     :return: None
@@ -169,6 +170,7 @@ def request_tts_choice():
         config['default_tts'] = 'google'
 
     print("\nSpeech to Text configured successfully\n")
+
 
 set_extras()
 

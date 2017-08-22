@@ -231,6 +231,7 @@
               <object class="GtkSwitch" id="snowboy_switch">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <signal name="notify::active" handler="on_snowboy_switch_active_notify" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -271,6 +272,7 @@
               <object class="GtkSwitch" id="wake_button_switch">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <signal name="notify::active" handler="on_wake_button_switch_active_notify" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
