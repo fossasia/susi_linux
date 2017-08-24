@@ -14,12 +14,16 @@ class RecognizingState(State):
             return recognizer.recognize_google(audio)
 
         elif self.components.config['default_stt'] == 'watson':
-            username = self.components.config['watson_stt_self.components.config']['username']
-            password = self.components.config['watson_stt_self.components.config']['password']
+            username = self.components.config['watson_stt_config']['username']
+            password = self.components.config['watson_stt_config']['password']
             return recognizer.recognize_ibm(
                 username=username,
                 password=password,
                 audio_data=audio)
+
+        elif self.components.config['default_stt'] == 'bing':
+            api_key = self.components.config['bing_speech_api_key']
+            return recognizer.recognize_bing(audio_data=audio, key=api_key)
 
     def on_enter(self, payload=None):
         """ Executed on the entry to the Recognizing State. Upon entry, audio is captured from the Microphone and
