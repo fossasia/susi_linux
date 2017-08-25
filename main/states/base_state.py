@@ -8,6 +8,7 @@ class State(ABC):
     """State is an abstract class to represent a state. It defines the abstract method for behavior of state and
     transition method to facilitate transition between states.
     """
+
     def __init__(self, components):
         self.components = components
         self.allowedStateTransitions = {}

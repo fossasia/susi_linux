@@ -1,15 +1,15 @@
-import os
 import gi
+import os
 import json_config
 import re
 import requests
+gi.require_version('Gtk', '3.0')  # nopep8
+
+from gi.repository import Gtk
+from gi.repository.Gdk import Color
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
 config = json_config.connect('config.json')
-
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-from gi.repository.Gdk import Color
 
 
 def is_valid(email, password):
@@ -36,7 +36,8 @@ def is_valid(email, password):
 class LoginWindow():
     def __init__(self):
         builder = Gtk.Builder()
-        builder.add_from_file(os.path.join(TOP_DIR, "glade_files/signin.glade"))
+        builder.add_from_file(os.path.join(
+            TOP_DIR, "glade_files/signin.glade"))
 
         self.window = builder.get_object("login_window")
         self.email_field = builder.get_object("email_field")
@@ -57,15 +58,19 @@ class LoginWindow():
         Gtk.main_quit()
 
     def show_successful_login_dialog(self):
-        dialog = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "Login Successful")
-        dialog.format_secondary_text("Saving Login Details in configuration file.")
+        dialog = Gtk.MessageDialog(self.window, 0,
+                                   Gtk.MessageType.INFO, Gtk.ButtonsType.OK,
+                                   "Login Successful")
+        dialog.format_secondary_text(
+            "Saving Login Details in configuration file.")
         dialog.run()
         dialog.destroy()
         self.exit_window()
 
     def show_failed_login_dialog(self):
         dialog = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.ERROR,
-                                   Gtk.ButtonsType.CANCEL, "Incorrect Login Details")
+                                   Gtk.ButtonsType.CANCEL,
+                                   "Incorrect Login Details")
         dialog.format_secondary_text("Please check your login details again.")
         dialog.run()
         dialog.destroy()
@@ -91,14 +96,17 @@ class LoginWindow():
             email = self.login_window.email_field.get_text()
             password = self.login_window.password_field.get_text()
 
-            result = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
+            result = re.match(
+                '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
 
             if result is None:
                 print("None")
-                self.login_window.email_field.modify_fg(Gtk.StateFlags.NORMAL, COLOR_INVALID)
+                self.login_window.email_field.modify_fg(
+                    Gtk.StateFlags.NORMAL, COLOR_INVALID)
                 return
             else:
-                self.login_window.email_field.modify_fg(Gtk.StateFlags.NORMAL, None)
+                self.login_window.email_field.modify_fg(
+                    Gtk.StateFlags.NORMAL, None)
 
             self.login_window.spinner.start()
             try:
@@ -125,10 +133,10 @@ class LoginWindow():
             email = self.login_window.email_field.get_text()
             password = self.login_window.password_field.get_text()
 
-            result = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
+            result = re.match(
+                '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
 
             if result is not None and password is not '':
                 self.login_window.sign_in_button.set_sensitive(True)
             else:
                 self.login_window.sign_in_button.set_sensitive(False)
-

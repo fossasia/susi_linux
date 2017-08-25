@@ -2,4 +2,3 @@
 """
 from .states import SusiStateMachine
 from .states import Components
-
