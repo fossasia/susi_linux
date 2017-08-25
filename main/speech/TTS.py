@@ -29,7 +29,8 @@ def speak_flite_tts(text):
     # Call flite tts to reply the response by Susi
     flite_speech_file = config['flite_speech_file_path']
     print('flite -voice file://{0} -f {1}'.format(flite_speech_file, filename))
-    os.system('flite -v -voice file://{0} -f {1} -o extras/output.wav'.format(flite_speech_file, filename))
+    os.system(
+        'flite -v -voice file://{0} -f {1} -o extras/output.wav'.format(flite_speech_file, filename))
     os.system('play extras/output.wav')
 
 

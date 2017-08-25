@@ -10,5 +10,7 @@ install:
   - chmod +x .travis_scripts/install.sh
   - ./.travis_scripts/install.sh
   - pip3 install -U pytest
+  - pip3 install -U pep8
 script:
+  - pep8 main --ignore E501 --exclude=main/hotword_engine/snowboy/snowboydetect.py
   - python3 -m pytest tests/

@@ -46,7 +46,8 @@ class BusyState(State):
                     self.__speak(entity.title)
 
         except ConnectionError:
-            self.transition(self.allowedStateTransitions.get('error'), payload='ConnectionError')
+            self.transition(self.allowedStateTransitions.get(
+                'error'), payload='ConnectionError')
         except Exception as e:
             print(e)
             self.transition(self.allowedStateTransitions.get('error'))

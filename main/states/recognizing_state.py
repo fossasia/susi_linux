@@ -39,17 +39,22 @@ class RecognizingState(State):
                 audio = recognizer.listen(source, phrase_time_limit=5)
             print("Got it! Now to recognize it...")
             try:
-                value = self.__recognize_audio(audio=audio, recognizer=recognizer)
+                value = self.__recognize_audio(
+                    audio=audio, recognizer=recognizer)
                 print(value)
-                self.transition(self.allowedStateTransitions.get('busy'), payload=value)
+                self.transition(self.allowedStateTransitions.get(
+                    'busy'), payload=value)
 
             except sr.UnknownValueError:
                 print("Oops! Didn't catch that")
-                self.transition(self.allowedStateTransitions.get('error'), payload='RecognitionError')
+                self.transition(self.allowedStateTransitions.get(
+                    'error'), payload='RecognitionError')
 
             except sr.RequestError as e:
-                print("Uh oh! Couldn't request results from Speech Recognition service; {0}".format(e))
-                self.transition(self.allowedStateTransitions.get('error'), payload='ConnectionError')
+                print(
+                    "Uh oh! Couldn't request results from Speech Recognition service; {0}".format(e))
+                self.transition(self.allowedStateTransitions.get(
+                    'error'), payload='ConnectionError')
 
         except KeyboardInterrupt:
             pass

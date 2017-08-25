@@ -76,7 +76,8 @@ class ConfigurationWindow:
     def __init__(self) -> None:
         super().__init__()
         builder = Gtk.Builder()
-        builder.add_from_file(os.path.join(TOP_DIR, "glade_files/configure.glade"))
+        builder.add_from_file(os.path.join(
+            TOP_DIR, "glade_files/configure.glade"))
 
         self.window = builder.get_object("configuration_window")
         self.stt_combobox = builder.get_object("stt_combobox")
@@ -136,7 +137,8 @@ class ConfigurationWindow:
     def init_hotword_switch(self):
         try:
             parent_dir = os.path.dirname(TOP_DIR)
-            snowboyDetectFile = Path(os.path.join(parent_dir, "hotword_engine/snowboy/_snowboydetect.so"))
+            snowboyDetectFile = Path(os.path.join(
+                parent_dir, "hotword_engine/snowboy/_snowboydetect.so"))
             print(snowboyDetectFile)
             if not snowboyDetectFile.exists():
                 self.snowboy_switch.set_sensitive(False)
@@ -176,7 +178,8 @@ class ConfigurationWindow:
                 config['default_stt'] = 'google'
 
             elif selection == 1:
-                credential_dialog = WatsonCredentialsDialog(self.config_window.window)
+                credential_dialog = WatsonCredentialsDialog(
+                    self.config_window.window)
                 response = credential_dialog.run()
 
                 if response == Gtk.ResponseType.OK:
@@ -191,7 +194,8 @@ class ConfigurationWindow:
                 credential_dialog.destroy()
 
             elif selection == 2:
-                credential_dialog = BingCredentialDialog(self.config_window.window)
+                credential_dialog = BingCredentialDialog(
+                    self.config_window.window)
                 response = credential_dialog.run()
 
                 if response == Gtk.ResponseType.OK:
@@ -213,7 +217,8 @@ class ConfigurationWindow:
                 config['default_tts'] = 'flite'
 
             elif selection == 2:
-                credential_dialog = WatsonCredentialsDialog(self.config_window.window)
+                credential_dialog = WatsonCredentialsDialog(
+                    self.config_window.window)
                 response = credential_dialog.run()
 
                 if response == Gtk.ResponseType.OK:

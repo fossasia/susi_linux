@@ -9,6 +9,7 @@ class ErrorState(State):
     """Error State inherits from the State class. If any error is encountered in any state, it should transition to
     error mentioning the error in the payload.
     """
+
     def on_enter(self, payload=None):
         """Method executed on entry to Error State. Relevant error message is spoken.
         :param payload: String mentioning the error encountered.
