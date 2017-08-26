@@ -17,13 +17,14 @@ class BusyState(State):
         """
         try:
             reply = self.components.susi.ask(payload)
+            if self.components.renderer is not None:
+                self.components.renderer.receive_message('speaking', payload={'susi_reply': reply})
+
             if 'answer' in reply.keys():
                 print('Susi:' + reply['answer'])
                 self.__speak(reply['answer'])
-                self.transition(self.allowedStateTransitions.get('idle'))
             else:
                 self.__speak("I don't have an answer to this")
-                self.transition(self.allowedStateTransitions.get('idle'))
 
             if 'table' in reply.keys():
                 table = reply['table']
@@ -44,6 +45,8 @@ class BusyState(State):
                 for entity in entities[0:count]:
                     print(entity.title)
                     self.__speak(entity.title)
+
+            self.transition(self.allowedStateTransitions.get('idle'))
 
         except ConnectionError:
             self.transition(self.allowedStateTransitions.get(

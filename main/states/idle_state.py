@@ -19,6 +19,9 @@ class IdleState(State):
         if self.components.wake_button is not None:
             self.components.wake_button.subject.subscribe(
                 on_next=lambda x: self.__detected())
+        if self.components.renderer is not None:
+            self.components.renderer.subject.subscribe(
+                on_next=lambda x: self.__detected())
 
     def on_enter(self, payload=None):
         """Method to be executed on entry to Idle State. Detection is set to active.
@@ -26,6 +29,7 @@ class IdleState(State):
         :return: None
         """
         self.isActive = True
+        self.components.renderer.receive_message('idle')
 
     def __detected(self):
         if self.isActive:
