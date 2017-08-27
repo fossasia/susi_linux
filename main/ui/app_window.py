@@ -2,16 +2,16 @@ import os
 
 import gi
 import json_config
-from async_promises import Promise
 
+gi.require_version('Gtk', '3.0')  # nopep8
+
+from async_promises import Promise
 from main.ui.animators import ListeningAnimator, ThinkingAnimator
 from main.ui.renderer import Renderer
+from gi.repository import Gtk
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
 config = json_config.connect('config.json')
-
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
 
 
 class SusiAppWindow(Renderer):
@@ -29,6 +29,7 @@ class SusiAppWindow(Renderer):
         self.mic_box = builder.get_object("mic_box")
         self.listening_box = builder.get_object("listening_box")
         self.thinking_box = builder.get_object("thinking_box")
+        self.error_label = builder.get_object("error_label")
 
         listeningAnimator = ListeningAnimator(self.window)
         self.listening_box.add(listeningAnimator)
@@ -58,6 +59,8 @@ class SusiAppWindow(Renderer):
 
         elif message_type == 'listening':
             self.state_stack.set_visible_child_name("listening_page")
+            self.user_text_label.set_text("")
+            self.susi_text_label.set_text("")
 
         elif message_type == 'recognizing':
             self.state_stack.set_visible_child_name("thinking_page")
@@ -73,7 +76,15 @@ class SusiAppWindow(Renderer):
                 self.susi_text_label.set_text(susi_reply['answer'])
 
         elif message_type == 'error':
-            pass
+            self.state_stack.set_visible_child_name("error_page")
+            error_type = payload
+            if error_type is not None:
+                if error_type == 'connection':
+                    self.error_label.set_text("Problem in internet connectivity !!")
+                elif error_type == 'recognition':
+                    self.error_label.set_text("Couldn't recognize the speech.")
+            else:
+                self.error_label.set_text('Some error occurred,')
 
     class Handler:
         def __init__(self, app_window):

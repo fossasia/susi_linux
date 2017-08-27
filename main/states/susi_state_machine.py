@@ -37,6 +37,13 @@ class Components:
 
         self.config = json_config.connect('config.json')
 
+        if self.config['usage_mode'] == 'authenticated':
+            try:
+                susi.sign_in(email=self.config['login_credentials']['email'],
+                             password=self.config['login_credentials']['password'])
+            except Exception:
+                print('Some error occurred in login. Check you login details in config.json')
+
         if self.config['hotword_engine'] == 'Snowboy':
             from main.hotword_engine import SnowboyDetector
             self.hotword_detector = SnowboyDetector()
@@ -81,5 +88,3 @@ class SusiStateMachine(Thread):
 
     def run(self):
         self.current_state.on_enter(payload=None)
-
-

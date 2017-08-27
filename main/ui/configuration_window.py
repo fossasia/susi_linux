@@ -1,17 +1,16 @@
 import os
-from pathlib import Path
-
+import json_config
 import gi
 import logging
-from gi.repository import Gtk
 
-import json_config
+gi.require_version('Gtk', '3.0')  # nopep8
+
+from pathlib import Path
+from gi.repository import Gtk
 from .login_window import LoginWindow
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
 config = json_config.connect('config.json')
-
-gi.require_version('Gtk', '3.0')
 
 
 class WatsonCredentialsDialog(Gtk.Dialog):
