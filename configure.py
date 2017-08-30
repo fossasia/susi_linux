@@ -1,4 +1,4 @@
-from main.renderer import ConfigurationWindow
+from main.ui import ConfigurationWindow
 
 window = ConfigurationWindow()
 window.show_window()

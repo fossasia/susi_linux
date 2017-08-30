@@ -45,3 +45,7 @@ class State(ABC):
 
     def __can_transition(self, state):
         return state in self.allowedStateTransitions.values()
+
+    def notify_renderer(self, message, payload=None):
+        if self.components.renderer is not None:
+            self.components.renderer.receive_message(message, payload)

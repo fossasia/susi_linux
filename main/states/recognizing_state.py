@@ -32,19 +32,22 @@ class RecognizingState(State):
         :param payload: No payload is expected by this state
         :return: None
         """
+
+        self.notify_renderer('listening')
         recognizer = self.components.recognizer
         try:
             print("Say something!")
             with self.components.microphone as source:
                 audio = recognizer.listen(source, phrase_time_limit=5)
+            self.notify_renderer('recognizing')
             print("Got it! Now to recognize it...")
             try:
                 value = self.__recognize_audio(
                     audio=audio, recognizer=recognizer)
                 print(value)
+                self.notify_renderer('recognized', value)
                 self.transition(self.allowedStateTransitions.get(
                     'busy'), payload=value)
-
             except sr.UnknownValueError:
                 print("Oops! Didn't catch that")
                 self.transition(self.allowedStateTransitions.get(

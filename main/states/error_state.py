@@ -16,10 +16,13 @@ class ErrorState(State):
         :return: None
         """
         if payload == 'RecognitionError':
+            self.notify_renderer('error', 'recognition')
             os.system('play extras/recognition-error.wav')
         elif payload == 'ConnectionError':
+            self.notify_renderer('error', 'connection')
             os.system('play extras/connect-error.wav')
         else:
+            self.notify_renderer('error')
             os.system('play extras/problem.wav')
 
         self.transition(self.allowedStateTransitions.get('idle'))

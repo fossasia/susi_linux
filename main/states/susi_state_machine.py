@@ -11,19 +11,21 @@ from .busy_state import BusyState
 from .error_state import ErrorState
 from .idle_state import IdleState
 from .recognizing_state import RecognizingState
+from threading import Thread
 
 
 class Components:
     """Common components accessible by each state of the the  SUSI state Machine.
     """
 
-    def __init__(self):
+    def __init__(self, renderer=None):
         recognizer = Recognizer()
         recognizer.dynamic_energy_threshold = False
         recognizer.energy_threshold = 1000
         self.recognizer = recognizer
         self.microphone = Microphone()
         self.susi = susi
+        self.renderer = renderer
 
         try:
             res = requests.get('http://ip-api.com/json').json()
@@ -34,6 +36,13 @@ class Components:
             logging.error(e)
 
         self.config = json_config.connect('config.json')
+
+        if self.config['usage_mode'] == 'authenticated':
+            try:
+                susi.sign_in(email=self.config['login_credentials']['email'],
+                             password=self.config['login_credentials']['password'])
+            except Exception:
+                print('Some error occurred in login. Check you login details in config.json')
 
         if self.config['hotword_engine'] == 'Snowboy':
             from main.hotword_engine import SnowboyDetector
@@ -52,16 +61,16 @@ class Components:
             self.wake_button = None
 
 
-class SusiStateMachine:
+class SusiStateMachine(Thread):
     """SUSI State Machine works on the concept of Finite State Machine. Each step of working of this app is divided into
     a state of the State Machine. Each state can transition into one of the allowed states and pass some information
     to other states as PAYLOAD. Upon Error, transition should happen to Error State and after speaking the correct error
     message, the machine transitions to the Idle State.
     """
 
-    def __init__(self):
+    def __init__(self, renderer=None):
         super().__init__()
-        components = Components()
+        components = Components(renderer)
         self.__idle_state = IdleState(components)
         self.__recognizing_state = RecognizingState(components)
         self.__busy_state = BusyState(components)
@@ -77,4 +86,5 @@ class SusiStateMachine:
         self.__error_state.allowedStateTransitions = \
             {'idle': self.__idle_state}
 
+    def run(self):
         self.current_state.on_enter(payload=None)
