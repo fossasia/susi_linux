@@ -3,6 +3,8 @@ import os
 import gi
 import json_config
 
+from main.ui import ConfigurationWindow
+
 gi.require_version('Gtk', '3.0')  # nopep8
 
 from async_promises import Promise
@@ -30,6 +32,7 @@ class SusiAppWindow(Renderer):
         self.listening_box = builder.get_object("listening_box")
         self.thinking_box = builder.get_object("thinking_box")
         self.error_label = builder.get_object("error_label")
+        self.settings_button = builder.get_object("settings_button")
 
         listeningAnimator = ListeningAnimator(self.window)
         self.listening_box.add(listeningAnimator)
@@ -98,3 +101,7 @@ class SusiAppWindow(Renderer):
             Promise(
                 lambda resolve, reject: resolve(self.app_window.on_mic_pressed())
             )
+
+        def on_settings_button_clicked(self, button):
+            window = ConfigurationWindow()
+            window.show_window()

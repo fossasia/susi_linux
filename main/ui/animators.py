@@ -59,10 +59,10 @@ class ThinkingAnimator(Animator):
 
     def draw(self, ctx, width, height):
         self.x, self.y = width / 2, height / 2
-        self.rot += 0.3
+        self.rot += 0.2
         self.rot %= 2 * math.pi
 
         for i in range(-2, 2):
             ctx.set_source_rgb(0.2, 0.7, 1)
-            ctx.arc(self.x + i * 20, self.y, 8 * math.cos(self.rot - i / 2), 0, 360)
+            ctx.arc(self.x + i * 20, self.y, 8 * math.cos(self.rot - i / 2), 0, 2 * math.pi)
             ctx.fill()

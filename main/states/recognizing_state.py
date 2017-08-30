@@ -33,19 +33,19 @@ class RecognizingState(State):
         :return: None
         """
 
-        self.components.renderer.receive_message('listening')
+        self.notify_renderer('listening')
         recognizer = self.components.recognizer
         try:
             print("Say something!")
             with self.components.microphone as source:
                 audio = recognizer.listen(source, phrase_time_limit=5)
-            self.components.renderer.receive_message('recognizing')
+            self.notify_renderer('recognizing')
             print("Got it! Now to recognize it...")
             try:
                 value = self.__recognize_audio(
                     audio=audio, recognizer=recognizer)
                 print(value)
-                self.components.renderer.receive_message('recognized', value)
+                self.notify_renderer('recognized', value)
                 self.transition(self.allowedStateTransitions.get(
                     'busy'), payload=value)
             except sr.UnknownValueError:

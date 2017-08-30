@@ -29,7 +29,7 @@ class IdleState(State):
         :return: None
         """
         self.isActive = True
-        self.components.renderer.receive_message('idle')
+        self.notify_renderer('idle')
 
     def __detected(self):
         if self.isActive:

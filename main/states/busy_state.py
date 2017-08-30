@@ -18,7 +18,7 @@ class BusyState(State):
         try:
             reply = self.components.susi.ask(payload)
             if self.components.renderer is not None:
-                self.components.renderer.receive_message('speaking', payload={'susi_reply': reply})
+                self.notify_renderer('speaking', payload={'susi_reply': reply})
 
             if 'answer' in reply.keys():
                 print('Susi:' + reply['answer'])
