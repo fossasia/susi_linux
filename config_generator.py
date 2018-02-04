@@ -95,9 +95,11 @@ def request_hotword_choice():
             else:
                 config['hotword_engine'] = 'PocketSphinx'
                 print('\nPocketSphinx set as default Hotword Detection Engine\n')
+        else:
+             raise Exception
 
     except Exception:
-        print("Some Error Occurred. Using PocketSphinx as default engine for Hotword. Run this script again to change")
+        print("Some Error Occurred.Snowboy not configured properly.\nUsing PocketSphinx as default engine for Hotword. Run this script again to change")
         config['hotword_engine'] = 'PocketSphinx'
 
 
