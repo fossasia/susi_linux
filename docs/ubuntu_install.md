@@ -36,12 +36,16 @@ If still there is error, see if devices are selected correctly in Ubuntu sound s
 $ python3 config_generator.py
 ```
 
-- One config.json is generated, run SUSI by running command
+- One config.json is generated, you may run SUSI User Interface by executing the following command
 ```bash
+$ python3 app.py
+```
+- Alternatively ,you can run SUSI without User Interface by executing the following command
+```
 $ python3 -m main
 ```
 
-This will start SUSI in always listening Hotword Detection Mode. To ask SUSI a question, say "Susi". If detection of
+In both case SUSI will start in always listening Hotword Detection Mode. To ask SUSI a question, say "Susi". If detection of
 hotword is successful, you will hear a small bell sound. Ask your query after the bell sound. Your query will be
 processed by SUSI and you will hear a voice reply.
 
