@@ -24,3 +24,6 @@ set output volume
 
 > pactl set-sink-volume 0 80%
 
+If you get the error
+ALSA lib confmisc.c:1281:(snd_func_refer) Unable to find definition 'cards.bcm2835.pcm.front.0:CARD=0
+check the value of defaults.pcm.card in /usr/share/alsa/alsa.conf
