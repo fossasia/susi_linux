@@ -1,0 +1,26 @@
+Some hints to do debugging of missing audio support:
+
+Check for playback devices:
+
+> aplay -l
+
+List connected USB devices:
+
+> lsusb
+
+Install pulseaudio
+
+> apt-get install pulseaudio
+
+List all audio input devices
+
+> pactl list sources short
+
+Audio output list
+
+> pactl list sinks short
+
+set output volume
+
+> pactl set-sink-volume 0 80%
+

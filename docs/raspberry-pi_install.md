@@ -48,7 +48,7 @@ is showing it as "USB 2.0 PC Camera". It can be different for your device.
 - Now click on select controls and then select the microphone control.
 ![mic control](./images/enable-mic.png)
 - You may adjust input and output volume for your devices using sliders.
-- Test your microphone working by running command ```rec a.wav```. It should give an output like below.
+- Test your microphone working by running command ```rec a.wav``` (you need the 'sox' package for this). It should give an output like below.
 ![rec command](./images/rec-command.png)
 - Test your speaker using play command. You may play the just recorded ```a.wav``` file using
 ```play a.wav``` command. It should give an output like below.
@@ -83,6 +83,10 @@ setup according to your needs. It can be used to modify:
     - Speech Recognition service
     - Authenticate to SUSI.AI
     - Enable Hardware Wake Button.
+
+Install required python libraries:
+pip3 install --user json_config
+pip3 install --user service_identity
     
 Run the script using:
 ```
