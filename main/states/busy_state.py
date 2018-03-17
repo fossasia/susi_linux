@@ -2,6 +2,7 @@
 """
 from ..speech import TTS
 from .base_state import State
+import RPi.GPIO as GPIO
 
 
 class BusyState(State):
@@ -16,7 +17,10 @@ class BusyState(State):
         :return: None
         """
         try:
+            GPIO.output(17, True)
             reply = self.components.susi.ask(payload)
+            GPIO.output(17, False)
+            GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
 
@@ -58,6 +62,9 @@ class BusyState(State):
     def on_exit(self):
         """Method executed on exit from the Busy State.
         """
+        GPIO.output(17, False)
+        GPIO.output(27, False)
+        GPIO.output(22, False)
         pass
 
     def __speak(self, text):
