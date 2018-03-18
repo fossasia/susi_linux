@@ -35,6 +35,7 @@ If still there is error, see if devices are selected correctly in Ubuntu sound s
 ```bash
 $ python3 config_generator.py
 ```
+-Note: Enclose every input(y/n, email, password) queried after running the above command with ''(single quotes).
 
 - One config.json is generated, run SUSI by running command
 ```bash
