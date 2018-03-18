@@ -14,8 +14,9 @@ class IdleState(State):
         super().__init__(components)
         self.isActive = False
         self.components.hotword_detector.start()
-        self.components.hotword_detector.subject.subscribe(
-            on_next=lambda x: self.__detected())
+        if self.components.hotword_detector is not None:
+            self.components.hotword_detector.subject.subscribe(
+                on_next=lambda x: self.__detected())
         if self.components.wake_button is not None:
             self.components.wake_button.subject.subscribe(
                 on_next=lambda x: self.__detected())

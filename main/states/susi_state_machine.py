@@ -57,13 +57,17 @@ class Components:
             from main.hotword_engine import PocketSphinxDetector
             self.hotword_detector = PocketSphinxDetector()
 
-        if self.config['wake_button'] == 'enabled':
-            if self.config['device'] == 'RaspberryPi':
+        if self.config['WakeButton'] == 'enabled':
+            print("\nSusi has the wake button enabled")
+            if self.config['Device'] == 'RaspberryPi':
+                print("\nSusi runs on a RaspberryPi")
                 from ..hardware_components import RaspberryPiWakeButton
                 self.wake_button = RaspberryPiWakeButton()
             else:
+                print("\nSusi is not running on a RaspberryPi")
                 self.wake_button = None
         else:
+            print("\nSusi has the wake button disabled")
             self.wake_button = None
 
 
