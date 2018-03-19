@@ -1,0 +1,65 @@
+Some hints to do debugging of missing audio support:
+
+Check for playback devices:
+
+> aplay -l
+
+List connected USB devices:
+
+> lsusb
+
+Install pulseaudio
+
+> apt-get install pulseaudio
+
+List all audio input devices
+
+> pactl list sources short
+
+Audio output list
+
+> pactl list sinks short
+
+set output volume
+
+> pactl set-sink-volume 0 80%
+
+If you get the error
+ALSA lib confmisc.c:1281:(snd_func_refer) Unable to find definition 'cards.bcm2835.pcm.front.0:CARD=0
+check the value of defaults.pcm.card in /usr/share/alsa/alsa.conf
+
+To determine the sampling rate of the microphone, use the alsa-utils
+
+> apt-get install alsa-utils
+
+Then check the capture devices:
+
+> arecord --list-devices
+
+This lists the devices, which is either hw:0,0 or hw:1,0
+Using this information, check the sampling rate:
+
+> arecord -f dat -r 60000 -D hw:1,0 -d 5 a.wav
+
+This gives a hint which sampling rate is possible.
+To get the default sample rate, do:
+
+> grep "default-sample-rate" /etc/pulse/daemon.conf
+
+maybe you see a disabled (starts with semicolon) line; you can change the value to something appropriate (i.e. 44100)
+After changing of values, restart pulsaudio:
+
+> pulseaudio -k
+> pulseaudio --start
+
+You can then record 10 seconds with
+
+> arecord -f cd -d 10 a.wav
+
+And play it with
+
+> aplay a.wav
+
+To set details of alsa, run
+
+> alsamixer

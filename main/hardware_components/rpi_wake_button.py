@@ -14,5 +14,6 @@ class RaspberryPiWakeButton(WakeButton):
         while True:
             input_state = GPIO.input(18)
             if not input_state:
+                print('WakeButton')
                 self.on_detected()
                 time.sleep(0.2)

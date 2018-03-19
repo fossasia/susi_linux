@@ -4,6 +4,7 @@ The SUSI State Machine works on the concept of Finite State Machine.
 import json_config
 import logging
 import requests
+import RPi.GPIO as GPIO
 from speech_recognition import Recognizer, Microphone
 
 import susi_python as susi
@@ -19,6 +20,11 @@ class Components:
     """
 
     def __init__(self, renderer=None):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup (17, GPIO.OUT)
+        GPIO.setup (27, GPIO.OUT)
+        GPIO.setup (22, GPIO.OUT)
+
         recognizer = Recognizer()
         recognizer.dynamic_energy_threshold = False
         recognizer.energy_threshold = 1000
@@ -51,13 +57,17 @@ class Components:
             from main.hotword_engine import PocketSphinxDetector
             self.hotword_detector = PocketSphinxDetector()
 
-        if self.config['wake_button'] == 'enabled':
-            if self.config['device'] == 'RaspberryPi':
+        if self.config['WakeButton'] == 'enabled':
+            print("\nSusi has the wake button enabled")
+            if self.config['Device'] == 'RaspberryPi':
+                print("\nSusi runs on a RaspberryPi")
                 from ..hardware_components import RaspberryPiWakeButton
                 self.wake_button = RaspberryPiWakeButton()
             else:
+                print("\nSusi is not running on a RaspberryPi")
                 self.wake_button = None
         else:
+            print("\nSusi has the wake button disabled")
             self.wake_button = None
 
 

@@ -2,6 +2,7 @@
 """
 from .base_state import State
 import speech_recognition as sr
+import RPi.GPIO as GPIO
 
 
 class RecognizingState(State):
@@ -37,9 +38,11 @@ class RecognizingState(State):
         recognizer = self.components.recognizer
         try:
             print("Say something!")
+            GPIO.output(22, True)
             with self.components.microphone as source:
                 audio = recognizer.listen(source, phrase_time_limit=5)
             self.notify_renderer('recognizing')
+            GPIO.output(22, False)
             print("Got it! Now to recognize it...")
             try:
                 value = self.__recognize_audio(
@@ -66,4 +69,7 @@ class RecognizingState(State):
         """ Method to executed upon exit from Recognizing State.
         :return:
         """
+        GPIO.output(17, False)
+        GPIO.output(27, False)
+        GPIO.output(22, False)
         pass
