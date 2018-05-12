@@ -1,5 +1,5 @@
 import os
-
+import signal
 import gi
 import json_config
 
@@ -96,6 +96,7 @@ class SusiAppWindow(Renderer):
         def on_delete(self, *args):
             print('Exiting')
             self.app_window.exit_window()
+            os.kill(os.getppid(), signal.SIGHUP)
 
         def on_mic_button_clicked(self, button):
             Promise(
