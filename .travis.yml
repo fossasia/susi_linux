@@ -4,6 +4,7 @@ language: python
 python:
   - "3.5"
 install:
+  - sudo apt-get update --fix-missing
   - sudo apt install swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev
     libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev
     python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev
