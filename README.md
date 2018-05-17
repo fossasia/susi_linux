@@ -7,7 +7,7 @@
 SUSI AI on Linux
 
 This project aims at creating an implementation of Susi, capable to run on Linux Devices in a headless mode.
-It will enable you to bring Susi AI intelligence to all devices you may think like a Speaker, Car etc.
+It will enable you to bring Susi AI intelligence to all devices you may think like a Speaker, Car etc. 
 
 **Current Status**
 - Voice Detection working with Google Speech API/ IBM Watson Speech to Text API.
