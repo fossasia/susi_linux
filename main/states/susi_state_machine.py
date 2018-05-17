@@ -21,9 +21,9 @@ class Components:
 
     def __init__(self, renderer=None):
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup (17, GPIO.OUT)
-        GPIO.setup (27, GPIO.OUT)
-        GPIO.setup (22, GPIO.OUT)
+        GPIO.setup(17, GPIO.OUT)
+        GPIO.setup(27, GPIO.OUT)
+        GPIO.setup(22, GPIO.OUT)
 
         recognizer = Recognizer()
         recognizer.dynamic_energy_threshold = False
