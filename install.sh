@@ -116,6 +116,22 @@ function install_snowboy()
     fi
 }
 
+echo "Deploying local server"
+if  [ ! -e "susi-server" ]
+then
+    git clone https://github.com/fossasia/susi_server.git
+fi
+
+if [ -e "susi_server" ]
+then    
+    cd susi_server
+    git submodule update --recursive --remote
+    git submodule update --init --recursive
+    ./gradlew build
+    bin/start.sh
+fi
+
+
 echo "Downloading dependency: Susi Python API Wrapper"
 if [ ! -d "susi_python" ]
 then
@@ -156,6 +172,8 @@ echo
 echo
 
 install_snowboy
+
+python3 media_daemon/media.py
 
 echo "Setup Complete"
 
