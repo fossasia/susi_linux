@@ -10,3 +10,4 @@ main/hotword_engine/snowboy/snowboydetect.py
 /extras/output.wav
 /snowboy/
 config.json
+susi_server/
