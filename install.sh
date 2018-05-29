@@ -131,6 +131,10 @@ then
     bin/start.sh
 fi
 
+# if [-d "susi_skill_data"]
+#then
+#./media_daemon/media_daemon.sh
+#fi
 
 echo "Downloading dependency: Susi Python API Wrapper"
 if [ ! -d "susi_python" ]
