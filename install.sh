@@ -173,6 +173,8 @@ echo
 
 install_snowboy
 
+python3 media_daemon/media.py
+
 echo "Setup Complete"
 
 echo "Run configuration script by 'python3 config_generator.py'"
