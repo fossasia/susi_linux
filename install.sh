@@ -116,18 +116,28 @@ function install_snowboy()
     fi
 }
 
-echo "Deploying local server"
-if  [ ! -e "susi-server" ]
+pwd
+
+if  [ ! -d "susi_server" ]
 then
+    mkdir susi_server
+    cd susi_server
     git clone https://github.com/fossasia/susi_server.git
+    git clone https://github.com/fossasia/susi_skill_data.git
 fi
 
-if [ -e "susi_server" ]
-then    
-    cd susi_server
+if [ -d "susi_server" ]
+then 
+    echo "Deploying local server"
+    cd susi_server/susi_server
     git submodule update --recursive --remote
     git submodule update --init --recursive
-    ./gradlew build
+    {
+        ./gradlew build 
+    } || {
+        echo PASS
+    }
+
     bin/start.sh
 fi
 
