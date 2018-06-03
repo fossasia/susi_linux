@@ -42,3 +42,11 @@ For installation on Raspberry Pi, read [Raspberry Pi setup guide.](docs/raspberr
 ### Installing on Ubuntu and other Debian based distributions
 
 For installation on Ubuntu and other Debian based distributions, read [Ubuntu Setup Guide](docs/ubuntu_install.md)
+
+### Factory Reset
+
+To initiate the factory reset command.<br/>
+Use the folllowing commands.
+* `cd factory_reset/`
+* `chmod +x factory_reset.sh`
+* `./factory_reset.sh`
