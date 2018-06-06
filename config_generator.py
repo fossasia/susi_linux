@@ -4,9 +4,12 @@
 import json_config
 import requests
 from pathlib import Path
+import os
 
 config = json_config.connect('config.json')
 
+wifi_ssid = ''
+wifi_password = ''
 
 def is_valid(email, password):
     """ Method to Validate SUSI Login Details
@@ -173,8 +176,21 @@ def request_tts_choice():
 
     print("\nSpeech to Text configured successfully\n")
 
+def request_wifi_credentials():
+    """ Method for getting wifi credentials from the user
+    :return: None
+    """
+    global wifi_ssid
+    wifi_ssid = input('Please Enter the wifi ssid : ')
+    global wifi_password
+    wifi_password = input('Please Enter the wifi password : ')
+
 
 set_extras()
+print("Setup WiFi credentials\n")
+request_wifi_credentials() #bandit -s B605
+os.system('sudo ./access_point/wifi_search.sh {} {}'.format(wifi_ssid,wifi_password))#nosec #pylint-disable type: ignore
+#pylint-enable
 
 print("Setup Speech to Text Service\n")
 request_stt_choice()
