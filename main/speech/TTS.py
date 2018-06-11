@@ -54,4 +54,5 @@ def speak_google_tts(text):
     :param text: Text which is needed to be spoken
     :return: None
     """
-    Speech(text=text, lang='en').play(sox_effects=None)
+    sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
+    Speech(text=text, lang='en').play(sox_effects)
