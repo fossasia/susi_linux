@@ -71,6 +71,7 @@ class BusyState(State):
         if self.components.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
         if self.components.config['default_tts'] == 'flite':
+            print("Using flite for TTS")
             TTS.speak_flite_tts(text)
         elif self.components.config['default_tts'] == 'watson':
             TTS.speak_watson_tts(text)
