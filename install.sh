@@ -129,7 +129,7 @@ fi
 if [ -d "susi_server" ]
 then 
     echo "Deploying local server"
-    cd susi_server/susi_server
+    cd /home/pi/SUSI.AI/susi_linux/susi_server/susi_server
     git submodule update --recursive --remote
     git submodule update --init --recursive
     {
@@ -141,10 +141,9 @@ then
     bin/start.sh
 fi
 
-# if [-d "susi_skill_data"]
-#then
-#./media_daemon/media_daemon.sh
-#fi
+./media_daemon/media_daemon.sh
+
+cd /home/pi/SUSI.AI/susi_linux
 
 echo "Downloading dependency: Susi Python API Wrapper"
 if [ ! -d "susi_python" ]

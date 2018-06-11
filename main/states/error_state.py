@@ -1,8 +1,10 @@
 """Class to represent Error State
 """
 import os
-
+import json_config
 from .base_state import State
+
+config = json_config.connect('config.json')
 
 
 class ErrorState(State):
@@ -20,6 +22,7 @@ class ErrorState(State):
             os.system('play extras/recognition-error.wav')
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
+            config['default_tts'] = 'flite'
             os.system('play extras/connect-error.wav')
         else:
             self.notify_renderer('error')
