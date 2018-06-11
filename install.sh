@@ -141,6 +141,8 @@ then
     bin/start.sh
 fi
 
+./media_daemon/media_daemon.sh
+
 cd /home/pi/SUSI.AI/susi_linux
 
 echo "Downloading dependency: Susi Python API Wrapper"
