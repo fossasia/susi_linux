@@ -15,17 +15,23 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 - Susi AI response working through Susi AI API Python Wrapper(https://github.com/fossasia/susi_api_wrapper)
 - Hotword Detection works for hotword 'Susi'
 - SUSI Wake Button in Raspberry Pi is working.
+- Audio parsing working through SOX
+- Youtube audio working through tizonia(http://tizonia.org/)
+- Connection between the mobile devices and the smart speaker is done through ssh by using Access Point Mode
 
 **Roadmap**
 - Offline Voice Detection (if possible with satisfactory results)
+- Configuring led lights in accordance with SUSI.AI response
+- Make Update Daemon check for the updates at regular intervals
+- Create an automated workflow which sets up the initialisation through the mobile app
 
 
 ## Setting up Susi on Linux
 
 Setting up Susi on Linux is pretty easy.
 
-### Minimal Requirements
-* A hardware device capable to run Linux. It included development boards like Raspberry Pi 
+### Minimum Requirements
+* A hardware device capable to run Linux. It includes development boards like Raspberry Pi 
 and other generic machines.
 * A Debian based Linux Distribution. Tested on
     - Raspbian on Raspberry Pi 3
@@ -43,6 +49,12 @@ For installation on Raspberry Pi, read [Raspberry Pi setup guide.](docs/raspberr
 
 For installation on Ubuntu and other Debian based distributions, read [Ubuntu Setup Guide](docs/ubuntu_install.md)
 
+### Update Daemon
+
+Use the folllowing commands.
+* `cd update_daemon/`
+* `./update_daemon.sh`
+
 ### Factory Reset
 
 To initiate the factory reset command.<br/>
@@ -50,3 +62,9 @@ Use the folllowing commands.
 * `cd factory_reset/`
 * `chmod +x factory_reset.sh`
 * `./factory_reset.sh`
+
+## Setting Up the access point mode
+
+To allow the raspberry Pi to behave as an access point
+* Execute the wap.sh script by `./wap.sh`
+* To convert RasPi back to normal mode use `./rwap.sh`
