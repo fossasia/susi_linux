@@ -114,7 +114,8 @@ def request_stt_choice():
         choice = int(input('Which Speech Recognition Service do you wish to use? Press number or enter for default.\n'
                            '1. Google Voice Recognition (default)\n'
                            '2. IBM Watson\n'
-                           '3. Bing Speech API\n'))
+                           '3. Bing Speech API\n'
+                           '4. PocketSphinx(offline) \n'))
         if choice == 1:
             config['default_stt'] = 'google'
 
@@ -133,6 +134,9 @@ def request_stt_choice():
             print('For using Bing Speech API, you need an API key')
             key = input('Enter Bing Speech API Key')
             config['bing_speech_api_key'] = key
+
+        elif choice == 4:
+            config['default_stt'] = 'pocket_sphinx'
 
         else:
             raise ValueError

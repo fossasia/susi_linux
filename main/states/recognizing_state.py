@@ -3,6 +3,7 @@
 from .base_state import State
 import speech_recognition as sr
 import RPi.GPIO as GPIO
+from internet_test import internet_on
 
 
 class RecognizingState(State):
@@ -21,6 +22,12 @@ class RecognizingState(State):
                 username=username,
                 password=password,
                 audio_data=audio)
+        elif self.components.config['default_stt'] == 'pocket_sphinx':
+            if internet_on():
+                self.components.config['default_stt'] = 'google'
+                return recognizer.recognize_google(audio)
+            else:
+                return recognizer.recognize_sphinx(audio)
 
         elif self.components.config['default_stt'] == 'bing':
             api_key = self.components.config['bing_speech_api_key']
