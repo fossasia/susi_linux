@@ -36,7 +36,7 @@ class Components:
         try:
             res = requests.get('http://ip-api.com/json').json()
             self.susi.update_location(
-                longitude=res['lon'], latitude=res['lat'])
+                longitude=res['lon'], latitude=res['lat'], country_name=res['country'], country_code=res['countryCode'])
 
         except ConnectionError as e:
             logging.error(e)
