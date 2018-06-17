@@ -45,6 +45,33 @@ inbuilt, you can use a USB Microphone.
 
 For installation on Raspberry Pi, read [Raspberry Pi setup guide.](docs/raspberry-pi_install.md)
 
+### Configuring a connection through SSH
+
+Step 1: Initial Setup
+* Both the raspberry Pi with raspbian installed and the mobile device should be on a same wireless network 
+* One should have an SSH viewer like JuiceSSH(Android) and iTerminal(IOS) installed on their mobile devices
+* Now we must enable SSH on our raspberry Pi
+
+Step 2: Enabling SSH on Raspberry PI
+* To enable SSH on your Pi , follow the following steps:
+    <br>
+    `Menu > Preferences > Raspberry Pi Configuration.`
+    ![SSH_Config](docs/images/ssh_config.png "SSH_Config")
+    <br>
+    Choose the interfaces tab and enable SSH
+Step 3:Setting Up the client
+* Login to your raspberry pi as the root user (pi by default)
+* Type the following command to know the broadcasting ip address<br>
+	`pi@raspberrypi:hostname -I`
+* Now , open the client on your mobile device and add the configurations<br>
+![SSH_Config](docs/images/ssh-client.png "SSH_Config")
+<p>By default the username of the system is ‘pi’ and the password is ‘raspberry’</p>
+
+### Using SUSI in a Authenticated Mode
+* To login in the speaker , first start the configuration script<br>
+    `python3 config_generator.py`
+* Follow the On Screen Instructions and agree to use SUSI in authenticated mode.<br>
+
 ### Installing on Ubuntu and other Debian based distributions
 
 For installation on Ubuntu and other Debian based distributions, read [Ubuntu Setup Guide](docs/ubuntu_install.md)
