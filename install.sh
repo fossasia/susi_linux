@@ -142,6 +142,7 @@ then
 fi
 
 cd /home/pi/SUSI.AI/susi_linux
+./media_daemon/media_daemon.sh
 
 echo "Downloading dependency: Susi Python API Wrapper"
 if [ ! -d "susi_python" ]
