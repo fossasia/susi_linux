@@ -162,6 +162,9 @@ echo "Downloading Python Dependencies"
 sudo -E pip3 install -r requirements.txt
 sudo -E pip3 install -r requirements-hw.txt
 
+echo "Downloading Tizonia"
+curl -kL https://github.com/tizonia/tizonia-openmax-il/raw/master/tools/install.sh | bash
+
 if ! [ -x "$(command -v flite)" ]
 then
     echo "Downloading and Installing Flite TTS"
@@ -186,6 +189,7 @@ echo
 install_snowboy
 
 python3 media_daemon/media.py
+
 
 echo "Setup Complete"
 
