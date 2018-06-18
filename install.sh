@@ -142,6 +142,7 @@ then
 fi
 
 cd /home/pi/SUSI.AI/susi_linux
+./media_daemon/media_daemon.sh
 
 echo "Downloading dependency: Susi Python API Wrapper"
 if [ ! -d "susi_python" ]
@@ -160,6 +161,9 @@ install_debian_dependencies
 echo "Downloading Python Dependencies"
 sudo -E pip3 install -r requirements.txt
 sudo -E pip3 install -r requirements-hw.txt
+
+echo "Downloading Tizonia"
+curl -kL https://github.com/tizonia/tizonia-openmax-il/raw/master/tools/install.sh | bash
 
 if ! [ -x "$(command -v flite)" ]
 then
@@ -185,6 +189,7 @@ echo
 install_snowboy
 
 python3 media_daemon/media.py
+
 
 echo "Setup Complete"
 

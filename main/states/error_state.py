@@ -23,7 +23,9 @@ class ErrorState(State):
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
             config['default_tts'] = 'flite'
+            config['default_stt'] = 'pocket_sphinx'
             os.system('play extras/connect-error.wav')
+            print("Changed to offline providers")
         else:
             self.notify_renderer('error')
             os.system('play extras/problem.wav')
