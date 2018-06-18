@@ -3,7 +3,7 @@
 from ..speech import TTS
 from .base_state import State
 import RPi.GPIO as GPIO
-
+import os
 
 class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
@@ -29,6 +29,15 @@ class BusyState(State):
                 self.__speak(reply['answer'])
             else:
                 self.__speak("I don't have an answer to this")
+
+            if 'identifier' in reply.keys():
+                classifier = reply['identifier']
+                if classifier[:3] == 'ytd':
+                    audio_url = reply['identifier']    #bandit -s B605
+                    os.system('tizonia --youtube-audio-stream '+ audio_url) #nosec #pylint-disable type: ignore
+                else:
+                    audio_url = reply['identifier']  # bandit -s B605
+                    os.system('play ' + audio_url[6:])  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
                 table = reply['table']
