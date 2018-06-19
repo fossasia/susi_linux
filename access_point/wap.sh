@@ -1,4 +1,5 @@
 #!/bin/bash
+# To be configured on auto boot-up
 
 if [ "$EUID" -ne 0 ]
 	then echo "Must be root"
@@ -68,6 +69,7 @@ systemctl enable dnsmasq
 sudo service hostapd start
 sudo service dnsmasq start
 
+# add server in the auto-boot up list 
 echo "All done! Rebooting"
 
 sudo reboot
