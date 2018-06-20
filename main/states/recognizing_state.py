@@ -3,7 +3,7 @@
 from .base_state import State
 import speech_recognition as sr
 import RPi.GPIO as GPIO
-from internet_test import internet_on
+from .internet_test import internet_on
 
 
 class RecognizingState(State):

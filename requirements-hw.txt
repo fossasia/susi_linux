@@ -7,3 +7,4 @@ json-config
 google_speech
 async_promises
 rx
+pyudev
