@@ -5,11 +5,10 @@ import json_config
 import requests
 from pathlib import Path
 import os
+import sys
 
 config = json_config.connect('config.json')
 
-wifi_ssid = ''
-wifi_password = ''
 
 def is_valid(email, password):
     """ Method to Validate SUSI Login Details
@@ -35,7 +34,11 @@ def setup_wake_button():
     try:
         import RPi.GPIO
         print("\nDevice supports RPi.GPIO")
-        choice = input("Do you wish to enable hardware wake button? (y/n) ")
+        # choice = input("Do you wish to enable hardware wake button? (y/n) ")
+        if sys.argv[6] != 'y':
+            choice = sys.argv[7]
+        else:
+            choice = sys.argv[9]
         if choice == 'y':
             config['WakeButton'] = 'enabled'
             config['Device'] = 'RaspberryPi'
@@ -59,10 +62,15 @@ def request_authentication():
     :return: None
     """
     try:
-        choice = input('Do you wish to use SUSI in Authenticated Mode? (y/n)\n')
+        # choice = input('Do you wish to use SUSI in Authenticated Mode? (y/n)\n')
+        choice = sys.argv[5]
+        print(choice)
         if choice == 'y':
-            email = input('Enter SUSI Sign-in Email Address: ')
-            password = input('Enter SUSI Sign-in Password: ')
+            # email = input('Enter SUSI Sign-in Email Address: ')
+            email = sys.argv[6]
+            print(email)
+            # password = input('Enter SUSI Sign-in Password: ')
+            password = sys.argv[7]
             if is_valid(email, password):
                 print('Login Details are valid. Saving details.')
                 config['usage_mode'] = 'authenticated'
@@ -91,7 +99,8 @@ def request_hotword_choice():
         snowboyDetectFile = Path("main/hotword_engine/snowboy/_snowboydetect.so")
         if snowboyDetectFile.exists():
             print("Snowboy is available on this platform")
-            choice = input("Do you wish to use Snowboy as default Hotword Detection Engine (Recommended). (y/n) ")
+            # choice = input("Do you wish to use Snowboy as default Hotword Detection Engine (Recommended). (y/n) ")
+            choice = sys.argv[3]
             if choice == 'y':
                 config['hotword_engine'] = 'Snowboy'
                 print('\nSnowboy set as default Hotword Detection Engine\n')
@@ -111,15 +120,17 @@ def request_stt_choice():
     :return: None
     """
     try:
-        choice = int(input('Which Speech Recognition Service do you wish to use? Press number or enter for default.\n'
-                           '1. Google Voice Recognition (default)\n'
-                           '2. IBM Watson\n'
-                           '3. Bing Speech API\n'
-                           '4. PocketSphinx(offline) \n'))
-        if choice == 1:
+        # choice = int(input('Which Speech Recognition Service do you wish to use? Press number or enter for default.\n'
+        #                    '1. Google Voice Recognition (default)\n'
+        #                    '2. IBM Watson\n'
+        #                    '3. Bing Speech API\n'
+        #                    '4. PocketSphinx(offline) \n'))
+        choice = sys.argv[1]
+        print(choice)
+        if choice == 'google':
             config['default_stt'] = 'google'
 
-        elif choice == 2:
+        elif choice == 'ibm':
             config['default_stt'] = 'watson'
             print('For using IBM Watson. You need API keys for IBM Watson Speech to Text Service'
                   'Please input credentials')
@@ -129,13 +140,13 @@ def request_stt_choice():
             config['watson_stt_config']['password'] = password
             config['watson_stt_config']['voice'] = 'en-US_AllisonVoice'
 
-        elif choice == 3:
+        elif choice == 'bing':
             config['default_stt'] = 'bing'
             print('For using Bing Speech API, you need an API key')
             key = input('Enter Bing Speech API Key')
             config['bing_speech_api_key'] = key
 
-        elif choice == 4:
+        elif choice == 'sphinx':
             config['default_stt'] = 'pocket_sphinx'
 
         else:
@@ -153,17 +164,19 @@ def request_tts_choice():
     :return: None
     """
     try:
-        choice = int(input('Which Text to Speech Service do you wish to use? Press number or enter for default.\n'
-                           '1. Google Text to Speech (default)\n'
-                           '2. Flite TTS (offline)\n'
-                           '3. IBM Watson\n'))
-        if choice == 1:
+        # choice = int(input('Which Text to Speech Service do you wish to use? Press number or enter for default.\n'
+        #                    '1. Google Text to Speech (default)\n'
+        #                    '2. Flite TTS (offline)\n'
+        #                    '3. IBM Watson\n'))
+
+        choice = sys.argv[2]
+        if choice == 'google':
             config['default_tts'] = 'google'
 
-        elif choice == 2:
+        elif choice == 'flite':
             config['default_tts'] = 'flite'
 
-        elif choice == 3:
+        elif choice == 'ibm':
             config['default_tts'] = 'watson'
             print('For using IBM Watson. You need API keys for IBM Watson Text to Speech Service'
                   'Please input credentials')
@@ -180,21 +193,16 @@ def request_tts_choice():
 
     print("\nSpeech to Text configured successfully\n")
 
-def request_wifi_credentials():
-    """ Method for getting wifi credentials from the user
-    :return: None
-    """
-    global wifi_ssid
-    wifi_ssid = input('Please Enter the wifi ssid : ')
-    global wifi_password
-    wifi_password = input('Please Enter the wifi password : ')
-
 
 set_extras()
-print("Setup WiFi credentials\n")
-request_wifi_credentials() #bandit -s B605
-os.system('sudo ./access_point/wifi_search.sh {} {}'.format(wifi_ssid,wifi_password))#nosec #pylint-disable type: ignore
-#pylint-enable
+
+# print(len(sys.argv))
+if sys.argv[6] != 'y':
+    if len(sys.argv) != 8:
+        print("Execution style python3 config_generator.py  sst tts hotword auth wake")
+elif sys.argv[6] == 'n':
+    if len(sys.argv) != 8:
+        print("Execution style python3 config_generator.py  sst tts hotword auth email password wake")
 
 print("Setup Speech to Text Service\n")
 request_stt_choice()
@@ -205,10 +213,10 @@ request_tts_choice()
 print("Setup Hotword Detection Engine\n")
 request_hotword_choice()
 
-print("Setup Authentication to SUSI.AI\n")
-request_authentication()
-
 print("Setup Wake Button\n")
 setup_wake_button()
+
+print("Setup Authentication to SUSI.AI\n")
+request_authentication()
 
 print("Run SUSI by 'python3 -m main'")
