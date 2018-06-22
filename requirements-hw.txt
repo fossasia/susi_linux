@@ -8,3 +8,4 @@ google_speech
 async_promises
 rx
 pyudev
+python-Levenshtein
