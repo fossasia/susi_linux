@@ -22,6 +22,13 @@ if [[ $# -lt 2 ]];
 	exit
 fi
 
+if [[ $# -gt 2 ]]; 
+	then echo "You supplied an extra third command. Only two parameters needed!"
+	echo "Usage:"
+	echo "sudo $0 SSID PASSWORD"
+	exit
+fi
+
 cat >> /etc/wpa_supplicant/wpa_supplicant.conf <<EOF
 network={
     ssid="$SSID"
