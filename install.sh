@@ -123,8 +123,8 @@ pwd
 
 if  [ ! -d "susi_server" ]
 then
-    mkdir susi_server
-    cd susi_server
+    mkdir $DIR_PATH/susi_server
+    cd $DIR_PATH/susi_server
     git clone https://github.com/fossasia/susi_server.git
     git clone https://github.com/fossasia/susi_skill_data.git
 fi
