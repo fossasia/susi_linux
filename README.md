@@ -73,7 +73,7 @@ Step 3:Setting Up the client
     `python3 config_generator.py`
 * Follow the On Screen Instructions and agree to use SUSI in authenticated mode.<br>
 
-### Installing on Ubuntu and other Debian based distributions
+### Installing on Ubuntu and other Debian based distributions 
 
 For installation on Ubuntu and other Debian based distributions, read [Ubuntu Setup Guide](docs/ubuntu_install.md)
 

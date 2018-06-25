@@ -7,5 +7,5 @@ AUTH="$5"
 EMAIL="$6"
 PASS="$7"
 
-cd /home/pi/SUSI.AI/susi_linux
+cd $HOME/SUSI.AI/susi_linux
 sudo python3 config_generator.py $STT $TTS $HOTWORD $WAKE $AUTH $EMAIL $PASS
