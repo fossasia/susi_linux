@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+SCRIPT_PATH=$(realpath $0)
+DIR_PATH=$(dirname $SCRIPT_PATH)
 
 install_debian_dependencies()
 {
@@ -121,8 +123,8 @@ pwd
 
 if  [ ! -d "susi_server" ]
 then
-    mkdir susi_server
-    cd susi_server
+    mkdir $DIR_PATH/susi_server
+    cd $DIR_PATH/susi_server
     git clone https://github.com/fossasia/susi_server.git
     git clone https://github.com/fossasia/susi_skill_data.git
 fi
@@ -130,7 +132,7 @@ fi
 if [ -d "susi_server" ]
 then 
     echo "Deploying local server"
-    cd $HOME/SUSI.AI/susi_linux/susi_server/susi_server
+    cd $DIR_PATH/susi_server/susi_server
     git submodule update --recursive --remote
     git submodule update --init --recursive
     {
@@ -142,7 +144,7 @@ then
     bin/start.sh
 fi
 
-cd $HOME/SUSI.AI/susi_linux
+cd $DIR_PATH
 ./media_daemon/media_daemon.sh
 
 echo "Downloading dependency: Susi Python API Wrapper"
