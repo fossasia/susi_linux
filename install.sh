@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
-SCRIPT_PATH=`realpath $0`
-DIR_PATH=`dirname $SCRIPT_PATH`
+SCRIPT_PATH=$(realpath $0)
+DIR_PATH=$(dirname $SCRIPT_PATH)
 
 install_debian_dependencies()
 {
