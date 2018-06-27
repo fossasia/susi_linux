@@ -4,7 +4,6 @@ The SUSI State Machine works on the concept of Finite State Machine.
 import json_config
 import logging
 import requests
-import RPi.GPIO as GPIO
 from speech_recognition import Recognizer, Microphone
 
 import susi_python as susi
@@ -20,10 +19,16 @@ class Components:
     """
 
     def __init__(self, renderer=None):
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(17, GPIO.OUT)
-        GPIO.setup(27, GPIO.OUT)
-        GPIO.setup(22, GPIO.OUT)
+        try:
+            import RPi.GPIO as GPIO
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(17, GPIO.OUT)
+            GPIO.setup(27, GPIO.OUT)
+            GPIO.setup(22, GPIO.OUT)
+        except ImportError:
+            print("Only available for devices with GPIO ports ")
+        except RuntimeError:
+            pass
 
         recognizer = Recognizer()
         recognizer.dynamic_energy_threshold = False
