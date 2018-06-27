@@ -9,10 +9,8 @@ def make_skill(): # pylint-enable
     print(name_of_usb[0])
     x = name_of_usb[0]
     os.chdir('{}'.format(x[1]))
-    mp3 = list()
     USB = name_of_usb[0]
-    for file in glob("*.mp3"):
-        mp3.append(file)
+    mp3 = [file for file in glob("*.mp3")]
     os.chdir('/home/pi/SUSI.AI/susi_linux/media_daemon/')
     f = open('custom_skill.txt','w')
     skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://{}/{}"}'.format(USB[1],mp3[0]),']}','eol']
