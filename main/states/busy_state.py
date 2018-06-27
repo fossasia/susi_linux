@@ -4,6 +4,7 @@ from ..speech import TTS
 from .base_state import State
 import os
 import pafy
+import subprocess   # nosec #pylint-disable type: ignore
 
 
 class BusyState(State):
@@ -48,6 +49,9 @@ class BusyState(State):
                     audio_url = reply['identifier']  # bandit -s B605
                     os.system('play ' + audio_url[6:])  # nosec #pylint-disable type: ignore
 
+            if 'volume' in reply.keys():
+                subprocess.call(["amixer", "-D", "pulse", "sset", "Master", str(reply['volume'])])  # nosec #pylint-disable type: ignore
+
             if 'table' in reply.keys():
                 table = reply['table']
                 for h in table.head:
@@ -67,7 +71,6 @@ class BusyState(State):
                 for entity in entities[0:count]:
                     print(entity.title)
                     self.__speak(entity.title)
-
             self.transition(self.allowedStateTransitions.get('idle'))
 
         except ConnectionError:
