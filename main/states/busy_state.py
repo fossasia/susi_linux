@@ -2,7 +2,6 @@
 """
 from ..speech import TTS
 from .base_state import State
-import RPi.GPIO as GPIO
 import os
 import pafy
 
@@ -19,6 +18,7 @@ class BusyState(State):
         :return: None
         """
         try:
+            import RPi.GPIO as GPIO
             GPIO.output(17, True)
             reply = self.components.susi.ask(payload)
             GPIO.output(17, False)
@@ -80,10 +80,16 @@ class BusyState(State):
     def on_exit(self):
         """Method executed on exit from the Busy State.
         """
-        GPIO.output(17, False)
-        GPIO.output(27, False)
-        GPIO.output(22, False)
-        pass
+        try:
+            import RPi.GPIO as GPIO
+            GPIO.output(17, False)
+            GPIO.output(27, False)
+            GPIO.output(22, False)
+            pass
+        except RuntimeError:
+            pass
+        except ImportError:
+            print("Only available for devices with RPI.GPIo ports")
 
     def __speak(self, text):
         if self.components.config['default_tts'] == 'google':
