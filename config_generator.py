@@ -44,6 +44,9 @@ def setup_wake_button():
     except ImportError:
         print("\nThis device does not support RPi.GPIO")
         config['WakeButton'] = 'not available'
+    except RuntimeError:
+        print("\nThis device does not support RPi.GPIO")
+        config['WakeButton'] = 'not available'
 
 
 def set_extras():
