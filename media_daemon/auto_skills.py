@@ -16,9 +16,9 @@ def make_skill(): # pylint-enable
     music_path = list()
     for mp in mp3:
         music_path.append("{}".format(USB[1]) + "/{}".format(mp))
-    
+
     song_list = " ".join(music_path)
-    skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://{}"}'.format(song_list),']}','eol']
+    skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://"'+str(song_list) +'}',']}','eol']
     for skill in skills:
         f.write(skill + '\n')
     f.close()
