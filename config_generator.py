@@ -35,10 +35,7 @@ def setup_wake_button():
         import RPi.GPIO
         print("\nDevice supports RPi.GPIO")
         # choice = input("Do you wish to enable hardware wake button? (y/n) ")
-        if sys.argv[6] != 'y':
-            choice = sys.argv[7]
-        else:
-            choice = sys.argv[9]
+        choice = sys.argv[4]
         if choice == 'y':
             config['WakeButton'] = 'enabled'
             config['Device'] = 'RaspberryPi'
@@ -58,40 +55,6 @@ def set_extras():
     """
     config['flite_speech_file_path'] = 'extras/cmu_us_slt.flitevox'
     config['detection_bell_sound'] = 'extras/detection-bell.wav'
-
-
-def request_authentication():
-    """Method for setting authentication parameters in the configuration
-    :return: None
-    """
-    try:
-        # choice = input('Do you wish to use SUSI in Authenticated Mode? (y/n)\n')
-        choice = sys.argv[5]
-        print(choice)
-        if choice == 'y':
-            # email = input('Enter SUSI Sign-in Email Address: ')
-            email = sys.argv[6]
-            print(email)
-            # password = input('Enter SUSI Sign-in Password: ')
-            password = sys.argv[7]
-            if is_valid(email, password):
-                print('Login Details are valid. Saving details.')
-                config['usage_mode'] = 'authenticated'
-                config['login_credentials']['email'] = email
-                config['login_credentials']['password'] = password
-            else:
-                print('Login Details are invalid. Falling back to Anonymous Mode. Run the configuration script again '
-                      'if you wish to change your choice.')
-                config['usage_mode'] = 'anonymous'
-        elif choice == 'n':
-            print('Setting anonymous mode as default')
-            config['usage_mode'] = 'anonymous'
-        else:
-            raise ValueError
-    except ValueError:
-        print('Invalid choice. Anonymous mode set as default. Run the configuration script again if you wish '
-              'to change your choice.')
-        config['usage_mode'] = 'anonymous'
 
 
 def request_hotword_choice():
@@ -201,11 +164,8 @@ set_extras()
 
 # print(len(sys.argv))
 if sys.argv[6] != 'y':
-    if len(sys.argv) != 8:
+    if len(sys.argv) != 5:
         print("Execution style python3 config_generator.py  sst tts hotword auth wake")
-elif sys.argv[6] == 'n':
-    if len(sys.argv) != 8:
-        print("Execution style python3 config_generator.py  sst tts hotword auth email password wake")
 
 print("Setup Speech to Text Service\n")
 request_stt_choice()
@@ -218,8 +178,5 @@ request_hotword_choice()
 
 print("Setup Wake Button\n")
 setup_wake_button()
-
-print("Setup Authentication to SUSI.AI\n")
-request_authentication()
 
 print("Run SUSI by 'python3 -m main'")

@@ -58,6 +58,8 @@ class RecognizingState(State):
                 self.notify_renderer('recognized', value)
                 self.transition(self.allowedStateTransitions.get(
                     'busy'), payload=value)
+                self.no_trans(self.allowedStateTransitions.get(
+                    'recognizing'))
             except sr.UnknownValueError:
                 print("Oops! Didn't catch that")
                 self.transition(self.allowedStateTransitions.get(
