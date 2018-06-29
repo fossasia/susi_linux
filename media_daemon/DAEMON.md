@@ -11,3 +11,8 @@ We are using:
 * `udev` lib to monitor the status of the USB connection
 * `shutil` module to move files from one directory to another
 * `glob` module to traverse through the files in a specific directory
+
+
+## Workflow
+
+<img src="https://raw.github.com/fossasia/susi_linux/docs/images/media_daemon.svg">
