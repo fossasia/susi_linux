@@ -7,8 +7,7 @@ install_debian_dependencies()
 {
     sudo -E apt install swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
     libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev \
-    python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev python3-cairo 
-    python3-flask
+    python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev python3-cairo python3-flask
 }
 
 # Implementation from https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
@@ -121,31 +120,30 @@ function install_snowboy()
 
 pwd
 
-if  [ ! -d "susi_server" ]
-then
-    mkdir $DIR_PATH/susi_server
-    cd $DIR_PATH/susi_server
-    git clone https://github.com/fossasia/susi_server.git
-    git clone https://github.com/fossasia/susi_skill_data.git
-fi
+function susi_server(){
+    if  [ ! -d "susi_server" ]
+    then
+        mkdir $DIR_PATH/susi_server
+        cd $DIR_PATH/susi_server
+        git clone https://github.com/fossasia/susi_server.git
+        git clone https://github.com/fossasia/susi_skill_data.git
+    fi
 
-if [ -d "susi_server" ]
-then 
-    echo "Deploying local server"
-    cd $DIR_PATH/susi_server/susi_server
-    git submodule update --recursive --remote
-    git submodule update --init --recursive
-    {
-        ./gradlew build 
-    } || {
-        echo PASS
-    }
+    if [ -d "susi_server" ]
+    then 
+        echo "Deploying local server"
+        cd $DIR_PATH/susi_server/susi_server
+        git submodule update --recursive --remote
+        git submodule update --init --recursive
+        {
+            ./gradlew build 
+        } || {
+            echo PASS
+        }
 
-    bin/start.sh
-fi
-
-cd $DIR_PATH
-./media_daemon/media_daemon.sh
+        bin/start.sh
+    fi
+}
 
 echo "Downloading dependency: Susi Python API Wrapper"
 if [ ! -d "susi_python" ]
@@ -191,8 +189,11 @@ echo
 
 install_snowboy
 
-python3 media_daemon/media.py
+cd $DIR_PATH
+sudo ./media_daemon/media_daemon.sh
 
+echo "Cloning and building SUSI server"
+susi_server()
 
 echo "Setup Complete"
 
