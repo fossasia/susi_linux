@@ -43,6 +43,8 @@ class RecognizingState(State):
         self.notify_renderer('listening')
         recognizer = self.components.recognizer
         try:
+            self.transition(self.allowedStateTransitions.get(
+                'idle'),payload=None)
             import RPi.GPIO as GPIO
             print("Say something!")
             GPIO.output(22, True)
@@ -58,8 +60,8 @@ class RecognizingState(State):
                 self.notify_renderer('recognized', value)
                 self.transition(self.allowedStateTransitions.get(
                     'busy'), payload=value)
-                self.no_trans(self.allowedStateTransitions.get(
-                    'recognizing'))
+                # self.no_trans(self.allowedStateTransitions.get(
+                    # 'recognizing'))
             except sr.UnknownValueError:
                 print("Oops! Didn't catch that")
                 self.transition(self.allowedStateTransitions.get(
