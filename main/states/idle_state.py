@@ -37,7 +37,7 @@ class IdleState(State):
             os.system('play {0} &'.format(
                 self.components.config['detection_bell_sound']))
             self.transition(state=self.allowedStateTransitions.get(
-                # 'recognizing'), payload=None) & self.transition(state=self.allowedStateTransitions.get('idle'),payload=None)
+                 'recognizing'), payload=None)
 
     def on_exit(self):
         """Method to be executed on exit from Idle State. Detection of Hotword and Wake Button is paused.
