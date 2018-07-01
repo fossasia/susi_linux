@@ -14,8 +14,13 @@ sed -i '57,60d' dhcpcd.conf
 cd /etc/network/
 sed -i '9,17d' interfaces
 
-#Empty port 5000
-#Remove the server file from auto-boot
+#To remove the flask server file from auto-boot
+
+cd /etc/
+sed '$d' rc.local | sed '$d' rc.local | sed '$d' rc.local | sed '$d' rc.local
+echo "" >> rc.local
+echo "exit 0" >> rc.local
+echo "" >> rc.local
 
 echo "Please reboot"
 
