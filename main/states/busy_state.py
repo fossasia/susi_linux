@@ -19,6 +19,7 @@ class BusyState(State):
         :return: None
         """
         try:
+            # self.transition(self.allowedStateTransitions.get('recognizing'))
             import RPi.GPIO as GPIO
             GPIO.output(17, True)
             reply = self.components.susi.ask(payload)
