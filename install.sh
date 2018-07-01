@@ -193,7 +193,7 @@ cd $DIR_PATH
 sudo ./media_daemon/media_daemon.sh
 
 echo "Cloning and building SUSI server"
-susi_server()
+susi_server
 
 echo "Setup Complete"
 

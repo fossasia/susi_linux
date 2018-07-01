@@ -50,7 +50,8 @@ class BusyState(State):
                     os.system('play ' + audio_url[6:])  # nosec #pylint-disable type: ignore
 
             if 'volume' in reply.keys():
-                subprocess.call(["amixer", "-D", "pulse", "sset", "Master", str(reply['volume'])])  # nosec #pylint-disable type: ignore
+                os.system('amixer scontrols')   # nosec #pylint-disable type: ignore
+                os.system("amixer sset 'Master' " + str(reply['volume']))  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
                 table = reply['table']
