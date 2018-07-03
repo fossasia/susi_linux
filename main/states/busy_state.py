@@ -5,6 +5,7 @@ from .base_state import State
 import os
 import pafy
 import subprocess   # nosec #pylint-disable type: ignore
+from multiprocessing import Process
 
 
 class BusyState(State):
@@ -26,7 +27,10 @@ class BusyState(State):
             GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
-
+                self.components.hotword_detector.start()
+                if self.components.hotword_detector is not None:
+                    self.components.hotword_detector.subject.subscribe(
+                        on_next=lambda x: print("Transit"))
             if 'answer' in reply.keys():
                 print('Susi:' + reply['answer'])
                 self.__speak(reply['answer'])
