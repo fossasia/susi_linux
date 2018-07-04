@@ -193,8 +193,8 @@ cd $DIR_PATH
 sudo ./media_daemon/media_daemon.sh
 
 echo "Cloning and building SUSI server"
-susi_server()
+susi_server
 
 echo "Setup Complete"
 
-echo "Run configuration script by 'python3 config_generator.py'"
+echo "Run configuration script by 'python3 config_generator.py stt tts hotword wake'"
