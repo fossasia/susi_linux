@@ -57,6 +57,9 @@ class BusyState(State):
                         self.__speak(value)
                     print()
 
+            if 'stop' in reply.keys():
+                self.transition(self.allowedStateTransitions.get('idle'))
+
             if 'rss' in reply.keys():
                 rss = reply['rss']
                 entities = rss['entities']
