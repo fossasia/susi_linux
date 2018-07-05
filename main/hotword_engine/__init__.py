@@ -7,5 +7,22 @@ Presently, it support
 While Snowboy gives marginally better results, if it is unavailable on your device,
 you may use PocketSphinx
 """
-from .snowboy_detector import SnowboyDetector
-from .sphinx_detector import PocketSphinxDetector
+
+def import_hotword():
+    try:
+        from snowboy_detector import SnowboyDetector
+
+    except ImportError:
+           print('Snowboy Detector is not present.')
+           print('Use Pocket Sphinx Detector instead.')
+
+    try: 
+        from sphinx_detector import PocketSphinxDetector
+
+    except ImportError:
+       print('PocketSphinx is not properly installed.')
+       print('We recommend using Snowboy')
+   
+  
+  
+import_hotword()
