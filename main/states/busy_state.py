@@ -3,7 +3,6 @@
 from ..speech import TTS
 from .base_state import State
 import os
-import pafy
 import subprocess   # nosec #pylint-disable type: ignore
 from multiprocessing import Process
 
@@ -40,15 +39,9 @@ class BusyState(State):
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
                 if classifier[:3] == 'ytd':
-                    audio_url = reply['identifier']    # bandit -s B605
-                    video = pafy.new(audio_url[4:])
-                    vid_len = video.length
-                    buffer_len = ''
-                    if 0.07 * vid_len >= 10:
-                        buffer_len = 10
-                    else:
-                        buffer_len = 0.07 * vid_len
-                    os.system('timeout {} tizonia --youtube-audio-stream '.format(buffer_len) + audio_url[4:])  # nosec #pylint-disable type: ignore
+                    video_url = reply['identifier']
+                    subprocess.call(['mpv', '--no-video', 'https://www.youtube.com/watch?v=' + video_url[4:]])  # nosec #pylint-disable type: ignore
+
                 else:
                     audio_url = reply['identifier']  # bandit -s B605
                     os.system('play ' + audio_url[6:])  # nosec #pylint-disable type: ignore
