@@ -4,13 +4,18 @@ from ..speech import TTS
 from .base_state import State
 import os
 import subprocess   # nosec #pylint-disable type: ignore
+from multiprocessing import Process
 
-
+       
 class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
     """
-
+    def tmkc(self):
+        if self.components.hotword_detector.on_detected():
+            os.system('play ' + '/home/pi/SUSI.AI/susi_linux/wav/infobleep.wav')
+            print("TMKC")    
+    
     def on_enter(self, payload=None):
         """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
         result. We then call TTS to speak the reply. If successful, we transition to Idle State else to the Error State.
@@ -23,12 +28,16 @@ class BusyState(State):
             reply = self.components.susi.ask(payload)
             GPIO.output(17, False)
             GPIO.output(27, True)
+            p1=Process(target = self.tmkc())
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
-
             if 'answer' in reply.keys():
                 print('Susi:' + reply['answer'])
-                self.__speak(reply['answer'])
+                p2=Process(target=self.__speak,args=((reply['answer']),))
+                p2.start()
+                p1.start()
+                p1.join()
+                p2.join()
             else:
                 self.__speak("I don't have an answer to this")
 
