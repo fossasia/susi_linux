@@ -1,0 +1,4 @@
+# Ref: https://unix.stackexchange.com/questions/229987/udev-rule-to-match-any-usb-storage-device
+
+ACTION=="add", KERNEL=="sd?", SUBSYSTEM=="block", ENV{ID_BUS}=="usb", RUN="/home/pi/SUSI.AI/susi_linux/media_daemon/autostart.sh"
+ACTION=="remove", KERNEL=="sd?", SUBSYSTEM=="block", ENV{ID_BUS}=="usb", RUN="/home/pi/SUSI.AI/susi_linux/media_daemon/autostop.sh"

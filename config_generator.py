@@ -163,9 +163,6 @@ def request_tts_choice():
 set_extras()
 
 # print(len(sys.argv))
-if sys.argv[6] != 'y':
-    if len(sys.argv) != 5:
-        print("Execution style python3 config_generator.py  sst tts hotword auth wake")
 
 print("Setup Speech to Text Service\n")
 request_stt_choice()

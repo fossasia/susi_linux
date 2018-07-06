@@ -7,7 +7,8 @@ install_debian_dependencies()
 {
     sudo -E apt install swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
     libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev \
-    python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev python3-cairo python3-flask
+    python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev \
+    python3-cairo python3-flask mpv
 }
 
 # Implementation from https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
@@ -163,8 +164,6 @@ echo "Downloading Python Dependencies"
 sudo -E pip3 install -r requirements.txt
 sudo -E pip3 install -r requirements-hw.txt
 
-echo "Downloading Tizonia"
-curl -kL https://github.com/tizonia/tizonia-openmax-il/raw/master/tools/install.sh | bash
 
 if ! [ -x "$(command -v flite)" ]
 then
@@ -193,8 +192,8 @@ cd $DIR_PATH
 sudo ./media_daemon/media_daemon.sh
 
 echo "Cloning and building SUSI server"
-susi_server()
+susi_server
 
 echo "Setup Complete"
 
-echo "Run configuration script by 'python3 config_generator.py'"
+echo "Run configuration script by 'python3 config_generator.py stt tts hotword wake'"

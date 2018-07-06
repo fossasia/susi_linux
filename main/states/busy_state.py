@@ -3,16 +3,19 @@
 from ..speech import TTS
 from .base_state import State
 import os
-import pafy
 import subprocess   # nosec #pylint-disable type: ignore
 from multiprocessing import Process
 
-
+       
 class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
     """
-
+    def tmkc(self):
+        if self.components.hotword_detector.on_detected():
+            os.system('play ' + '/home/pi/SUSI.AI/susi_linux/wav/infobleep.wav')
+            print("TMKC")    
+    
     def on_enter(self, payload=None):
         """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
         result. We then call TTS to speak the reply. If successful, we transition to Idle State else to the Error State.
@@ -25,30 +28,25 @@ class BusyState(State):
             reply = self.components.susi.ask(payload)
             GPIO.output(17, False)
             GPIO.output(27, True)
+            p1=Process(target = self.tmkc())
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
-                self.components.hotword_detector.start()
-                if self.components.hotword_detector is not None:
-                    self.components.hotword_detector.subject.subscribe(
-                        on_next=lambda x: print("Transit"))
             if 'answer' in reply.keys():
                 print('Susi:' + reply['answer'])
-                self.__speak(reply['answer'])
+                p2=Process(target=self.__speak,args=((reply['answer']),))
+                p2.start()
+                p1.start()
+                p1.join()
+                p2.join()
             else:
                 self.__speak("I don't have an answer to this")
 
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
                 if classifier[:3] == 'ytd':
-                    audio_url = reply['identifier']    # bandit -s B605
-                    video = pafy.new(audio_url[4:])
-                    vid_len = video.length
-                    buffer_len = ''
-                    if 0.07 * vid_len >= 10:
-                        buffer_len = 10
-                    else:
-                        buffer_len = 0.07 * vid_len
-                    os.system('timeout {} tizonia --youtube-audio-stream '.format(buffer_len) + audio_url[4:])  # nosec #pylint-disable type: ignore
+                    video_url = reply['identifier']
+                    subprocess.call(['mpv', '--no-video', 'https://www.youtube.com/watch?v=' + video_url[4:]])  # nosec #pylint-disable type: ignore
+
                 else:
                     audio_url = reply['identifier']  # bandit -s B605
                     os.system('play ' + audio_url[6:])  # nosec #pylint-disable type: ignore
