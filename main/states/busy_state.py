@@ -4,6 +4,7 @@ from ..speech import TTS
 from .base_state import State
 import os
 import subprocess   # nosec #pylint-disable type: ignore
+import alsaaudio
 
 
 class BusyState(State):
@@ -37,13 +38,14 @@ class BusyState(State):
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
                     subprocess.call(['mpv', '--no-video', 'https://www.youtube.com/watch?v=' + video_url[4:]])  # nosec #pylint-disable type: ignore
-
                 else:
-                    audio_url = reply['identifier']  # bandit -s B605
+                    audio_url = reply['identifier']
                     os.system('play ' + audio_url[6:])  # nosec #pylint-disable type: ignore
 
             if 'volume' in reply.keys():
-                subprocess.call(["amixer", "-D", "pulse", "sset", "Master", str(reply['volume'])])  # nosec #pylint-disable type: ignore
+                m = alsaaudio.Mixer()
+                m.setvolume(int(reply['volume']))
+                os.system('play {0} &'.format(self.components.config['detection_bell_sound']))  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
                 table = reply['table']
