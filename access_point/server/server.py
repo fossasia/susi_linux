@@ -13,19 +13,19 @@ def install():
 
 @app.route('/config/<stt>/<tts>/<hotword>/<wake>')
 def config(stt, tts, hotword, wake):
-    os.system('sudo ./config.sh {} {} {} {}'.format(stt,tts,hotword,wake))  #nosec #pylint-disable type: ignore
+    os.system('sudo bash /home/pi/SUSI.AI/susi_linux/access_point/server/config.sh {} {} {} {}'.format(stt,tts,hotword,wake))  #nosec #pylint-disable type: ignore
     return 'Done' # pylint-enable
 
 @app.route('/auth/<auth>/<email>/<passwd>')
 def login(auth, email, passwd):
-    os.system('sudo ./login.sh {} {} {}'.format(auth, email,passwd)) #nosec #pylint-disable type: ignore
+    os.system('sudo bash /home/pi/SUSI.AI/susi_linux/access_point/server/login.sh {} {} {}'.format(auth, email,passwd)) #nosec #pylint-disable type: ignore
     return 'Authenticated' # pylint-enable
 
 @app.route('/wifi_credentials/<wifissid>/<wifipassd>')
 def wifi_config(wifissid,wifipassd):
     wifi_ssid = wifissid
     wifi_password = wifipassd
-    os.system('sudo ./home/pi/SUSI.AI/susi_linux/access_point/wifi_search.sh {} {}'.format(wifi_ssid,wifi_password))  #nosec #pylint-disable type: ignore
+    os.system('sudo bash /home/pi/SUSI.AI/susi_linux/access_point/wifi_search.sh {} {}'.format(wifi_ssid,wifi_password))  #nosec #pylint-disable type: ignore
     return 'Wifi Configured' # pylint-enable
 
 if __name__ == '__main__':
