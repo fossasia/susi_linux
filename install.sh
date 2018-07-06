@@ -101,9 +101,7 @@ function install_snowboy()
     if install_dependencies
     then
         root_dir=$(pwd)
-        git clone https://github.com/Kitt-AI/snowboy.git
-        cd snowboy/swig/Python3
-        make -j4
+        sudo pip3 install git+https://github.com/Kitt-AI/snowboy.git
         if [ -f _snowboydetect.so ]; then
             echo "Snowboy Detect successfully installed"            
         else
