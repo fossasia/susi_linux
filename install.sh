@@ -90,7 +90,7 @@ function install_dependencies()
                 echo "SWIG version is up to date"
             fi
         fi
-        sudo -E apt install libatlas-dev libatlas-base-dev
+        sudo -E apt install libatlas-base-dev
     else
         return 1;
     fi
