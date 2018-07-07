@@ -102,11 +102,11 @@ function install_snowboy()
     then
         root_dir=$(pwd)
         sudo pip3 install git+https://github.com/Kitt-AI/snowboy.git
-        if [ -f _snowboydetect.so ]; then
-            echo "Snowboy Detect successfully installed"            
-        else
+        if [ $? -ne 0 ]; then
             echo "FAILED: Unable to make Snowboy Detect file. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
             echo "You may also use PocketSphinx Detector if you are unable to install snowboy on your machine"
+        else
+            echo "Snowboy Detect successfully installed" 
         fi
         cd "$root_dir"
         rm -rf snowboy
