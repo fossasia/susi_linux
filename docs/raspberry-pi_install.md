@@ -24,8 +24,11 @@ You just need to change locale. Timezone and other changes illustrated in articl
 
 ## Steps
 #### **Clone repository and install dependencies**
-- Clone the repository for SUSI Linux and move into the folder
+- In your root directory, make a folder named `SUSI.AI` and move into the folder.
+- Clone the repository for SUSI Linux and move into the folder.
 ```
+$ mkdir SUSI.AI
+$ cd SUSI.AI
 $ git clone https://github.com/fossasia/susi_linux.git
 $ cd susi_linux
 ```
