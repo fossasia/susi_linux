@@ -14,13 +14,16 @@ $ sudo apt update && sudo apt upgrade
 
 ### IMPORTANT
 
-For installation of PocketSphinx on Python 3.4 (latest available on Raspbian Repositories), you need to change
+- For installation of PocketSphinx on Python 3.4 (latest available on Raspbian Repositories), you need to change
 system locale to ```en_US.UTF-8```. You may changes locale later after installation if you wish to.
 Refer to this article for step by step instructions on changing locale to ```en_US.UTF-8```
 
-http://rohankapoor.com/2012/04/americanizing-the-raspberry-pi/
+    - http://rohankapoor.com/2012/04/americanizing-the-raspberry-pi/
 
-You just need to change locale. Timezone and other changes illustrated in article are not needed.
+    - You just need to change locale. Timezone and other changes illustrated in article are not needed.
+- For installation on devices running on Armv6 processors, Please use Java 8 (Either Oracle or OpenJDK). 
+    - For most debian based OS, including Raspbian, you may install OpenJDK's Java 8 JRE and JDK by running 
+    - `sudo apt install openjdk-8-jre* openjdk-8-jdk*`
 
 ## Steps
 #### **Clone repository and install dependencies**
