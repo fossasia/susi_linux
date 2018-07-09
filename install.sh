@@ -47,17 +47,7 @@ vercomp()
     echo 0;
 }
 
-function install_swig_from_sources()
-{
-    wget https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz
-    tar xf swig-3.0.12.tar.gz
-    cd swig-3.0.12
-    ./configure
-    make
-    sudo make install
-    rm -rf swig-3.0.12*
-    cd ..
-}
+
 
 function install_flite_from_source()
 {
@@ -77,18 +67,8 @@ function install_dependencies()
     then
         if ! [ -x "$(command -v swig)" ]
         then
-            install_swig_from_sources
-        else
-            installed_version=$(swig -version | perl -nae 'print "$F[2]\n" if /SWIG Version/i;')
-            minimum_version="3.0.10"
-            result=$(vercomp ${installed_version} ${minimum_version})
-            if [ ${result} -eq 2 ]
-            then
-                echo "Installing SWIG 3.0.12 from sources"
-                install_swig_from_sources
-            else
-                echo "SWIG version is up to date"
-            fi
+            echo "swig not installed"
+            echo "install the latest version of swig"
         fi
         sudo -E apt install libatlas-base-dev
     else
