@@ -2,8 +2,8 @@
 """
 from ..speech import TTS
 from .base_state import State
-import pafy
 import subprocess   # nosec #pylint-disable type: ignore
+import alsaaudio
 
 
 class BusyState(State):
@@ -47,9 +47,13 @@ class BusyState(State):
                 else:
                     audio_url = reply['identifier']  # bandit -s B605
                     subprocess.call('play ' + audio_url[6:], shell = True)  # nosec #pylint-disable type: ignore
-
+                    video_url = reply['identifier']
+                    subprocess.call(['mpv', '--no-video', 'https://www.youtube.com/watch?v=' + video_url[4:]])  # nosec #pylint-disable type: ignore
+                
             if 'volume' in reply.keys():
-                subprocess.call(["amixer", "-D", "pulse", "sset", "Master", str(reply['volume'])])  # nosec #pylint-disable type: ignore
+                m = alsaaudio.Mixer()
+                m.setvolume(int(reply['volume']))
+                os.system('play {0} &'.format(self.components.config['detection_bell_sound']))  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
                 table = reply['table']
@@ -62,6 +66,9 @@ class BusyState(State):
                         print('%s\t' % value, end='')
                         self.__speak(value)
                     print()
+
+            if 'stop' in reply.keys():
+                self.transition(self.allowedStateTransitions.get('idle'))
 
             if 'rss' in reply.keys():
                 rss = reply['rss']
