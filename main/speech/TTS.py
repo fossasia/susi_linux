@@ -2,7 +2,7 @@
 You may use any of the speech synthesis services by calling the
 respective method.
 """
-import os
+import subprocess
 
 import json_config
 from google_speech import Speech
@@ -29,9 +29,9 @@ def speak_flite_tts(text):
     # Call flite tts to reply the response by Susi
     flite_speech_file = config['flite_speech_file_path']
     print('flite -voice file://{0} -f {1}'.format(flite_speech_file, filename))
-    os.system(
-        'flite -v -voice file://{0} -f {1} -o extras/output.wav'.format(flite_speech_file, filename))
-    os.system('play extras/output.wav')
+    subprocess.call(
+        'flite -v -voice file://{0} -f {1} -o extras/output.wav'.format(flite_speech_file, filename), shell = True)
+    subprocess.call('play extras/output.wav', shell = True)
 
 
 def speak_watson_tts(text):
@@ -45,7 +45,7 @@ def speak_watson_tts(text):
             text_to_speech.synthesize(text, accept='audio/wav',
                                       voice=config['watson_tts_config']['voice']))
 
-    os.system('play extras/output.wav')
+    subprocess.call('play extras/output.wav', shell = True)
 
 
 def speak_google_tts(text):

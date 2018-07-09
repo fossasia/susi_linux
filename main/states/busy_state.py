@@ -2,7 +2,6 @@
 """
 from ..speech import TTS
 from .base_state import State
-import os
 import pafy
 import subprocess   # nosec #pylint-disable type: ignore
 
@@ -44,10 +43,10 @@ class BusyState(State):
                         buffer_len = 10
                     else:
                         buffer_len = 0.07 * vid_len
-                    os.system('timeout {} tizonia --youtube-audio-stream '.format(buffer_len) + audio_url[4:])  # nosec #pylint-disable type: ignore
+                    subprocess.call('timeout {} tizonia --youtube-audio-stream '.format(buffer_len) + audio_url[4:], shell = True)  # nosec #pylint-disable type: ignore
                 else:
                     audio_url = reply['identifier']  # bandit -s B605
-                    os.system('play ' + audio_url[6:])  # nosec #pylint-disable type: ignore
+                    subprocess.call('play ' + audio_url[6:], shell = True)  # nosec #pylint-disable type: ignore
 
             if 'volume' in reply.keys():
                 subprocess.call(["amixer", "-D", "pulse", "sset", "Master", str(reply['volume'])])  # nosec #pylint-disable type: ignore

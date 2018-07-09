@@ -1,6 +1,6 @@
 """Class to represent Idle State
 """
-import os
+import subprocess
 
 from .base_state import State
 
@@ -34,8 +34,8 @@ class IdleState(State):
 
     def __detected(self):
         if self.isActive:
-            os.system('play {0} &'.format(
-                self.components.config['detection_bell_sound']))
+            subprocess.call('play {0} &'.format(
+                self.components.config['detection_bell_sound']), shell = True)
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
 
