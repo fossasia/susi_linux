@@ -19,16 +19,16 @@ class ErrorState(State):
         """
         if payload == 'RecognitionError':
             self.notify_renderer('error', 'recognition')
-            subprocess.call('play extras/recognition-error.wav', shell=True)
+            subprocess.call('play extras/recognition-error.wav')
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
             config['default_tts'] = 'flite'
             config['default_stt'] = 'pocket_sphinx'
-            subprocess.call('play extras/connect-error.wav', shell=True)
+            subprocess.call('play extras/connect-error.wav')
             print("Changed to offline providers")
         else:
             self.notify_renderer('error')
-            subprocess.call('play extras/problem.wav',  shell=True)
+            subprocess.call('play extras/problem.wav')
 
         self.transition(self.allowedStateTransitions.get('idle'))
 
