@@ -9,7 +9,7 @@ Tested on:
 <details>
  <summary>
    
-   ### Additional steps required for Ubuntu 18.03
+   ### Additional steps required for Ubuntu 18.04
  </summary>
   
 - Java is not installed by default and there are some compatibility issues with the latest version of Java (Java 10 as of writing) installed by `default-jdk` therefore, you need to manually install an older version of Java (tested with OpenJDK Java 8).
