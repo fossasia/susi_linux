@@ -30,8 +30,8 @@ def speak_flite_tts(text):
     flite_speech_file = config['flite_speech_file_path']
     print('flite -voice file://{0} -f {1}'.format(flite_speech_file, filename))
     subprocess.call(
-        'flite -v -voice file://{0} -f {1} -o extras/output.wav'.format(flite_speech_file, filename), shell = True)
-    subprocess.call('play extras/output.wav', shell = True)
+        'flite -v -voice file://{0} -f {1} -o extras/output.wav'.format(flite_speech_file, filename))
+    subprocess.call('play extras/output.wav')
 
 
 def speak_watson_tts(text):
@@ -45,7 +45,7 @@ def speak_watson_tts(text):
             text_to_speech.synthesize(text, accept='audio/wav',
                                       voice=config['watson_tts_config']['voice']))
 
-    subprocess.call('play extras/output.wav', shell = True)
+    subprocess.call('play extras/output.wav')
 
 
 def speak_google_tts(text):
