@@ -35,7 +35,7 @@ class IdleState(State):
     def __detected(self):
         if self.isActive:
             subprocess.call('play {0} &'.format(
-                self.components.config['detection_bell_sound']), shell = True)
+                self.components.config['detection_bell_sound']))
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
 
