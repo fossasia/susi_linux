@@ -1,6 +1,6 @@
 """Class to represent Error State
 """
-import os
+import subprocess
 import json_config
 from .base_state import State
 
@@ -19,16 +19,16 @@ class ErrorState(State):
         """
         if payload == 'RecognitionError':
             self.notify_renderer('error', 'recognition')
-            os.system('play extras/recognition-error.wav')
+            subprocess.call('play extras/recognition-error.wav')
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
             config['default_tts'] = 'flite'
             config['default_stt'] = 'pocket_sphinx'
-            os.system('play extras/connect-error.wav')
+            subprocess.call('play extras/connect-error.wav')
             print("Changed to offline providers")
         else:
             self.notify_renderer('error')
-            os.system('play extras/problem.wav')
+            subprocess.call('play extras/problem.wav')
 
         self.transition(self.allowedStateTransitions.get('idle'))
 
