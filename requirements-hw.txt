@@ -9,3 +9,4 @@ async_promises
 rx
 pyudev
 python-Levenshtein
+pyalsaaudio

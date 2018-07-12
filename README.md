@@ -17,7 +17,7 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 - Hotword Detection works for hotword 'Susi'
 - SUSI Wake Button in Raspberry Pi is working.
 - Audio parsing working through SOX
-- Youtube audio working through tizonia(http://tizonia.org/)
+- Youtube audio working MPV player
 - Connection between the mobile devices and the smart speaker is done through ssh by using Access Point Mode
 
 **Roadmap**
@@ -96,3 +96,7 @@ Use the folllowing commands.
 To allow the raspberry Pi to behave as an access point
 * Execute the wap.sh script by `./wap.sh`
 * To convert RasPi back to normal mode use `./rwap.sh`
+
+## SUSI Smart Speaker - IOS/Android Workflow
+
+<img src="https://raw.github.com/fossasia/susi_linux/docs/images/workflow.svg">

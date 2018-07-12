@@ -2,9 +2,9 @@
 """
 from ..speech import TTS
 from .base_state import State
-import RPi.GPIO as GPIO
 import os
-import pafy
+import subprocess   # nosec #pylint-disable type: ignore
+import alsaaudio
 
 
 class BusyState(State):
@@ -19,6 +19,7 @@ class BusyState(State):
         :return: None
         """
         try:
+            import RPi.GPIO as GPIO
             GPIO.output(17, True)
             reply = self.components.susi.ask(payload)
             GPIO.output(17, False)
@@ -35,18 +36,16 @@ class BusyState(State):
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
                 if classifier[:3] == 'ytd':
-                    audio_url = reply['identifier']    # bandit -s B605
-                    video = pafy.new(audio_url[4:])
-                    vid_len = video.length
-                    buffer_len = ''
-                    if 0.07 * vid_len >= 10:
-                        buffer_len = 10
-                    else:
-                        buffer_len = 0.07 * vid_len
-                    os.system('timeout {} tizonia --youtube-audio-stream '.format(buffer_len) + audio_url[4:])  # nosec #pylint-disable type: ignore
+                    video_url = reply['identifier']
+                    subprocess.call(['mpv', '--no-video', 'https://www.youtube.com/watch?v=' + video_url[4:]])  # nosec #pylint-disable type: ignore
                 else:
-                    audio_url = reply['identifier']  # bandit -s B605
+                    audio_url = reply['identifier']
                     os.system('play ' + audio_url[6:])  # nosec #pylint-disable type: ignore
+
+            if 'volume' in reply.keys():
+                m = alsaaudio.Mixer()
+                m.setvolume(int(reply['volume']))
+                os.system('play {0} &'.format(self.components.config['detection_bell_sound']))  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
                 table = reply['table']
@@ -60,6 +59,9 @@ class BusyState(State):
                         self.__speak(value)
                     print()
 
+            if 'stop' in reply.keys():
+                self.transition(self.allowedStateTransitions.get('idle'))
+
             if 'rss' in reply.keys():
                 rss = reply['rss']
                 entities = rss['entities']
@@ -67,7 +69,6 @@ class BusyState(State):
                 for entity in entities[0:count]:
                     print(entity.title)
                     self.__speak(entity.title)
-
             self.transition(self.allowedStateTransitions.get('idle'))
 
         except ConnectionError:
@@ -80,10 +81,16 @@ class BusyState(State):
     def on_exit(self):
         """Method executed on exit from the Busy State.
         """
-        GPIO.output(17, False)
-        GPIO.output(27, False)
-        GPIO.output(22, False)
-        pass
+        try:
+            import RPi.GPIO as GPIO
+            GPIO.output(17, False)
+            GPIO.output(27, False)
+            GPIO.output(22, False)
+            pass
+        except RuntimeError:
+            pass
+        except ImportError:
+            print("Only available for devices with RPI.GPIo ports")
 
     def __speak(self, text):
         if self.components.config['default_tts'] == 'google':

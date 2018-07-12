@@ -161,6 +161,8 @@ class ConfigurationWindow:
                 self.wake_button_switch.set_active(False)
         except ImportError:
             self.wake_button_switch.set_sensitive(False)
+        except RuntimeError:
+            self.wake_button_switch.set_sensitive(False)
 
     class Handler:
         def __init__(self, config_window):
