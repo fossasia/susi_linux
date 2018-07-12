@@ -7,5 +7,5 @@ Presently, it support
 While Snowboy gives marginally better results, if it is unavailable on your device,
 you may use PocketSphinx
 """
-from .snowboy_detector import SnowboyDetector
+from snowboy.snowboydetect import SnowboyDetect
 from .sphinx_detector import PocketSphinxDetector
