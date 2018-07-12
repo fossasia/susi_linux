@@ -31,5 +31,5 @@ if POCKETSPHINX_AVAILABLE is True:
 else:
     print("PocketSphinx is not currently installed. You may use Snowboy instead.")
 
-if(SNOWBOY_AVAILABLE == True and POCKETSPHINX_AVAILABLE == True):
+if SNOWBOY_AVAILABLE is True and POCKETSPHINX_AVAILABLE is True:
     print("Both Snowboy and PocketSphinx successfully imported. We will recommend using Snowboy.")
