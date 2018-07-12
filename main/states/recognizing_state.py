@@ -3,7 +3,7 @@
 from .base_state import State
 import speech_recognition as sr
 from .internet_test import internet_on
-
+from .lights import lights
 
 class RecognizingState(State):
     """ Recognizing State inherits from Base State class. In this state, audio is recorded from the microphone and
@@ -51,6 +51,7 @@ class RecognizingState(State):
             self.notify_renderer('recognizing')
             GPIO.output(22, False)
             print("Got it! Now to recognize it...")
+            lights.think()
             try:
                 value = self.__recognize_audio(
                     audio=audio, recognizer=recognizer)

@@ -3,7 +3,7 @@
 import subprocess   # nosec #pylint-disable type: ignore
 
 from .base_state import State
-
+from .lights import lights
 
 class IdleState(State):
     """Idle State inherits from the base state. In this state, app is actively listening for Hotword Input or Push
@@ -24,12 +24,14 @@ class IdleState(State):
             self.components.renderer.subject.subscribe(
                 on_next=lambda x: self.__detected())
 
+
     def on_enter(self, payload=None):
         """Method to be executed on entry to Idle State. Detection is set to active.
         :param payload: Nothing is expected
         :return: None
         """
         self.isActive = True
+        lights.wakeup()
         self.notify_renderer('idle')
 
     def __detected(self):
@@ -44,3 +46,4 @@ class IdleState(State):
         :return: None
         """
         self.isActive = False
+        lights.off()
