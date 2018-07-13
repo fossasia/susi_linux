@@ -5,6 +5,7 @@ import json_config
 import requests
 from pathlib import Path
 import os
+from importlib import util
 import sys
 
 config = json_config.connect('config.json')
@@ -62,23 +63,24 @@ def request_hotword_choice():
     """
     try:
         print("Checking for Snowboy Availability...")
-        snowboyDetectFile = Path("main/hotword_engine/snowboy/_snowboydetect.so")
-        if snowboyDetectFile.exists():
-            print("Snowboy is available on this platform")
-            # choice = input("Do you wish to use Snowboy as default Hotword Detection Engine (Recommended). (y/n) ")
-            choice = sys.argv[3]
-            if choice == 'y':
-                config['hotword_engine'] = 'Snowboy'
-                print('\nSnowboy set as default Hotword Detection Engine\n')
-            else:
-                config['hotword_engine'] = 'PocketSphinx'
-                print('\nPocketSphinx set as default Hotword Detection Engine\n')
-        else:
-             raise Exception
+        snowboy_available = util.find_spec('snowboy')
+        found = snowboy_available is not None
 
-    except Exception:
+    except ImportError:
         print("Some Error Occurred.Snowboy not configured properly.\nUsing PocketSphinx as default engine for Hotword. Run this script again to change")
+        found = False
         config['hotword_engine'] = 'PocketSphinx'
+
+    if found is True:
+        print("Snowboy is available on this platform")
+        # choice = input("Do you wish to use Snowboy as default Hotword Detection Engine (Recommended). (y/n) ")
+        choice = sys.argv[3]
+        if choice == 'y':
+            config['hotword_engine'] = 'Snowboy'
+            print('\nSnowboy set as default Hotword Detection Engine\n')
+        else:
+            config['hotword_engine'] = 'PocketSphinx'
+            print('\nPocketSphinx set as default Hotword Detection Engine\n')
 
 
 def request_stt_choice():
