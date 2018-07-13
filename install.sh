@@ -185,7 +185,7 @@ echo
 install_snowboy
 
 cd $DIR_PATH
-sudo ./media_daemon/media_daemon.sh
+sudo ./media_daemon/media_udev_rule.sh
 
 echo "Cloning and building SUSI server"
 susi_server
