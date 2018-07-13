@@ -4,6 +4,7 @@ from ..speech import TTS
 from .base_state import State
 import subprocess   # nosec #pylint-disable type: ignore
 import alsaaudio
+from .lights import lights
 
 
 class BusyState(State):
@@ -28,9 +29,13 @@ class BusyState(State):
 
             if 'answer' in reply.keys():
                 print('Susi:' + reply['answer'])
+                lights.speak()
                 self.__speak(reply['answer'])
+                lights.off()
             else:
+                lights.speak()
                 self.__speak("I don't have an answer to this")
+                lights.off()
 
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
