@@ -5,7 +5,7 @@ import json_config
 import requests
 from pathlib import Path
 import os
-import imp
+from importlib import util
 import sys
 
 config = json_config.connect('config.json')
@@ -63,10 +63,10 @@ def request_hotword_choice():
     """
     try:
         print("Checking for Snowboy Availability...")
-        imp.find_module('snowboy')
-        found = True
+        snowboy_available = util.find_spec('snowboy')
+        found = snowboy_available is not None
 
-    except Exception:
+    except ImportError:
         print("Some Error Occurred.Snowboy not configured properly.\nUsing PocketSphinx as default engine for Hotword. Run this script again to change")
         found = False
         config['hotword_engine'] = 'PocketSphinx'
