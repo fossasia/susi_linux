@@ -106,7 +106,7 @@ function install_snowboy()
             echo "FAILED: Unable to make Snowboy Detect file. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
             echo "You may also use PocketSphinx Detector if you are unable to install snowboy on your machine"
         else
-            echo "Snowboy Detect successfully installed" 
+            echo "Snowboy Detect successfully installed"
         fi
         cd "$root_dir"
         rm -rf snowboy
@@ -127,13 +127,13 @@ function susi_server(){
     fi
 
     if [ -d "susi_server" ]
-    then 
+    then
         echo "Deploying local server"
         cd $DIR_PATH/susi_server/susi_server
         git submodule update --recursive --remote
         git submodule update --init --recursive
         {
-            ./gradlew build 
+            ./gradlew build
         } || {
             echo PASS
         }
