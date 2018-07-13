@@ -5,6 +5,7 @@ import speech_recognition as sr
 from .internet_test import internet_on
 from .lights import lights
 
+
 class RecognizingState(State):
     """ Recognizing State inherits from Base State class. In this state, audio is recorded from the microphone and
     recognized with the Speech Recognition Engine set as default in the configuration.

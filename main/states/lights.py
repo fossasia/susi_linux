@@ -118,7 +118,7 @@ class Lights:
 
     def write(self, colors):
         for i in range(self.LIGHTS_N):
-            self.dev.set_pixel(i, int(colors[3*i]), int(colors[3*i + 1]), int(colors[3*i + 2]))
+            self.dev.set_pixel(i, int(colors[3 * i]), int(colors[3 * i + 1]), int(colors[3 * i + 2]))
 
         self.dev.show()
 
