@@ -115,7 +115,7 @@ function install_snowboy()
     fi
 }
 
-#pwd
+
 
 function susi_server(){
     if  [ ! -d "susi_server" ]
