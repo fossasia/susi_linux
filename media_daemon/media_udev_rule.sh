@@ -1,7 +1,6 @@
 #! /bin/bash
 # To configure at bootup
 
-#clear
 
 SCRIPT_PATH=$(realpath $0)
 DIR_PATH=$(dirname $SCRIPT_PATH)
