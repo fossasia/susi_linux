@@ -5,7 +5,7 @@ DIR_PATH=$(dirname $SCRIPT_PATH)
 
 install_debian_dependencies()
 {
-    sudo -E apt install swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
+    sudo -E apt install -y swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
     libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev \
     python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev \
     python3-cairo python3-flask mpv
@@ -48,7 +48,6 @@ vercomp()
 }
 
 
-
 function install_flite_from_source()
 {
     wget http://www.festvox.org/flite/packed/flite-2.0/flite-2.0.0-release.tar.bz2
@@ -57,8 +56,8 @@ function install_flite_from_source()
     ./configure
     make
     sudo make install
-    rm -rf flite-2.0.0-release*
     cd ..
+    rm -rf flite-2.0.0-release*
 }
 
 function install_dependencies()
@@ -70,7 +69,7 @@ function install_dependencies()
             echo "swig not installed"
             echo "install the latest version of swig"
         fi
-        sudo -E apt install libatlas-base-dev
+        sudo -E apt install -y libatlas-base-dev
     else
         return 1;
     fi
@@ -95,7 +94,7 @@ function install_snowboy()
     fi
 }
 
-pwd
+
 
 function susi_server(){
     if  [ ! -d "susi_server" ]
@@ -172,4 +171,8 @@ susi_server
 
 echo "Setup Complete"
 
-echo "Run configuration script by 'python3 config_generator.py stt tts hotword wake'"
+echo "Run configuration script by 'python3 config_generator.py <stt engine> <tts engine> <snowboy or pocketsphinx> <wake button?>'"
+echo "e.g. python3 config_generator.py config_generator.py google google y n"
+echo "will configure SUSI to use google for speech-to-text and text-to-speech; "
+echo "use snowboy for hot-word detection;"
+echo "use GPIO for wake button"
