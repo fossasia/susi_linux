@@ -10,3 +10,4 @@ rx
 pyudev
 python-Levenshtein
 pyalsaaudio
+spidev
