@@ -169,10 +169,11 @@ sudo ./media_daemon/media_udev_rule.sh
 echo "Cloning and building SUSI server"
 susi_server
 
-echo "Setup Complete"
-
-echo "Run configuration script by 'python3 config_generator.py <stt engine> <tts engine> <snowboy or pocketsphinx> <wake button?>'"
-echo "e.g. python3 config_generator.py config_generator.py google google y n"
-echo "will configure SUSI to use google for speech-to-text and text-to-speech; "
-echo "use snowboy for hot-word detection;"
-echo "use GPIO for wake button"
+echo -e "\033[0;92mSUSI is installed successfully!\033[0m"
+echo -e "Run configuration script by 'python3 config_generator.py \033[0;32m<stt engine> \033[0;33m<tts engine> \033[0;34m<snowboy or pocketsphinx> \033[0;35m<wake button?>' \033[0m"
+echo "For example, to configure SUSI as following: "
+echo -e "\t \033[0;32m-Google for speech-to-text"
+echo -e "\t \033[0;33m-Google for text-to-speech"
+echo -e "\t \033[0;34m-Use snowboy for hot-word detection"
+echo -e "\t \033[0;35m-Do not use GPIO for wake button\033[0m"
+echo -e "python3 config_generator.py \033[0;32mgoogle \033[0;33mgoogle \033[0;34my \033[0;35mn \033[0m"
