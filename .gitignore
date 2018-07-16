@@ -11,3 +11,4 @@ main/hotword_engine/snowboy/snowboydetect.py
 /snowboy/
 config.json
 susi_server/
+**/seeed_voicecard/
