@@ -47,16 +47,15 @@ vercomp()
     echo 0;
 }
 
-function install_swig_from_sources()
+
+function install_seed_voicecard_driver()
 {
-    wget https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz
-    tar xf swig-3.0.12.tar.gz
-    cd swig-3.0.12
-    ./configure
-    make
-    sudo make install
+    echo "installing Respeaker Mic Array drivers from source"
+    git clone https://github.com/respeaker/seeed-voicecard.git
+    cd seeed-voicecard
+    sudo ./install.sh
     cd ..
-    rm -rf swig-3.0.12*
+    mv seeed-voicecard ~/seeed-voicecard
 }
 
 function install_flite_from_source()
@@ -73,23 +72,9 @@ function install_flite_from_source()
 
 function install_dependencies()
 {
+    install_seed_voicecard_driver
     if /usr/bin/dpkg --search /usr/bin/dpkg
     then
-        if ! [ -x "$(command -v swig)" ]
-        then
-            install_swig_from_sources
-        else
-            installed_version=$(swig -version | perl -nae 'print "$F[2]\n" if /SWIG Version/i;')
-            minimum_version="3.0.10"
-            result=$(vercomp ${installed_version} ${minimum_version})
-            if [ ${result} -eq 2 ]
-            then
-                echo "Installing SWIG 3.0.12 from sources"
-                install_swig_from_sources
-            else
-                echo "SWIG version is up to date"
-            fi
-        fi
         sudo -E apt install -y libatlas-base-dev
     else
         return 1;
