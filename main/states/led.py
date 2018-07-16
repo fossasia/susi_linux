@@ -1,7 +1,10 @@
 import spidev
+import subprocess
+import sys
 from math import ceil
 
-RGB_MAP = {'rgb': [3, 2, 1], 'rbg': [3, 1, 2], 'grb': [2, 3, 1], 'gbr': [2, 1, 3], 'brg': [1, 3, 2], 'bgr': [1, 2, 3]}
+RGB_MAP = {'rgb': [3, 2, 1], 'rbg': [3, 1, 2], 'grb': [
+    2, 3, 1], 'gbr': [2, 1, 3], 'brg': [1, 3, 2], 'bgr': [1, 2, 3]}
 
 
 class LED_COLOR:
@@ -12,6 +15,11 @@ class LED_COLOR:
 
     def __init__(self, num_led, global_brightness=MAX_BRIGHTNESS,
                  order='rgb', bus=0, device=1, max_speed_hz=8000000):
+        output = subprocess.check_output(
+            ["aplay", "-l"]).decode(sys.stdout.encoding)
+        self.driver_installed = output.find("seeed") != -1
+        if (not self.driver_installed):
+            return
         self.num_led = num_led  # The number of LEDs in the Strip
         order = order.lower()
         self.rgb = RGB_MAP.get(order, RGB_MAP['rgb'])
@@ -29,11 +37,15 @@ class LED_COLOR:
             self.spi.max_speed_hz = max_speed_hz
 
     def clock_start_frame(self):
+        if (not self.driver_installed):
+            return
         """Sends a start frame to the LED strip.
         """
         self.spi.xfer2([0] * 4)  # Start frame, 32 zero bits
 
     def clock_end_frame(self):
+        if (not self.driver_installed):
+            return
         self.spi.xfer2([0xFF] * 4)
 
         # Round up num_led/2 bits (or num_led/16 bytes)
@@ -41,6 +53,8 @@ class LED_COLOR:
         #    self.spi.xfer2([0x00])
 
     def clear_strip(self):
+        if (not self.driver_installed):
+            return
         """ Turns off the strip and shows the result right away."""
 
         for led in range(self.num_led):
@@ -48,6 +62,8 @@ class LED_COLOR:
         self.show()
 
     def set_pixel(self, led_num, red, green, blue, bright_percent=100):
+        if (not self.driver_installed):
+            return
         """Sets the color of one pixel in the LED stripe.
 
         The changed pixel is not shown yet on the Stripe, it is only
@@ -74,6 +90,8 @@ class LED_COLOR:
         self.leds[start_index + self.rgb[2]] = blue
 
     def set_pixel_rgb(self, led_num, rgb_color, bright_percent=100):
+        if (not self.driver_installed):
+            return
         """Sets the color of one pixel in the LED stripe.
 
         The changed pixel is not shown yet on the Stripe, it is only
@@ -85,6 +103,8 @@ class LED_COLOR:
                        (rgb_color & 0x00FF00) >> 8, rgb_color & 0x0000FF, bright_percent)
 
     def rotate(self, positions=1):
+        if (not self.driver_installed):
+            return
         """ Rotate the LEDs by the specified number of positions.
 
         Treating the internal LED array as a circular buffer, rotate it by
@@ -95,6 +115,8 @@ class LED_COLOR:
         self.leds = self.leds[cutoff:] + self.leds[:cutoff]
 
     def show(self):
+        if (not self.driver_installed):
+            return
         """Sends the content of the pixel buffer to the strip.
 
         Todo: More than 1024 LEDs requires more than one xfer operation.
@@ -109,6 +131,8 @@ class LED_COLOR:
         self.clock_end_frame()
 
     def cleanup(self):
+        if (not self.driver_installed):
+            return
         """Release the SPI device; Call this method at the end"""
         self.spi.close()  # Close SPI port
 

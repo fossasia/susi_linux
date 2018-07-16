@@ -48,6 +48,16 @@ vercomp()
 }
 
 
+function install_seed_voicecard_driver()
+{
+    echo "installing Respeaker Mic Array drivers from source"
+    git clone https://github.com/respeaker/seeed-voicecard.git
+    cd seeed-voicecard
+    sudo ./install.sh
+    cd ..
+    mv seeed-voicecard ~/seeed-voicecard
+}
+
 function install_flite_from_source()
 {
     wget http://www.festvox.org/flite/packed/flite-2.0/flite-2.0.0-release.tar.bz2
@@ -62,13 +72,9 @@ function install_flite_from_source()
 
 function install_dependencies()
 {
+    install_seed_voicecard_driver
     if /usr/bin/dpkg --search /usr/bin/dpkg
     then
-        if ! [ -x "$(command -v swig)" ]
-        then
-            echo "swig not installed"
-            echo "install the latest version of swig"
-        fi
         sudo -E apt install -y libatlas-base-dev
     else
         return 1;
