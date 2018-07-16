@@ -91,16 +91,12 @@ function install_snowboy()
     if install_dependencies
     then
         root_dir=$(pwd)
-        git clone https://github.com/Kitt-AI/snowboy.git
-        cd snowboy/swig/Python3
-        make -j4
-        if [ -f _snowboydetect.so ]; then
-            echo "Moving files"
-            cp _snowboydetect.so ${root_dir}/main/hotword_engine/snowboy
-            cp snowboydetect.py ${root_dir}/main/hotword_engine/snowboy
-        else
+        sudo pip3 install git+https://github.com/Kitt-AI/snowboy.git
+        if [ $? -ne 0 ]; then
             echo "FAILED: Unable to make Snowboy Detect file. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
             echo "You may also use PocketSphinx Detector if you are unable to install snowboy on your machine"
+        else
+            echo "Snowboy Detect successfully installed"
         fi
         cd "$root_dir"
     else
