@@ -14,10 +14,9 @@ class LED_COLOR:
 
     def __init__(self, num_led, global_brightness=MAX_BRIGHTNESS,
                  order='rgb', bus=0, device=1, max_speed_hz=8000000):
-        output = subprocess.check_output(["aplay", "-l"])
-        output = output.decode(sys.stdout.encoding)
-        self.driverInstalled = output.find("seeed") != -1
-        if (not self.driverInstalled):
+        output = subprocess.check_output(["aplay", "-l"]).decode(sys.stdout.encoding)
+        self.driver_installed  = output.find("seeed") != -1
+        if (not self.driver_installed ):
             return
         self.num_led = num_led  # The number of LEDs in the Strip
         order = order.lower()
@@ -36,14 +35,14 @@ class LED_COLOR:
             self.spi.max_speed_hz = max_speed_hz
 
     def clock_start_frame(self):
-        if (not self.driverInstalled):
+        if (not self.driver_installed ):
             return
         """Sends a start frame to the LED strip.
         """
         self.spi.xfer2([0] * 4)  # Start frame, 32 zero bits
 
     def clock_end_frame(self):
-        if (not self.driverInstalled):
+        if (not self.driver_installed ):
             return
         self.spi.xfer2([0xFF] * 4)
 
@@ -52,7 +51,7 @@ class LED_COLOR:
         #    self.spi.xfer2([0x00])
 
     def clear_strip(self):
-        if (not self.driverInstalled):
+        if (not self.driver_installed ):
             return
         """ Turns off the strip and shows the result right away."""
 
@@ -61,7 +60,7 @@ class LED_COLOR:
         self.show()
 
     def set_pixel(self, led_num, red, green, blue, bright_percent=100):
-        if (not self.driverInstalled):
+        if (not self.driver_installed ):
             return
         """Sets the color of one pixel in the LED stripe.
 
@@ -89,7 +88,7 @@ class LED_COLOR:
         self.leds[start_index + self.rgb[2]] = blue
 
     def set_pixel_rgb(self, led_num, rgb_color, bright_percent=100):
-        if (not self.driverInstalled):
+        if (not self.driver_installed ):
             return
         """Sets the color of one pixel in the LED stripe.
 
@@ -102,7 +101,7 @@ class LED_COLOR:
                        (rgb_color & 0x00FF00) >> 8, rgb_color & 0x0000FF, bright_percent)
 
     def rotate(self, positions=1):
-        if (not self.driverInstalled):
+        if (not self.driver_installed ):
             return
         """ Rotate the LEDs by the specified number of positions.
 
@@ -114,7 +113,7 @@ class LED_COLOR:
         self.leds = self.leds[cutoff:] + self.leds[:cutoff]
 
     def show(self):
-        if (not self.driverInstalled):
+        if (not self.driver_installed ):
             return
         """Sends the content of the pixel buffer to the strip.
 
@@ -130,7 +129,7 @@ class LED_COLOR:
         self.clock_end_frame()
 
     def cleanup(self):
-        if (not self.driverInstalled):
+        if (not self.driver_installed ):
             return
         """Release the SPI device; Call this method at the end"""
         self.spi.close()  # Close SPI port
