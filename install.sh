@@ -5,7 +5,7 @@ DIR_PATH=$(dirname $SCRIPT_PATH)
 
 install_debian_dependencies()
 {
-    sudo -E apt install swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
+    sudo -E apt install -y swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
     libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev \
     python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev \
     python3-cairo python3-flask mpv
@@ -55,8 +55,8 @@ function install_swig_from_sources()
     ./configure
     make
     sudo make install
-    rm -rf swig-3.0.12*
     cd ..
+    rm -rf swig-3.0.12*
 }
 
 function install_flite_from_source()
@@ -67,8 +67,8 @@ function install_flite_from_source()
     ./configure
     make
     sudo make install
-    rm -rf flite-2.0.0-release*
     cd ..
+    rm -rf flite-2.0.0-release*
 }
 
 function install_dependencies()
@@ -90,7 +90,7 @@ function install_dependencies()
                 echo "SWIG version is up to date"
             fi
         fi
-        sudo -E apt install libatlas-base-dev
+        sudo -E apt install -y libatlas-base-dev
     else
         return 1;
     fi
@@ -101,16 +101,12 @@ function install_snowboy()
     if install_dependencies
     then
         root_dir=$(pwd)
-        git clone https://github.com/Kitt-AI/snowboy.git
-        cd snowboy/swig/Python3
-        make -j4
-        if [ -f _snowboydetect.so ]; then
-            echo "Moving files"
-            cp _snowboydetect.so ${root_dir}/main/hotword_engine/snowboy
-            cp snowboydetect.py ${root_dir}/main/hotword_engine/snowboy
-        else
+        sudo pip3 install git+https://github.com/Kitt-AI/snowboy.git
+        if [ $? -ne 0 ]; then
             echo "FAILED: Unable to make Snowboy Detect file. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
             echo "You may also use PocketSphinx Detector if you are unable to install snowboy on your machine"
+        else
+            echo "Snowboy Detect successfully installed"
         fi
         cd "$root_dir"
         rm -rf snowboy
@@ -119,7 +115,7 @@ function install_snowboy()
     fi
 }
 
-pwd
+
 
 function susi_server(){
     if  [ ! -d "susi_server" ]
@@ -131,13 +127,13 @@ function susi_server(){
     fi
 
     if [ -d "susi_server" ]
-    then 
+    then
         echo "Deploying local server"
         cd $DIR_PATH/susi_server/susi_server
         git submodule update --recursive --remote
         git submodule update --init --recursive
         {
-            ./gradlew build 
+            ./gradlew build
         } || {
             echo PASS
         }
@@ -189,11 +185,16 @@ echo
 install_snowboy
 
 cd $DIR_PATH
-sudo ./media_daemon/media_daemon.sh
+sudo ./media_daemon/media_udev_rule.sh
 
 echo "Cloning and building SUSI server"
 susi_server
 
-echo "Setup Complete"
-
-echo "Run configuration script by 'python3 config_generator.py stt tts hotword wake'"
+echo -e "\033[0;92mSUSI is installed successfully!\033[0m"
+echo -e "Run configuration script by 'python3 config_generator.py \033[0;32m<stt engine> \033[0;33m<tts engine> \033[0;34m<snowboy or pocketsphinx> \033[0;35m<wake button?>' \033[0m"
+echo "For example, to configure SUSI as following: "
+echo -e "\t \033[0;32m-Google for speech-to-text"
+echo -e "\t \033[0;33m-Google for text-to-speech"
+echo -e "\t \033[0;34m-Use snowboy for hot-word detection"
+echo -e "\t \033[0;35m-Do not use GPIO for wake button\033[0m"
+echo -e "python3 config_generator.py \033[0;32mgoogle \033[0;33mgoogle \033[0;34my \033[0;35mn \033[0m"

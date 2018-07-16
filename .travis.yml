@@ -13,5 +13,5 @@ install:
   - pip3 install -U pytest
   - pip3 install -U pep8
 script:
-  - pep8 main --ignore E501 --exclude=main/hotword_engine/snowboy/snowboydetect.py
+  - pep8 main --ignore E501 --exclude=main/hotword_engine/snowboy_detector.py
   - python3 -m pytest tests/
