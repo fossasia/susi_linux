@@ -59,6 +59,16 @@ function install_swig_from_sources()
     rm -rf swig-3.0.12*
 }
 
+function install_seed_voicecard_driver()
+{
+    echo "installing Respeaker Mic Array drivers from source"
+    git clone https://github.com/respeaker/seeed-voicecard.git
+    cd seeed-voicecard
+    sudo ./install.sh
+    cd ..
+    mv seeed-voicecard ~/seeed-voicecard
+}
+
 function install_flite_from_source()
 {
     wget http://www.festvox.org/flite/packed/flite-2.0/flite-2.0.0-release.tar.bz2
@@ -78,6 +88,7 @@ function install_dependencies()
         if ! [ -x "$(command -v swig)" ]
         then
             install_swig_from_sources
+            install_seed_voicecard_driver
         else
             installed_version=$(swig -version | perl -nae 'print "$F[2]\n" if /SWIG Version/i;')
             minimum_version="3.0.10"
