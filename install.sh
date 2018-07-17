@@ -142,8 +142,8 @@ echo "Installing required Debian Packages"
 install_debian_dependencies
 
 echo "Downloading Python Dependencies"
-sudo -E pip3 install -r requirements.txt
-sudo -E pip3 install -r requirements-hw.txt
+pip3 install -r requirements.txt
+sudo -E -H pip3 install -r requirements-hw.txt
 
 
 if ! [ -x "$(command -v flite)" ]
