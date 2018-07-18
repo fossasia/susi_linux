@@ -49,7 +49,7 @@ class BusyState(State):
             if 'volume' in reply.keys():
                 m = alsaaudio.Mixer()
                 m.setvolume(int(reply['volume']))
-                subprocess.call(['play', '{0} &'.format(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+                subprocess.call(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
                 table = reply['table']
