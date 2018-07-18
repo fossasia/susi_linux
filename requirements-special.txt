@@ -1,0 +1,2 @@
+git+https://github.com/Pithikos/python-websocket-server
+watson-developer-cloud
