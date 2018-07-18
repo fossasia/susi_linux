@@ -5,10 +5,10 @@ Use PocketSphinx if you face errors with this Detector.
 import os
 
 from .hotword_detector import HotwordDetector
-from .snowboy import snowboydecoder
+from snowboy import snowboydecoder
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
-RESOURCE_FILE = os.path.join(TOP_DIR, "snowboy/resources/susi.pmdl")
+RESOURCE_FILE = os.path.join(TOP_DIR, "susi.pmdl")
 
 
 class SnowboyDetector(HotwordDetector):

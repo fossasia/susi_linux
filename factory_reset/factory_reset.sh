@@ -1,7 +1,10 @@
 #! /bin/bash
 # To be executed using a physical button
 
-cd $HOME/SUSI.AI/susi_linux
+SCRIPT_PATH=$(realpath $0)
+DIR_PATH=$(dirname $SCRIPT_PATH)
+
+cd $DIR_PATH/../..
 pwd
 mv susi_linux/ susi_temp
 git clone https://github.com/fossasia/susi_linux #while testing change to personal repo

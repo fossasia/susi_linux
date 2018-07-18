@@ -1,11 +1,11 @@
 speechRecognition==3.6.5
 pocketsphinx==0.1.3
 pyaudio
-watson-developer-cloud
-git+https://github.com/Pithikos/python-websocket-server
 json-config
 google_speech
 async_promises
 rx
 pyudev
 python-Levenshtein
+pyalsaaudio
+spidev

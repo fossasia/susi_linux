@@ -3,28 +3,34 @@ from glob import glob
 import shutil
 from subprocess import check_output #nosec #pylint-disable type: ignore
 
+# To get media_daemon folder
+media_daemon_folder = os.path.dirname(os.path.abspath(__file__))
+base_folder = os.path.dirname(media_daemon_folder)
+server_skill_folder = os.path.join(base_folder, 'susi_server/susi_server/data/generic_skills/media_discovery')
+server_settings_folder = os.path.join(base_folder, 'susi_server/susi_server/data/settings')
+
 def make_skill(): # pylint-enable
     name_of_usb = get_mount_points()
     print(type(name_of_usb))
     print(name_of_usb[0])
     x = name_of_usb[0]
     os.chdir('{}'.format(x[1]))
-    mp3 = list()
     USB = name_of_usb[0]
-    for file in glob("*.mp3"):
-        mp3.append(file)
-    os.chdir('/home/pi/SUSI.AI/susi_linux/media_daemon/')
-    f = open('custom_skill.txt','w')
-    skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://{}/{}"}'.format(USB[1],mp3[0]),']}','eol']
+    mp3 = [file for file in glob("*.mp3")]
+    f = open( media_daemon_folder +'/custom_skill.txt','w')
+    music_path = list()
+    for mp in mp3:
+        music_path.append("{}".format(USB[1]) + "/{}".format(mp))
+
+    song_list = " ".join(music_path)
+    skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://'+str(song_list) +'"}',']}','eol']
     for skill in skills:
         f.write(skill + '\n')
     f.close()
-    shutil.move('/home/pi/SUSI.AI/susi_linux/media_daemon/custom_skill.txt','/home/pi/SUSI.AI/susi_linux/susi_server/susi_server/data/generic_skills/media_discovery')
-    os.chdir('/home/pi/SUSI.AI/susi_linux/susi_server/susi_server/data/settings/')
-    f2 = open('customized_config.properties','a')
+    shutil.move( media_daemon_folder + 'custom_skill.txt', server_skill_folder)
+    f2 = open(server_settings_folder + 'customized_config.properties','a')
     f2.write('local.mode = true')
     f2.close()
-    os.chdir('/home/pi/SUSI.AI/susi_linux/')
 
 def get_usb_devices():
     sdb_devices = map(os.path.realpath, glob('/sys/block/sd*'))
