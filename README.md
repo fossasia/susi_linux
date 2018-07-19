@@ -99,4 +99,4 @@ To allow the raspberry Pi to behave as an access point
 
 ## SUSI Smart Speaker - IOS/Android Workflow
 
-<img src="https://raw.github.com/fossasia/susi_linux/docs/images/workflow.svg">
+<img src="/docs/images/workflow.svg">
