@@ -20,4 +20,4 @@ We are using:
 
 ## Workflow
 
-<img src="https://raw.github.com/fossasia/susi_linux/docs/images/media_daemon.svg">
+<img src="/docs/images/media_daemon.svg">
