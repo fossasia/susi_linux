@@ -36,8 +36,7 @@ class IdleState(State):
 
     def __detected(self):
         if self.isActive:
-            subprocess.call(['play', '{0} &'.format(   # nosec #pylint-disable type: ignore
-                self.components.config['detection_bell_sound'])])
+            subprocess.call(['play', str(self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
 
