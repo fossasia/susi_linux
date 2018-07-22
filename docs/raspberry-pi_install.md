@@ -1,7 +1,7 @@
 # Installation on Raspberry Pi
 
 Tested on
-- Raspberry Pi 3 with Raspbian Jessie Full 
+- Raspberry Pi 3 with Raspbian Strech Full 
 
 You will need to have access to Raspberry Pi Screen and terminal for the initial setup.
 You may start from ssh later.
@@ -118,3 +118,36 @@ bell after pressing button to confirm SUSI has started listening. Ask your query
 
 If you still face any errors in the setup, please provide a screenshot or logs of errors being encountered.
 This would help rectify the issue.
+
+
+# Installation on Raspbian Lite
+- Tested on
+- Raspberry Pi 3 with Raspbian Strech Lite
+
+You will need to have access to Raspberry Pi Screen and terminal for the initial setup.
+You may start from ssh later.
+
+## STEPS
+- First configure wifi on your pi
+    - Open the following file ```` sudo nano /etc/wpa_supplicant/wpa_supplicant.conf ````
+    - And write the following commands
+    - ![wifi-setup](./images/raspbian-lite-wifi.png)
+- Now, install GIT on your pi.
+    - Use the command ```` sudo apt-get install git ````
+- Update your system using ````sudo apt-get update && sudo apt-get upgrade ````
+- Install Java JDK and JRE for local SUSI server
+    - Use the following command ```` sudo apt install openjdk-8-jre openjdk-8-jdk -y ````
+- Clone repository and install dependencies
+    - In your root directory, make a folder named `SUSI.AI` and move into the folder.
+    - Clone the repository for SUSI Linux and move into the folder.
+    ```
+    $ mkdir SUSI.AI
+    $ cd SUSI.AI
+    $ git clone https://github.com/fossasia/susi_linux.git
+    $ cd susi_linux
+    ```
+- Run the install script by running 
+    ```
+    $ ./install.sh
+    ```
+- Enjoy :smile:
