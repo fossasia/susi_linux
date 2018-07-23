@@ -5,12 +5,24 @@ from .base_state import State
 import subprocess   # nosec #pylint-disable type: ignore
 import alsaaudio
 from .lights import lights
+import os
+from ..hotword_engine.stop_detection import StopDetector
 
 
 class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
     """
+    def detection(self):
+        """This callback is fired when a Hotword Detector detects a hotword.
+        :return: None
+        """
+        # subprocess.call(['killall', 'play'])
+        # subprocess.call(['killall', 'mpv']
+        os.system('kill STOP ' + str(self.video_pid))  # nosec #pylint-disable type: ignore
+        subprocess.call(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+        self.transition(self.allowedStateTransitions.get('recognizing'))
+        os.system('kill CONT ' + str(self.video_pid))  # nosec #pylint-disable type: ignore
 
     def on_enter(self, payload=None):
         """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
@@ -18,6 +30,7 @@ class BusyState(State):
         :param payload: query to be asked to SUSI
         :return: None
         """
+        print('busy')
         try:
             import RPi.GPIO as GPIO
             GPIO.output(17, True)
@@ -39,12 +52,19 @@ class BusyState(State):
 
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
+                stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    subprocess.call(['mpv', '--no-video', 'https://www.youtube.com/watch?v=' + video_url[4:]])  # nosec #pylint-disable type: ignore
+                    video_pid = subprocess.Popen('mpv --no-video https://www.youtube.com/watch?v={} --really-quiet &'.format(video_url[4:]), shell=True)  # nosec #pylint-disable type: ignore
+                    self.video_pid = video_pid.pid
+                    stopAction.run()
+                    stopAction.detector.terminate()
                 else:
                     audio_url = reply['identifier']
-                    subprocess.call(['play', audio_url[6:]])  # nosec #pylint-disable type: ignore
+                    audio_pid = subprocess.Popen('(play {} --no-show-progress) &'.format(audio_url[6:]), shell=True)  # nosec #pylint-disable type: ignore
+                    self.audio_pid = audio_pid.pid
+                    stopAction.run()
+                    stopAction.detector.terminate()
 
             if 'volume' in reply.keys():
                 m = alsaaudio.Mixer()
@@ -64,6 +84,8 @@ class BusyState(State):
                     print()
 
             if 'stop' in reply.keys():
+                subprocess.call(['killall', 'mpv'])  # nosec #pylint-disable type: ignore
+                subprocess.call(['killall', 'play'])  # nosec #pylint-disable type: ignore
                 self.transition(self.allowedStateTransitions.get('idle'))
 
             if 'rss' in reply.keys():
@@ -73,6 +95,7 @@ class BusyState(State):
                 for entity in entities[0:count]:
                     print(entity.title)
                     self.__speak(entity.title)
+            print('TMKC')
             self.transition(self.allowedStateTransitions.get('idle'))
 
         except ConnectionError:
