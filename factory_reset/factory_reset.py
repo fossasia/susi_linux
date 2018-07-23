@@ -13,6 +13,7 @@ try:
     i = 1
     while True:
         if GPIO.input(17) == 1:
+            time.sleep(0.1)
             pass
         elif GPIO.input(17) == 0 :
             start = time.time()
