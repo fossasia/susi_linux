@@ -22,7 +22,7 @@ def config():
     tts = request.args.get('tts')
     hotword = request.args.get('hotword')
     wake = request.args.get('wake')
-    subprocess.call(['sudo bash ' + access_point_folder + '/config.sh ' + ' {} {} {} {}  & '.format(stt, tts, hotword, wake)],shell=True)  #nosec #pylint-disable type: ignore
+    subprocess.Popen(['sudo','bash',access_point_folder + '/config.sh ',stt, tts, hotword, wake])  #nosec #pylint-disable type: ignore
     display_message = {"configuration":"successful", "stt": stt, "tts": tts, "hotword": hotword, "wake":wake}
     resp = jsonify(display_message)
     resp.status_code = 200
