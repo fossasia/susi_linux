@@ -1,7 +1,7 @@
 # Installation on Raspberry Pi
 
 Tested on
-- Raspberry Pi 3 with Raspbian Strech Full 
+- Raspberry Pi 3 with Raspbian Stretch Full 
 
 You will need to have access to Raspberry Pi Screen and terminal for the initial setup.
 You may start from ssh later.
@@ -122,7 +122,7 @@ This would help rectify the issue.
 
 # Installation on Raspbian Lite
 - Tested on
-- Raspberry Pi 3 with Raspbian Strech Lite
+- Raspberry Pi 3 with Raspbian Stretch Lite
 
 You will need to have access to Raspberry Pi Screen and terminal for the initial setup.
 You may start from ssh later.
@@ -151,3 +151,13 @@ You may start from ssh later.
     $ ./install.sh
     ```
 - Enjoy :smile:
+
+## Enabling SSH
+
+You can use the following commands to enable SSH connection on your pi
+- `sudo systemctl enable ssh`
+-`sudo systemctl start ssh `
+
+Similarly, to stop and disable SSH
+- `sudo systemctl stop ssh`
+- `sudo systemctl disable ssh `
