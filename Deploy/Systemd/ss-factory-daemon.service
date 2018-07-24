@@ -1,0 +1,11 @@
+[Unit]
+Description=SUSI Linux Factory Daemon
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/pi/SUSI.AI/susi_linux/factory_reset/factory_reset.py
+
+[Install]
+WantedBy=multi-user.target
+
