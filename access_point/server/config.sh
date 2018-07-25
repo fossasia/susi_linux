@@ -10,3 +10,7 @@ WAKE="$4"
 
 cd $DIR_PATH/../../
 sudo python3 config_generator.py $STT $TTS $HOTWORD $WAKE
+
+sleep 5
+cd $DIR_PATH/../
+sudo ./rwap.sh
