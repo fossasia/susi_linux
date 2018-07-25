@@ -2,9 +2,11 @@ from flask import Flask , render_template , request
 from flask import jsonify
 import subprocess   # nosec #pylint-disable type: ignore
 import os
+import json_config
 
 access_point_folder = os.path.dirname(os.path.abspath(__file__))
 wifi_search_folder = os.path.join(access_point_folder, '..')
+config_json_folder = os.path.join(access_point_folder, '../config.json')
 
 app = Flask(__name__)
 
@@ -49,6 +51,13 @@ def wifi_config():
     resp.status_code = 200
     return resp  # pylint-enable
 
+@app.route('/speaker_config', methods=['GET'])
+def speaker_config():
+    speaker_name = request.args.get('speaker_name')
+    room_name = request.args.get('room_name')
+    config = json_config.connect(config_json_folder)
+    config['speaker_name'] = speaker_name
+    config['room_name'] = room_name
 
 if __name__ == '__main__':
     app.run(debug=False, host= '0.0.0.0') #nosec #pylint-disable type: ignore
