@@ -15,5 +15,6 @@ sudo systemctl daemon-reload
 sudo systemctl disable ss-python-flask.service
 sudo systemctl enable ss-susi-linux.service
 
-cd $DIR_PATH
+sleep 5
+cd $DIR_PATH/../
 sudo ./rwap.sh
