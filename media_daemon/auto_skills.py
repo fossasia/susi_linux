@@ -27,8 +27,8 @@ def make_skill(): # pylint-enable
     for skill in skills:
         f.write(skill + '\n')
     f.close()
-    shutil.move( media_daemon_folder + 'custom_skill.txt', server_skill_folder)
-    f2 = open(server_settings_folder + 'customized_config.properties','a')
+    shutil.move( os.path.join(media_daemon_folder, 'custom_skill.txt'), server_skill_folder)
+    f2 = open(os.path.join(server_settings_folder, 'customized_config.properties'),'a')
     f2.write('local.mode = true')
     f2.close()
 
