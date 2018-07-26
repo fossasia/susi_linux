@@ -6,7 +6,6 @@ After=network-online.target
 [Service]
 Type=idle
 ExecStart=/usr/bin/python3 /home/pi/SUSI.AI/susi_linux/access_point/server/server.py
-RemainAfterExit=true
 
 [Install]
 WantedBy=multi-user.target
