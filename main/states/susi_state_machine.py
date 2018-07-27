@@ -97,7 +97,7 @@ class SusiStateMachine(Thread):
         self.__recognizing_state.allowedStateTransitions = \
             {'busy': self.__busy_state, 'error': self.__error_state}
         self.__busy_state.allowedStateTransitions = \
-            {'idle': self.__idle_state, 'error': self.__error_state}
+            {'idle': self.__idle_state, 'error': self.__error_state, 'recognizing': self.__recognizing_state}
         self.__error_state.allowedStateTransitions = \
             {'idle': self.__idle_state}
 
