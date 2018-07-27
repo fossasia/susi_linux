@@ -16,10 +16,10 @@ def make_skill(): # pylint-enable
     x = name_of_usb[0]
     os.chdir('{}'.format(x[1]))
     USB = name_of_usb[0]
-    mp3 = glob("*.mp3")
+    mp3_files = glob("*.mp3")
     f = open( media_daemon_folder +'/custom_skill.txt','w')
     music_path = list()
-    for mp in mp3:
+    for mp in mp3_files:
         music_path.append("{}".format(USB[1]) + "/{}".format(mp))
 
     song_list = " ".join(music_path)
