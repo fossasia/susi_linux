@@ -20,14 +20,14 @@ class BusyState(State):
         """
         # subprocess.call(['killall', 'play'])
         # subprocess.call(['killall', 'mpv']
-        if 'vid_process' in self.__dict__:
+        if hasattr(self, 'video_process'):
             self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
             lights.wakeup()
             subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
             lights.off()
             self.transition(self.allowedStateTransitions.get('recognizing'))
             self.video_pid.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
-        if 'audio_process' in self.__dict__:
+        if hasattr(self, 'audio_process'):
             self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
             lights.wakeup()
             subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
