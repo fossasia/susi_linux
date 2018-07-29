@@ -101,7 +101,7 @@ To allow the raspberry Pi to behave as an access point
 
 <img src="https://raw.github.com/fossasia/susi_linux/docs/images/workflow.svg">
 
-## To Use PiHat as a default Audio Driver
+## To Use the ReSpeaker 2 Mic Array as a default Audio Driver
  * User can use `pacmd` to change the audio card to piHat
   - Use the following commands
      - `pacmd list-sinks` to check the index of the device
