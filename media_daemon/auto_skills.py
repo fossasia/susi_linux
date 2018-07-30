@@ -30,7 +30,6 @@ def make_skill(): # pylint-enable
     shutil.move(os.path.join(media_daemon_folder, 'custom_skill.txt'), server_skill_folder)
     with open(os.path.join(server_settings_folder, 'customized_config.properties'), 'a') as f2:
         f2.write('local.mode = true')
-        f2.close()
 
 def get_usb_devices():
     sdb_devices = map(os.path.realpath, glob('/sys/block/sd*'))
