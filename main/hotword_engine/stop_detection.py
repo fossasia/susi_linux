@@ -1,5 +1,5 @@
 """Implementation of SnowboyDetector using Snowboy Hotword Detection Engine.
-This method is to support Stop Action for snowboy
+This method is to support Second query processing using snowboy
 """
 
 from snowboy import snowboydecoder
