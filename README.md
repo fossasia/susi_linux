@@ -22,9 +22,7 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 
 **Roadmap**
 - Offline Voice Detection (if possible with satisfactory results)
-- Configuring led lights in accordance with SUSI.AI response
 - Make Update Daemon check for the updates at regular intervals
-- Create an automated workflow which sets up the initialisation through the mobile app
 
 **General Working Of SUSI**
 - SUSI.AI follows a finite state system for the code architecture.
@@ -38,6 +36,8 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 ## Setting up Susi on Linux
 
 Setting up Susi on Linux is pretty easy.
+
+**Note : For the app to work properly, repo must be cloned inside the folder `/home/pi/SUSI.AI/` , i.e. the path of your repo will look like `/home/pi/SUSI.AI/susi_linux/`**
 
 ### Minimum Requirements
 * A hardware device capable to run Linux. It includes development boards like Raspberry Pi 
