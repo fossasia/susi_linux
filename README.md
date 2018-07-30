@@ -100,3 +100,19 @@ To allow the raspberry Pi to behave as an access point
 ## SUSI Smart Speaker - IOS/Android Workflow
 
 <img src="https://raw.github.com/fossasia/susi_linux/docs/images/workflow.svg">
+
+## To Use the ReSpeaker 2 Mic Array as a default Audio Driver
+ * User can use `pacmd` to change the audio card to piHat
+  - Use the following commands
+     - `pacmd list-sinks` to check the index of the device
+     -  `pacmd set-sink-port <sink name> <port name>` '<sink-name>' is generally 1 , but you can choose depending on your list.
+     - eg. if you want to use inbuilt speaker ports ``pacmd set-sink-port alsa_output.platform-soc_sound.analog-stereo analog-output-speaker``
+     - if you want to use your headphones with it , we use ``pacmd set-sink-port alsa_output.platform-soc_sound.analog-stereo analog-output-headphones``
+     <br> <br>
+<p>If the above approach doesn't work , you can use the following approach</p>
+
+ * After running the installation script
+  - Type this command `cd /etc/pulse`
+  - Open the file `default.pa`
+  - Replace line 38 by `load-module module-alsa-sink device=hw:2,1` (This will disable the default soundacards from loading up)
+  - To enable default sound cards(usb mic,built-in headphone jack,etc ) , comment/delete out the above line
