@@ -169,6 +169,13 @@ echo
 
 install_snowboy
 
+echo "Installing Mounting Source"
+cd $DIR_PATH
+git clone https://github.com/MrVallentin/mount.py
+sudo python mount.py/setup.py install
+rm -rf mount.py
+
+echo "Updating the Udev Rules"
 cd $DIR_PATH
 sudo ./media_daemon/media_udev_rule.sh
 
