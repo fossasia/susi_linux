@@ -97,7 +97,8 @@ pip3 install --user service_identity
     
 Run the script using:
 ```
-$ python3 config_generator.py
+$ python3 config_generator.py <stt> <tts> <hotword_detection> <wake_button>
+$ python3 authentication.py <choice> <email> <password>
 ```
 - Once configured, you may run SUSI User Interface by executing the following command
 ```
