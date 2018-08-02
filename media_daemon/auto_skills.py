@@ -14,7 +14,7 @@ server_restart_folder = os.path.join(base_folder, 'susi_server/susi_server/bin/r
 def make_skill(): # pylint-enable
     devices = list_media_devices()
     path = get_media_path(devices[0])
-    subprocess.call(['udisks','mount',path])
+    subprocess.call(['udisks','mount',path])  #nosec #pylint-disable type: ignore
     name_of_usb = get_mount_points()
     USB = name_of_usb[1]
     os.chdir(str(USB))
@@ -37,7 +37,7 @@ def make_skill(): # pylint-enable
 def get_usb_devices():
     sdb_devices = map(os.path.realpath, glob('/sys/block/sd*'))
     usb_devices = (dev for dev in sdb_devices
-        if 'usb' in dev.split('/')[5])	
+        if 'usb' in dev.split('/')[5])
     return dict((os.path.basename(dev), dev) for dev in usb_devices)
 
 def get_mount_points(devices=None):
