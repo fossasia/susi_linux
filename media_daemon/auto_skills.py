@@ -20,7 +20,6 @@ def make_skill(): # pylint-enable
     ogg_files = glob('*.ogg')
     flac_files = glob('*.flac')
     wav_files = glob('*.wav')
-
     f = open( media_daemon_folder +'/custom_skill.txt','w')
     music_path = list()
     for mp in mp3_files:
