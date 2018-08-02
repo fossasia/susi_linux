@@ -9,7 +9,6 @@ base_folder = os.path.dirname(media_daemon_folder)
 server_skill_folder = os.path.join(base_folder, 'susi_server/susi_server/data/generic_skills/media_discovery')
 server_settings_folder = os.path.join(base_folder, 'susi_server/susi_server/data/settings')
 
-
 def make_skill(): # pylint-enable
     name_of_usb = get_mount_points()
     print(type(name_of_usb))
@@ -18,11 +17,21 @@ def make_skill(): # pylint-enable
     os.chdir('{}'.format(x[1]))
     USB = name_of_usb[0]
     mp3_files = glob("*.mp3")
+    ogg_files = glob('*.ogg')
+    flac_files = glob('*.flac')
+    wave_files = glob('*.wav')
+    
     f = open( media_daemon_folder +'/custom_skill.txt','w')
     music_path = list()
     for mp in mp3_files:
         music_path.append("{}".format(USB[1]) + "/{}".format(mp))
-
+    for mp in ogg_files:
+        music_path.append("{}".format(USB[1]) + "/{}".format(ogg))
+    for mp in flac_files:
+        music_path.append("{}".format(USB[1]) + "/{}".format(flac))
+    for mp in wav_files:
+        music_path.append("{}".format(USB[1]) + "/{}".format(wav))
+        
     song_list = " ".join(music_path)
     skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://'+str(song_list) +'"}',']}','eol']
     for skill in skills:
