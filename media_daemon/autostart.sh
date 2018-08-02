@@ -9,7 +9,7 @@ cd $DIR_PATH/../susi_server/
 if [ -d "susi_server" ]
 then
     cd $DIR_PATH
-    sudo python3 auto_skills.py
+    python3 auto_skills.py
 else
     echo "Please download Skill Data"
 fi 
