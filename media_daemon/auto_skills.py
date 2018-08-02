@@ -9,6 +9,7 @@ base_folder = os.path.dirname(media_daemon_folder)
 server_skill_folder = os.path.join(base_folder, 'susi_server/susi_server/data/generic_skills/media_discovery')
 server_settings_folder = os.path.join(base_folder, 'susi_server/susi_server/data/settings')
 
+
 def make_skill(): # pylint-enable
     name_of_usb = get_mount_points()
     print(type(name_of_usb))
