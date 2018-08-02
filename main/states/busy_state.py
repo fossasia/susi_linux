@@ -1,6 +1,5 @@
 """Class to represent the Busy State
 """
-from ..speech import TTS
 from .base_state import State
 import subprocess   # nosec #pylint-disable type: ignore
 import alsaaudio
@@ -8,7 +7,6 @@ from .lights import lights
 import os
 from ..hotword_engine.stop_detection import StopDetector
 import signal
-
 
 class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
@@ -20,6 +18,12 @@ class BusyState(State):
         """
         # subprocess.call(['killall', 'play'])
         # subprocess.call(['killall', 'mpv']
+        if hasattr(self, 'tts'):
+            self.tts.send_signal(signal.SIGTERM)  # nosec #pylint-disable type: ignore
+            lights.wakeup()
+            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+            lights.off()
+            self.transition(self.allowedStateTransitions.get('recognizing'))
         if hasattr(self, 'video_process'):
             self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
             lights.wakeup()
@@ -52,6 +56,9 @@ class BusyState(State):
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
 
             if 'answer' in reply.keys():
+                stopAction = StopDetector(self.detection)
+                stopAction.run()
+                stopAction.detector.terminate()
                 print('Susi:' + reply['answer'])
                 lights.speak()
                 self.__speak(reply['answer'])
@@ -131,10 +138,15 @@ class BusyState(State):
             print("Only available for devices with RPI.GPIo ports")
 
     def __speak(self, text):
+        base_folder = os.path.dirname(os.path.abspath(__file__))
+        tts_folder = os.path.join(base_folder, '../speech/tts_wrapper.sh')
         if self.components.config['default_tts'] == 'google':
-            TTS.speak_google_tts(text)
+            tts = subprocess.Popen(['bash', tts_folder, 'google', text]) . # nosec #pylint-disable type: ignore
+            self.tts = tts
         if self.components.config['default_tts'] == 'flite':
-            print("Using flite for TTS")
-            TTS.speak_flite_tts(text)
+            print("Using flite for TTS")  # indication for using an offline music player
+            tts = subprocess.Popen(['bash', tts_folder, 'flite', text]) . # nosec #pylint-disable type: ignore
+            self.tts = tts
         elif self.components.config['default_tts'] == 'watson':
-            TTS.speak_watson_tts(text)
+            tts = subprocess.Popen(['bash', tts_folder, 'watson', text])  # nosec #pylint-disable type: ignore
+            self.tts = tts
