@@ -178,6 +178,9 @@ susi_server
 echo "Updating Systemd Rules"
 sudo bash $DIR_PATH/Deploy/auto_boot.sh
 
+echo "Converting RasPi into an Access Point"
+sudo bash $DIR_PATH/access_point/wap.sh
+
 echo -e "\033[0;92mSUSI is installed successfully!\033[0m"
 echo -e "Run configuration script by 'python3 config_generator.py \033[0;32m<stt engine> \033[0;33m<tts engine> \033[0;34m<snowboy or pocketsphinx> \033[0;35m<wake button?>' \033[0m"
 echo "For example, to configure SUSI as following: "
