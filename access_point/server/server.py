@@ -53,7 +53,6 @@ def wifi_config():
 
 @app.route('/speaker_config', methods=['GET'])
 def speaker_config():
-    speaker_name = request.args.get('speaker_name')
     room_name = request.args.get('room_name')
     config = json_config.connect(config_json_folder)
     config['room_name'] = room_name
