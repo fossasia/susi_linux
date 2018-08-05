@@ -56,7 +56,6 @@ def speaker_config():
     speaker_name = request.args.get('speaker_name')
     room_name = request.args.get('room_name')
     config = json_config.connect(config_json_folder)
-    config['speaker_name'] = speaker_name
     config['room_name'] = room_name
 
 if __name__ == '__main__':
