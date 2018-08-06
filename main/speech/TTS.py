@@ -58,7 +58,7 @@ def speak_google_tts(text):
     Speech(text=text, lang='en').play(sox_effects)
 
 try:
-    if len(sys.argv) > 1 :
+    if len(sys.argv) > 1:
         if sys.argv[1] == 'google':
             speak_google_tts(sys.argv[2])
         elif sys.argv[2] == 'watson':
