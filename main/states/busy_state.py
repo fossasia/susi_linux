@@ -8,6 +8,7 @@ import os
 from ..hotword_engine.stop_detection import StopDetector
 import signal
 
+
 class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
@@ -138,12 +139,12 @@ class BusyState(State):
         base_folder = os.path.dirname(os.path.abspath(__file__))
         tts_folder = os.path.join(base_folder, '../speech/tts_wrapper.sh')
         if self.components.config['default_tts'] == 'google':
-            tts = subprocess.Popen(['bash', tts_folder, 'google', text])
+            tts = subprocess.Popen(['bash', tts_folder, 'google', text])  # nosec #pylint-disable type: ignore
             self.tts = tts
         if self.components.config['default_tts'] == 'flite':
             print("Using flite for TTS")  # indication for using an offline music player
-            tts = subprocess.Popen(['bash', tts_folder, 'flite', text])
+            tts = subprocess.Popen(['bash', tts_folder, 'flite', text])  # nosec #pylint-disable type: ignore
             self.tts = tts
         elif self.components.config['default_tts'] == 'watson':
-            tts = subprocess.Popen(['bash', tts_folder, 'watson', text])
+            tts = subprocess.Popen(['bash', tts_folder, 'watson', text])  # nosec #pylint-disable type: ignore
             self.tts = tts
