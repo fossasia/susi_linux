@@ -19,11 +19,19 @@ def make_skill(): # pylint-enable
     usb = name_of_usb[1]
     os.chdir(str(usb))
     mp3_files = glob("*.mp3")
+    ogg_files = glob('*.ogg')
+    flac_files = glob('*.flac')
+    wav_files = glob('*.wav')
     f = open( media_daemon_folder +'/custom_skill.txt','w')
     music_path = list()
     for mp in mp3_files:
         music_path.append("{}".format(usb) + "/{}".format(mp))
-
+    for mp in ogg_files:
+        music_path.append("{}".format(usb) + "/{}".format(ogg))
+    for mp in flac_files:
+        music_path.append("{}".format(usb) + "/{}".format(flac))
+    for mp in wav_files:
+        music_path.append("{}".format(usb) + "/{}".format(wav))
     song_list = " ".join(music_path)
     skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://'+str(song_list) +'"}',']}','eol']
     for skill in skills:
