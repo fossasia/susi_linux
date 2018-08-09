@@ -178,6 +178,12 @@ susi_server
 echo "Updating Systemd Rules"
 sudo bash $DIR_PATH/Deploy/auto_boot.sh
 
+echo "Creating a backup folder for future factory_reset"
+cd $DIR_PATH/..
+sudo tar -czvf reset_folder.tar.gz susi_linux
+mv reset_folder.tar.gz $DIR_PATH/factory_reset/reset_folder.tar.gz
+cd $DIR_PATH
+
 echo "Converting RasPi into an Access Point"
 sudo bash $DIR_PATH/access_point/wap.sh
 
