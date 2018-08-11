@@ -140,14 +140,14 @@ class BusyState(State):
 
     def __speak(self, text):
         base_folder = os.path.dirname(os.path.abspath(__file__))
-        tts_folder = os.path.join(base_folder, '../speech/tts_wrapper.sh')
+        tts_folder = os.path.join(base_folder, '../speech/TTS.py')
         if self.components.config['default_tts'] == 'google':
-            tts = subprocess.Popen(['bash', tts_folder, 'google', text])  # nosec #pylint-disable type: ignore
+            tts = subprocess.Popen(['python3', tts_folder, 'google', text])  # nosec #pylint-disable type: ignore
             self.tts = tts
         if self.components.config['default_tts'] == 'flite':
             print("Using flite for TTS")  # indication for using an offline music player
-            tts = subprocess.Popen(['bash', tts_folder, 'flite', text])  # nosec #pylint-disable type: ignore
+            tts = subprocess.Popen(['python3', tts_folder, 'flite', text])  # nosec #pylint-disable type: ignore
             self.tts = tts
         elif self.components.config['default_tts'] == 'watson':
-            tts = subprocess.Popen(['bash', tts_folder, 'watson', text])  # nosec #pylint-disable type: ignore
+            tts = subprocess.Popen(['python3', tts_folder, 'watson', text])  # nosec #pylint-disable type: ignore
             self.tts = tts
