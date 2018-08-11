@@ -67,4 +67,3 @@ try:
             speak_flite_tts(sys.argv[2])
 except IndexError as e:
     print(e)
-    pass

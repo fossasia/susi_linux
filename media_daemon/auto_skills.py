@@ -17,11 +17,10 @@ def make_skill(): # pylint-enable
     subprocess.call(['udisks','mount',path])  #nosec #pylint-disable type: ignore
     name_of_usb = get_mount_points()
     usb = name_of_usb[1]
-    os.chdir(str(usb))
-    mp3_files = glob("*.mp3")
-    ogg_files = glob('*.ogg')
-    flac_files = glob('*.flac')
-    wav_files = glob('*.wav')
+    mp3_files = glob(str(usb) + '/*.mp3')
+    ogg_files = glob(str(usb) + '/*.ogg')
+    flac_files = glob(str(usb) + '/*.flac')
+    wav_files = glob(str(usb) + '/*.wav')
     f = open( media_daemon_folder +'/custom_skill.txt','w')
     music_path = list()
     for mp in mp3_files:
