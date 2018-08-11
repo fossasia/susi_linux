@@ -117,14 +117,14 @@ For installation on Ubuntu and other Debian based distributions, read [Ubuntu Se
 
 ### Update Daemon
 
-Use the folllowing commands.
+Use the following commands.
 * `cd update_daemon/`
 * `./update_daemon.sh`
 
 ### Factory Reset
 
 To initiate the factory reset command.<br/>
-Use the folllowing commands.
+Use the following commands.
 * `cd factory_reset/`
 * `chmod +x factory_reset.sh`
 * `./factory_reset.sh`
