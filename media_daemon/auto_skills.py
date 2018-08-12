@@ -16,21 +16,28 @@ def make_skill(): # pylint-enable
     x = name_of_usb[0]
     os.chdir('{}'.format(x[1]))
     USB = name_of_usb[0]
-    mp3 = [file for file in glob("*.mp3")]
+    mp3_files = glob("*.mp3")
+    ogg_files = glob('*.ogg')
+    flac_files = glob('*.flac')
+    wav_files = glob('*.wav')
     f = open( media_daemon_folder +'/custom_skill.txt','w')
     music_path = list()
-    for mp in mp3:
+    for mp in mp3_files:
         music_path.append("{}".format(USB[1]) + "/{}".format(mp))
-
+    for mp in ogg_files:
+        music_path.append("{}".format(USB[1]) + "/{}".format(ogg))
+    for mp in flac_files:
+        music_path.append("{}".format(USB[1]) + "/{}".format(flac))
+    for mp in wav_files:
+        music_path.append("{}".format(USB[1]) + "/{}".format(wav))
     song_list = " ".join(music_path)
     skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://'+str(song_list) +'"}',']}','eol']
     for skill in skills:
         f.write(skill + '\n')
     f.close()
-    shutil.move( media_daemon_folder + 'custom_skill.txt', server_skill_folder)
-    f2 = open(server_settings_folder + 'customized_config.properties','a')
-    f2.write('local.mode = true')
-    f2.close()
+    shutil.move(os.path.join(media_daemon_folder, 'custom_skill.txt'), server_skill_folder)
+    with open(os.path.join(server_settings_folder, 'customized_config.properties'), 'a') as f2:
+        f2.write('local.mode = true')
 
 def get_usb_devices():
     sdb_devices = map(os.path.realpath, glob('/sys/block/sd*'))

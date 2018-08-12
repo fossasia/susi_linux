@@ -7,6 +7,7 @@ import alsaaudio
 from .lights import lights
 import os
 from ..hotword_engine.stop_detection import StopDetector
+import signal
 
 
 class BusyState(State):
@@ -19,10 +20,20 @@ class BusyState(State):
         """
         # subprocess.call(['killall', 'play'])
         # subprocess.call(['killall', 'mpv']
-        os.system('kill STOP ' + str(self.video_pid))  # nosec #pylint-disable type: ignore
-        subprocess.call(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-        self.transition(self.allowedStateTransitions.get('recognizing'))
-        os.system('kill CONT ' + str(self.video_pid))  # nosec #pylint-disable type: ignore
+        if hasattr(self, 'video_process'):
+            self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
+            lights.wakeup()
+            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+            lights.off()
+            self.transition(self.allowedStateTransitions.get('recognizing'))
+            self.video_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
+        if hasattr(self, 'audio_process'):
+            self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
+            lights.wakeup()
+            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+            lights.wakeup()
+            self.transition(self.allowedStateTransitions.get('recognizing'))
+            self.audio_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
 
     def on_enter(self, payload=None):
         """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
@@ -55,14 +66,14 @@ class BusyState(State):
                 stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    video_pid = subprocess.Popen('mpv --no-video https://www.youtube.com/watch?v={} --really-quiet &'.format(video_url[4:]), shell=True)  # nosec #pylint-disable type: ignore
-                    self.video_pid = video_pid.pid
+                    video_process = subprocess.Popen(['mpv', '--no-video', 'https://www.youtube.com/watch?v=' + video_url[4:], '--really-quiet'])  # nosec #pylint-disable type: ignore
+                    self.video_process = video_process
                     stopAction.run()
                     stopAction.detector.terminate()
                 else:
                     audio_url = reply['identifier']
-                    audio_pid = subprocess.Popen('(play {} --no-show-progress) &'.format(audio_url[6:]), shell=True)  # nosec #pylint-disable type: ignore
-                    self.audio_pid = audio_pid.pid
+                    audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
+                    self.audio_process = audio_process
                     stopAction.run()
                     stopAction.detector.terminate()
 
