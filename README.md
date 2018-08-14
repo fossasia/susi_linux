@@ -117,14 +117,14 @@ For installation on Ubuntu and other Debian based distributions, read [Ubuntu Se
 
 ### Update Daemon
 
-Use the folllowing commands.
+Use the following commands.
 * `cd update_daemon/`
 * `./update_daemon.sh`
 
 ### Factory Reset
 
 To initiate the factory reset command.<br/>
-Use the folllowing commands.
+Use the following commands.
 * `cd factory_reset/`
 * `chmod +x factory_reset.sh`
 * `./factory_reset.sh`
@@ -137,7 +137,7 @@ To allow the raspberry Pi to behave as an access point
 
 ## SUSI Smart Speaker - IOS/Android Workflow
 
-<img src="https://raw.github.com/fossasia/susi_linux/docs/images/workflow.svg">
+<img src="/docs/images/workflow.svg">
 
 ## To Use the ReSpeaker 2 Mic Array as a default Audio Driver
  * User can use `pacmd` to change the audio card to piHat
@@ -154,3 +154,4 @@ To allow the raspberry Pi to behave as an access point
   - Open the file `default.pa`
   - Replace line 38 by `load-module module-alsa-sink device=hw:2,1` (This will disable the default soundacards from loading up)
   - To enable default sound cards(usb mic,built-in headphone jack,etc ) , comment/delete out the above line
+
