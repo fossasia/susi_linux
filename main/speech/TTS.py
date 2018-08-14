@@ -3,7 +3,7 @@ You may use any of the speech synthesis services by calling the
 respective method.
 """
 import subprocess   # nosec #pylint-disable type: ignore
-
+import sys
 import json_config
 from google_speech import Speech
 from watson_developer_cloud import TextToSpeechV1
@@ -56,3 +56,14 @@ def speak_google_tts(text):
     """
     sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
     Speech(text=text, lang='en').play(sox_effects)
+
+try:
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'google':
+            speak_google_tts(sys.argv[2])
+        elif sys.argv[2] == 'watson':
+            speak_watson_tts(sys.argv[2])
+        elif sys.argv[2] == 'flite':
+            speak_flite_tts(sys.argv[2])
+except IndexError:
+    pass
