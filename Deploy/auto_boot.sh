@@ -9,6 +9,7 @@ cp $DIR_PATH/Systemd/ss-update-daemon.service /lib/systemd/system/ss-update-daem
 cp $DIR_PATH/Systemd/ss-susi-server.service /lib/systemd/system/ss-susi-server.service
 cp $DIR_PATH/Systemd/ss-python-flask.service /lib/systemd/system/ss-python-flask.service
 cp $DIR_PATH/Systemd/ss-susi-linux.service /lib/systemd/system/ss-susi-linux.service
+cp $DIR_PATH/Systemd/ss-startup-audio.service /lib/systemd/system/ss-startup-audio.service
 cp $DIR_PATH/Systemd/ss-susi-linux.service /lib/systemd/system/ss-factory-daemon.service
 
 sudo systemctl daemon-reload
