@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 -m  /home/pi/SUSI.AI/susi_linux/main
+ExecStart=/usr/bin/python3  /home/pi/SUSI.AI/susi_linux/access_point/server/server.py
 
 [Install]
 WantedBy=multi-user.target
