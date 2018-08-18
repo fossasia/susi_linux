@@ -1,0 +1,10 @@
+[Unit]
+Description=Startup Audio For SUSI Linux
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mpg123 /home/pi/SUSI.AI/susi_linux/wav/ting-ting_susi_is_alive_and_listening.wav
+
+[Install]
+WantedBy=multi-user.target
