@@ -3,6 +3,7 @@
 from .base_state import State
 import speech_recognition as sr
 from .internet_test import internet_on
+from .lights import lights
 
 
 class RecognizingState(State):
@@ -39,6 +40,7 @@ class RecognizingState(State):
         :param payload: No payload is expected by this state
         :return: None
         """
+        print('recog')
 
         self.notify_renderer('listening')
         recognizer = self.components.recognizer
@@ -51,6 +53,7 @@ class RecognizingState(State):
             self.notify_renderer('recognizing')
             GPIO.output(22, False)
             print("Got it! Now to recognize it...")
+            lights.think()
             try:
                 value = self.__recognize_audio(
                     audio=audio, recognizer=recognizer)

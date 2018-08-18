@@ -1,8 +1,9 @@
 """Class to represent Idle State
 """
-import os
+import subprocess   # nosec #pylint-disable type: ignore
 
 from .base_state import State
+from .lights import lights
 
 
 class IdleState(State):
@@ -29,13 +30,14 @@ class IdleState(State):
         :param payload: Nothing is expected
         :return: None
         """
+        print('idle')
         self.isActive = True
+        lights.wakeup()
         self.notify_renderer('idle')
 
     def __detected(self):
         if self.isActive:
-            os.system('play {0} &'.format(
-                self.components.config['detection_bell_sound']))
+            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
 
@@ -44,3 +46,4 @@ class IdleState(State):
         :return: None
         """
         self.isActive = False
+        lights.off()
