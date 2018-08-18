@@ -12,12 +12,11 @@ server_restart_script = os.path.join(base_folder, 'susi_server/susi_server/bin/r
 
 def list_media_devices():
 	with open("/proc/partitions", "r") as f:
-		devices = []	
-		for line in f.readlines()[2:]: # skip header lines
+		devices = []
+		for line in f.readlines()[2:]:  # skip header lines
 			words = [ word.strip() for word in line.split() ]
 			minor_number = int(words[1])
 			device_name = words[3]
-			
 			if (minor_number % 16) == 0:
 				path = "/sys/class/block/" + device_name
 				
