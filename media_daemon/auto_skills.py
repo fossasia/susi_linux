@@ -2,7 +2,6 @@ import os
 from glob import glob
 import shutil
 import subprocess #nosec #pylint-disable type: ignore
-from mount import *
 
 # To get media_daemon folder
 media_daemon_folder = os.path.dirname(os.path.abspath(__file__))
@@ -11,10 +10,34 @@ server_skill_folder = os.path.join(base_folder, 'susi_server/susi_server/data/ge
 server_settings_folder = os.path.join(base_folder, 'susi_server/susi_server/data/settings')
 server_restart_script = os.path.join(base_folder, 'susi_server/susi_server/bin/restart.sh')
 
+def list_media_devices():
+	with open("/proc/partitions", "r") as f:
+		devices = []
+		
+		for line in f.readlines()[2:]: # skip header lines
+			words = [ word.strip() for word in line.split() ]
+			minor_number = int(words[1])
+			device_name = words[3]
+			
+			if (minor_number % 16) == 0:
+				path = "/sys/class/block/" + device_name
+				
+				if os.path.islink(path):
+					if os.path.realpath(path).find("/usb") > 0:
+						devices.append("/dev/" + device_name)
+		
+		return devices
+
+def get_device_name(device):
+	return os.path.basename(device)
+
+def get_media_path(device):
+	return "/media/" + get_device_name(device)
+
 def make_skill(): # pylint-enable
     devices = list_media_devices()
     path = get_media_path(devices[0])
-    subprocess.call(['udisks','mount',path])  #nosec #pylint-disable type: ignore
+    subprocess.call(['udiskctl','mount','-b',path])  #nosec #pylint-disable type: ignore
     name_of_usb = get_mount_points()
     usb = name_of_usb[1]
     mp3_files = glob(str(usb) + '/*.mp3')
@@ -25,11 +48,11 @@ def make_skill(): # pylint-enable
     music_path = list()
     for mp in mp3_files:
         music_path.append("{}".format(usb) + "/{}".format(mp))
-    for mp in ogg_files:
+    for ogg in ogg_files:
         music_path.append("{}".format(usb) + "/{}".format(ogg))
-    for mp in flac_files:
+    for flac in flac_files:
         music_path.append("{}".format(usb) + "/{}".format(flac))
-    for mp in wav_files:
+    for wav in wav_files:
         music_path.append("{}".format(usb) + "/{}".format(wav))
     song_list = " ".join(music_path)
     skills = ['play audio','!console:Playing audio from your usb device','{"actions":[','{"type":"audio_play", "identifier_type":"url", "identifier":"file://'+str(song_list) +'"}',']}','eol']
