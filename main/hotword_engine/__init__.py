@@ -7,6 +7,7 @@ Presently, it support
 While Snowboy gives marginally better results, if it is unavailable on your device,
 you may use PocketSphinx
 """
+
 SNOWBOY_AVAILABLE = False
 POCKETSPHINX_AVAILABLE = False
 try:
@@ -33,3 +34,4 @@ else:
 
 if SNOWBOY_AVAILABLE is True and POCKETSPHINX_AVAILABLE is True:
     print("Both Snowboy and PocketSphinx successfully imported. We will recommend using Snowboy.")
+
