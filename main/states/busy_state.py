@@ -7,6 +7,7 @@ from .lights import lights
 import os
 from ..hotword_engine.stop_detection import StopDetector
 import signal
+from ..speech import TTS
 
 
 class BusyState(State):
@@ -19,12 +20,6 @@ class BusyState(State):
         """
         # subprocess.call(['killall', 'play'])
         # subprocess.call(['killall', 'mpv']
-        if hasattr(self, 'tts'):
-            self.tts.send_signal(signal.SIGTERM)  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.off()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
         if hasattr(self, 'video_process'):
             self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
             lights.wakeup()
@@ -136,15 +131,10 @@ class BusyState(State):
             print("Only available for devices with RPI.GPIo ports")
 
     def __speak(self, text):
-        base_folder = os.path.dirname(os.path.abspath(__file__))
-        tts_folder = os.path.join(base_folder, '../speech/tts_wrapper.sh')
         if self.components.config['default_tts'] == 'google':
-            tts = subprocess.Popen(['bash', tts_folder, 'google', text])  # nosec #pylint-disable type: ignore
-            self.tts = tts
+            TTS.speak_google_tts(text)
         if self.components.config['default_tts'] == 'flite':
             print("Using flite for TTS")  # indication for using an offline music player
-            tts = subprocess.Popen(['bash', tts_folder, 'flite', text])  # nosec #pylint-disable type: ignore
-            self.tts = tts
+            TTS.speak_flite_tts(text)
         elif self.components.config['default_tts'] == 'watson':
-            tts = subprocess.Popen(['bash', tts_folder, 'watson', text])  # nosec #pylint-disable type: ignore
-            self.tts = tts
+            TTS.speak_watson_tts(text)
