@@ -27,6 +27,10 @@ def config():
     hotword = request.args.get('hotword')
     wake = request.args.get('wake')
     subprocess.Popen(['sudo', 'python3', configuration_folder, stt, tts, hotword, wake])  #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'daemon-reload']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'disable', 'ss-python-flask.service']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'enable', 'ss-susi-linux.service']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'enable', 'ss-factory-daemon.service']) #nosec #pylint-disable type: ignore
     display_message = {"configuration":"successful", "stt": stt, "tts": tts, "hotword": hotword, "wake":wake}
     resp = jsonify(display_message)
     resp.status_code = 200
