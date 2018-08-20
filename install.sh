@@ -23,7 +23,7 @@ add_debian_repo() {
 
 install_debian_dependencies()
 {
-    sudo -E apt install -y build-essential python3-pip sox libsox-fmt-all flac pulseaudio libpulse-dev \
+    sudo -E apt install -y python3-pip sox libsox-fmt-all flac \
     python3-cairo python3-flask mpv flite ca-certificates-java
     # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
     # appropriate version of JRE-headless, which can be 8 or 9, depending on ARM6 or ARM7 platform.
@@ -99,14 +99,9 @@ then
     wget "http://www.festvox.org/flite/packed/flite-2.0/voices/cmu_us_slt.flitevox" -P extras
 fi
 
-echo "Setting up Snowboy"
-echo
 echo
 echo "NOTE: Snowboy is not compatible with all systems. If the setup indicates failed, use PocketSphinx engine for Hotword"
 echo
-echo
-
-install_snowboy
 
 echo "Updating the Udev Rules"
 cd $DIR_PATH

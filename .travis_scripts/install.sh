@@ -65,9 +65,9 @@ install_debian_dependencies
 
 echo "Installing Python Dependencies"
 sudo -H pip3 install -U pip wheel
-sudo -H pip3 install -r requirements.txt  # This is from susi_api_wrapper
-sudo -H pip3 install -r requirements-hw.txt
-sudo -H pip3 install -r requirements-special.txt
+pip3 install --user -r requirements.txt  # This is from susi_api_wrapper
+pip3 install --user -r requirements-hw.txt
+pip3 install --user -r requirements-special.txt
 
 echo "Downloading Speech Data for flite TTS"
 
@@ -75,12 +75,3 @@ if [ ! -f "extras/cmu_us_slt.flitevox" ]
 then
     wget "http://www.festvox.org/flite/packed/flite-2.0/voices/cmu_us_slt.flitevox" -P extras
 fi
-
-echo "Setting up Snowboy"
-echo
-echo
-echo "NOTE: Snowboy is not compatible with all systems. If the setup indicates failed, use PocketSphinx engine for Hotword"
-echo
-echo
-
-install_snowboy
