@@ -3,50 +3,31 @@ set -e
 SCRIPT_PATH=$(realpath $0)
 DIR_PATH=$(dirname $SCRIPT_PATH)
 
+
+add_fossasia_repo() {
+    echo "Set pip repo for root"
+    if ! sudo test -d /root/.pip; then sudo mkdir /root/.pip; fi
+    echo -e "[global]\nextra-index-url=https://repo.fury.io/fossasia/" | sudo tee /root/.pip/pip.conf
+    echo "Set pip repo for current user"
+    if [ ! -d ~/.config/pip ]; then mkdir -p ~/.config/pip ; fi
+    echo -e "[global]\nextra-index-url=https://repo.fury.io/fossasia/" > ~/.config/pip/pip.conf
+}
+
+add_debian_repo() {
+    echo "Add ReSpeaker Debian repo"
+    # Respeaker driver https://github.com/respeaker/deb
+    wget -qO- http://respeaker.io/deb/public.key | sudo apt-key add -
+    echo "deb http://respeaker.io/deb/ stretch main" | sudo tee /etc/apt/sources.list.d/respeaker.list
+    sudo apt update
+}
+
 install_debian_dependencies()
 {
-    sudo -E apt install -y swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
-    libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev \
-    python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev \
-    python3-cairo python3-flask mpv
+    sudo -E apt install -y build-essential python3-pip sox libsox-fmt-all flac pulseaudio libpulse-dev \
+    python3-cairo python3-flask mpv flite ca-certificates-java
+    # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
+    # appropriate version of JRE-headless, which can be 8 or 9, depending on ARM6 or ARM7 platform.
 }
-
-# Implementation from https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
-vercomp()
-{
-    if [[ $1 == $2 ]]
-    then
-        echo 0;
-        return 0;
-    fi
-    local IFS=.
-    local i ver1=($1) ver2=($2)
-    # fill empty fields in ver1 with zeros
-    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
-    do
-        ver1[i]=0
-    done
-    for ((i=0; i<${#ver1[@]}; i++))
-    do
-        if [[ -z ${ver2[i]} ]]
-        then
-            # fill empty fields in ver2 with zeros
-            ver2[i]=0
-        fi
-        if ((10#${ver1[i]} > 10#${ver2[i]}))
-        then
-            echo 1;
-            return 0;
-        fi
-        if ((10#${ver1[i]} < 10#${ver2[i]}))
-        then
-            echo 2;
-            return 0;
-        fi
-    done
-    echo 0;
-}
-
 
 function install_seed_voicecard_driver()
 {
@@ -55,68 +36,28 @@ function install_seed_voicecard_driver()
     cd seeed-voicecard
     sudo ./install.sh
     cd ..
-    mv seeed-voicecard ~/seeed-voicecard
-}
-
-function install_flite_from_source()
-{
-    wget http://www.festvox.org/flite/packed/flite-2.0/flite-2.0.0-release.tar.bz2
-    tar xf flite-2.0.0-release.tar.bz2
-    cd flite-2.0.0-release
-    ./configure
-    make
-    sudo make install
-    cd ..
-    rm -rf flite-2.0.0-release*
+    tar czf ~/seeed-voicecard.tar.gz seeed-voicecard
+    rm -rf seeed-voicecard
 }
 
 function install_dependencies()
 {
     install_seed_voicecard_driver
-    if /usr/bin/dpkg --search /usr/bin/dpkg
-    then
-        sudo -E apt install -y libatlas-base-dev
-    else
-        return 1;
-    fi
 }
-
-function install_snowboy()
-{
-    if install_dependencies
-    then
-        root_dir=$(pwd)
-        sudo pip3 install git+https://github.com/Kitt-AI/snowboy.git
-        if [ $? -ne 0 ]; then
-            echo "FAILED: Unable to make Snowboy Detect file. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
-            echo "You may also use PocketSphinx Detector if you are unable to install snowboy on your machine"
-        else
-            echo "Snowboy Detect successfully installed"
-        fi
-        cd "$root_dir"
-        rm -rf snowboy
-    else
-        echo "FAILED: Installation of Snowboy on your system is not supported presently. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
-    fi
-}
-
-
 
 function susi_server(){
     if  [ ! -d "susi_server" ]
     then
         mkdir $DIR_PATH/susi_server
         cd $DIR_PATH/susi_server
-        git clone https://github.com/fossasia/susi_server.git
-        git clone https://github.com/fossasia/susi_skill_data.git
+        git clone --recurse-submodules https://github.com/fossasia/susi_server.git
+        git clone --recurse-submodules https://github.com/fossasia/susi_skill_data.git
     fi
 
     if [ -d "susi_server" ]
     then
         echo "Deploying local server"
         cd $DIR_PATH/susi_server/susi_server
-        git submodule update --recursive --remote
-        git submodule update --init --recursive
         {
             ./gradlew build
         } || {
@@ -126,6 +67,10 @@ function susi_server(){
         bin/start.sh
     fi
 }
+
+####  Main  ####
+add_fossasia_repo
+add_debian_repo
 
 echo "Downloading dependency: Susi Python API Wrapper"
 if [ ! -d "susi_python" ]
@@ -141,23 +86,17 @@ fi
 echo "Installing required Debian Packages"
 install_debian_dependencies
 
-echo "Downloading Python Dependencies"
-pip3 install -r requirements.txt
-pip3 install -r requirements-hw.txt
-sudo -E -H pip3 install -r requirements-special.txt
-
-if ! [ -x "$(command -v flite)" ]
-then
-    echo "Downloading and Installing Flite TTS"
-    install_flite_from_source
-fi
+echo "Installing Python Dependencies"
+sudo -H pip3 install -U pip wheel
+sudo -H pip3 install -r requirements.txt  # This is from susi_api_wrapper
+sudo -H pip3 install -r requirements-hw.txt
+sudo -H pip3 install -r requirements-special.txt
 
 echo "Downloading Speech Data for flite TTS"
 
 if [ ! -f "extras/cmu_us_slt.flitevox" ]
 then
-    wget "http://www.festvox.org/flite/packed/flite-2.0/voices/cmu_us_slt.flitevox"
-    mv cmu_us_slt.flitevox extras/
+    wget "http://www.festvox.org/flite/packed/flite-2.0/voices/cmu_us_slt.flitevox" -P extras
 fi
 
 echo "Setting up Snowboy"
