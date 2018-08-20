@@ -5,6 +5,7 @@ python:
   - "3.5"
 install:
   - sudo apt-get update --fix-missing
+  - sudo apt-get install coreutils
   - chmod +x .travis_scripts/install.sh
   - ./.travis_scripts/install.sh
   - pip3 install -U pytest
