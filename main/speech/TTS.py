@@ -3,7 +3,6 @@ You may use any of the speech synthesis services by calling the
 respective method.
 """
 import subprocess   # nosec #pylint-disable type: ignore
-
 import json_config
 from google_speech import Speech
 from watson_developer_cloud import TextToSpeechV1
