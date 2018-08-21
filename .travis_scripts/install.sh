@@ -1,7 +1,5 @@
 #!/bin/bash
 set -e
-SCRIPT_PATH=$(realpath $0)
-DIR_PATH=$(dirname $SCRIPT_PATH)
 
 
 add_fossasia_repo() {
@@ -65,9 +63,9 @@ install_debian_dependencies
 
 echo "Installing Python Dependencies"
 sudo -H pip3 install -U pip wheel
-pip3 install --user -r requirements.txt  # This is from susi_api_wrapper
-pip3 install --user -r requirements-hw.txt
-pip3 install --user -r requirements-special.txt
+pip3 install -r requirements.txt  # This is from susi_api_wrapper
+pip3 install -r requirements-hw.txt
+pip3 install -r requirements-special.txt
 
 echo "Downloading Speech Data for flite TTS"
 
