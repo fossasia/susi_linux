@@ -77,6 +77,20 @@ Step 3:Setting Up the client
 <p>By default the username of the system is ‘pi’ and the password is ‘raspberry’</p>
 
 ### Configuring SUSI.AI
+* After Running the installation script , you'll have a RasPi in access point mode. With a Flask Server running at port 5000.
+* You can use the mobile clients to configure the device automatically.<br>
+<img src="docs/images/ios_app.gif" height="600px">
+* OR you can configure the Smart Speaker manually , in case of any failures in the mobile clients.
+ - First, you have to configure the room name by hitting the url : localhost:5000/speaker_config?room_name=roomName 
+    - Where roomName is the name of the room in which the speaker has too be placed
+ - Second, to configure the wifi credentials, use the URL : localhost:5000/wifi_credentials?wifissid=WIFISSID&wifipassd=WIFIPASSD
+    - Where WIFISSID is the name of your Wifi SSID and Wifi Password
+ - Third, to configure your SUSI credentials use the URL :localhost:5000/auth?auth=y&email=EMAIL&password=PASSWORD.
+    - Where EMAIL and PASSWORD are your login credentials of SUSI.AI
+ - Finally use the URL : localhost:5000/config?stt=google&tts=google&hotword=y&wake=n
+
+* Your RaspberryPi should restart automatically, if not execute the script `rwap.sh` in the access_point folder.
+
 * To login in the speaker , start the configuration script by<br>
     `python3 config_generator.py <stt> <tts> <hotword_detection> <wake_button>`
     Where 
