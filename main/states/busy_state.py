@@ -1,6 +1,5 @@
 """Class to represent the Busy State
 """
-from ..speech import TTS
 from .base_state import State
 import subprocess   # nosec #pylint-disable type: ignore
 import alsaaudio
@@ -8,6 +7,7 @@ from .lights import lights
 import os
 from ..hotword_engine.stop_detection import StopDetector
 import signal
+from ..speech import TTS
 
 
 class BusyState(State):
@@ -134,7 +134,7 @@ class BusyState(State):
         if self.components.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
         if self.components.config['default_tts'] == 'flite':
-            print("Using flite for TTS")
+            print("Using flite for TTS")  # indication for using an offline music player
             TTS.speak_flite_tts(text)
         elif self.components.config['default_tts'] == 'watson':
             TTS.speak_watson_tts(text)

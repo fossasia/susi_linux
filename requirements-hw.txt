@@ -9,3 +9,4 @@ pyudev
 python-Levenshtein
 pyalsaaudio
 spidev
+service_identity

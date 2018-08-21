@@ -169,6 +169,7 @@ echo
 
 install_snowboy
 
+echo "Updating the Udev Rules"
 cd $DIR_PATH
 sudo ./media_daemon/media_udev_rule.sh
 
