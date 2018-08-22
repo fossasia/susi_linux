@@ -80,7 +80,9 @@ Step 3:Setting Up the client
 * After Running the installation script , you'll have a RasPi in access point mode. With a Flask Server running at port 5000.
 * You can use the mobile clients to configure the device automatically.<br>
 <img src="docs/images/ios_app.gif" height="600px">
+
 * OR you can configure the Smart Speaker manually , in case of any failures in the mobile clients.
+
  - First, you have to configure the room name by hitting the url : localhost:5000/speaker_config?room_name=roomName 
     - Where roomName is the name of the room in which the speaker has too be placed
  - Second, to configure the wifi credentials, use the URL : localhost:5000/wifi_credentials?wifissid=WIFISSID&wifipassd=WIFIPASSD
