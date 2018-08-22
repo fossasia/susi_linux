@@ -2,7 +2,7 @@ snowboy
 speechRecognition==3.8.1
 pocketsphinx==0.1.15
 pyaudio
-json-config
+json_config
 google_speech
 async_promises
 rx
