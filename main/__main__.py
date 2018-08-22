@@ -7,6 +7,7 @@ import os
 config = json_config.connect('config.json')
 curr_folder = os.path.dirname(os.path.abspath(__file__))
 
+
 def add_device():
     susi.sign_in(config['login_credentials']['email'], config['login_credentials']['password'], room_name=config['room_name'])
 
