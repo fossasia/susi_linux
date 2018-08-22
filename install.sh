@@ -14,10 +14,13 @@ add_fossasia_repo() {
 }
 
 add_debian_repo() {
-    echo "Add ReSpeaker Debian repo"
-    # Respeaker driver https://github.com/respeaker/deb
-    wget -qO- http://respeaker.io/deb/public.key | sudo apt-key add -
-    echo "deb http://respeaker.io/deb/ stretch main" | sudo tee /etc/apt/sources.list.d/respeaker.list
+    if [ ! -f /etc/apt/sources.list.d/respeaker.list ]
+    then
+        echo "Add ReSpeaker Debian repo"
+        # Respeaker driver https://github.com/respeaker/deb
+        wget -qO- http://respeaker.io/deb/public.key | sudo apt-key add -
+        echo "deb http://respeaker.io/deb/ stretch main" | sudo tee /etc/apt/sources.list.d/respeaker.list
+    fi
     sudo apt update
 }
 
@@ -45,21 +48,28 @@ function install_dependencies()
     install_seed_voicecard_driver
 }
 
-function susi_server(){
-    if  [ ! -d "susi_server" ]
+function install_susi_server() {
+    if  [ ! -d "susi_server" ]; then mkdir $DIR_PATH/susi_server; fi
+
+    SUSI_SERVER_PATH=$DIR_PATH/susi_server/susi_server
+    if [ ! -d $SUSI_SERVER_PATH ]
     then
-        mkdir $DIR_PATH/susi_server
-        cd $DIR_PATH/susi_server
-        git clone --recurse-submodules https://github.com/fossasia/susi_server.git
-        git clone https://github.com/fossasia/susi_skill_data.git
+        git clone --recurse-submodules https://github.com/fossasia/susi_server.git $SUSI_SERVER_PATH
         # The .git folder is big. Delete it (we don't do susi_server deveplopment here, so no need to keep it)
-        rm -rf susi_server/susi_server/.git
+        echo "Delete $SUSI_SERVER_PATH/.git"
+        rm -rf $SUSI_SERVER_PATH/.git
     fi
 
-    if [ -d "susi_server" ]
+    SKILL_DATA_PATH=$DIR_PATH/susi_server/susi_skill_data
+    if [ ! -d $SKILL_DATA_PATH ]
+    then
+        git clone https://github.com/fossasia/susi_skill_data.git $SKILL_DATA_PATH
+    fi
+
+    if [ -d $SUSI_SERVER_PATH ]
     then
         echo "Deploying local server"
-        cd $DIR_PATH/susi_server/susi_server
+        cd $SUSI_SERVER_PATH
         {
             ./gradlew build
         } || {
@@ -112,13 +122,15 @@ cd $DIR_PATH
 sudo ./media_daemon/media_udev_rule.sh
 
 echo "Cloning and building SUSI server"
-susi_server
+install_susi_server
 
 echo "Updating Systemd Rules"
 sudo bash $DIR_PATH/Deploy/auto_boot.sh
 
+cd $DIR_PATH
 echo "Creating a backup folder for future factory_reset"
-sudo tar -Ipixz -cf ../reset_folder.tar.xz susi_linux
+tar -I 'pixz -p 2' -cf ../reset_folder.tar.xz --checkpoint=.1000 -C .. susi_linux
+echo ""  # To add newline after tar's last checkpoint
 mv ../reset_folder.tar.xz $DIR_PATH/factory_reset/reset_folder.tar.xz
 
 echo "Converting RasPi into an Access Point"
