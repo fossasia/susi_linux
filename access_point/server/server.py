@@ -7,6 +7,8 @@ import json_config
 access_point_folder = os.path.dirname(os.path.abspath(__file__))
 wifi_search_folder = os.path.join(access_point_folder, '..')
 config_json_folder = os.path.join(access_point_folder, '../config.json')
+configuration_script =  os.path.join(access_point_folder, '../../config_generator.py')
+authentication_script =  os.path.join(access_point_folder, '../../authentication.py')
 
 app = Flask(__name__)
 
@@ -24,7 +26,11 @@ def config():
     tts = request.args.get('tts')
     hotword = request.args.get('hotword')
     wake = request.args.get('wake')
-    subprocess.Popen(['sudo', 'bash', access_point_folder + '/config.sh ', stt, tts, hotword, wake])  #nosec #pylint-disable type: ignore
+    subprocess.Popen(['sudo', 'python3', configuration_script, stt, tts, hotword, wake])  #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'daemon-reload']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'disable', 'ss-python-flask.service']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'enable', 'ss-susi-linux.service']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'enable', 'ss-factory-daemon.service']) #nosec #pylint-disable type: ignore
     display_message = {"configuration":"successful", "stt": stt, "tts": tts, "hotword": hotword, "wake":wake}
     resp = jsonify(display_message)
     resp.status_code = 200
@@ -35,7 +41,7 @@ def login():
     auth = request.args.get('auth')
     email = request.args.get('email')
     password = request.args.get('password')
-    subprocess.call(['sudo', 'bash', access_point_folder + '/login.sh', auth, email, password]) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'python3', authentication_script, auth, email, password]) #nosec #pylint-disable type: ignore
     display_message = {"authentication":"successful", "auth": auth, "email": email, "password": password}
     resp = jsonify(display_message)
     resp.status_code = 200
