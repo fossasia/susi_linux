@@ -53,7 +53,7 @@ function susi_server(){
         git clone --recurse-submodules https://github.com/fossasia/susi_server.git
         git clone https://github.com/fossasia/susi_skill_data.git
         # The .git folder is big. Delete it (we don't do susi_server deveplopment here, so no need to keep it)
-        rm -rf susi_server/.git
+        rm -rf susi_server/susi_server/.git
     fi
 
     if [ -d "susi_server" ]
