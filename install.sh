@@ -89,10 +89,12 @@ echo "Installing required Debian Packages"
 install_debian_dependencies
 
 echo "Installing Python Dependencies"
-sudo -H pip3 install -U pip wheel
-sudo -H pip3 install -r requirements.txt  # This is from susi_api_wrapper
-sudo -H pip3 install -r requirements-hw.txt
-sudo -H pip3 install -r requirements-special.txt
+# We don't use "sudo -H pip3" here, so that pip3 cannot store cache.
+# We want to discard cache to save disk space.
+sudo pip3 install -U pip wheel
+sudo pip3 install -r requirements.txt  # This is from susi_api_wrapper
+sudo pip3 install -r requirements-hw.txt
+sudo pip3 install -r requirements-special.txt
 
 echo "Downloading Speech Data for flite TTS"
 
