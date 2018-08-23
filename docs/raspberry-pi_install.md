@@ -92,9 +92,10 @@ setup according to your needs. It can be used to modify:
     - Enable Hardware Wake Button.
 
 Install required python libraries:
-pip3 install --user json_config
-pip3 install --user service_identity
-    
+```
+$ pip3 install json_config
+$ pip3 install service_identity
+```    
 Run the script using:
 ```
 $ python3 config_generator.py <stt> <tts> <hotword_detection> <wake_button>
