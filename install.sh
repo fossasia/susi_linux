@@ -5,10 +5,10 @@ DIR_PATH=$(dirname $SCRIPT_PATH)
 
 install_debian_dependencies()
 {
-    sudo -E apt install swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
+    sudo -E apt install -y swig build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev \
     libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libssl-dev libffi-dev \
-    python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev python3-cairo 
-    python3-flask
+    python-dev python3-dev python3-pip sox libsox-fmt-all flac portaudio19-dev pulseaudio libpulse-dev \
+    python3-cairo python3-flask mpv
 }
 
 # Implementation from https://stackoverflow.com/questions/4023830/how-compare-two-strings-in-dot-separated-version-format-in-bash
@@ -47,16 +47,15 @@ vercomp()
     echo 0;
 }
 
-function install_swig_from_sources()
+
+function install_seed_voicecard_driver()
 {
-    wget https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz
-    tar xf swig-3.0.12.tar.gz
-    cd swig-3.0.12
-    ./configure
-    make
-    sudo make install
-    rm -rf swig-3.0.12*
+    echo "installing Respeaker Mic Array drivers from source"
+    git clone https://github.com/respeaker/seeed-voicecard.git
+    cd seeed-voicecard
+    sudo ./install.sh
     cd ..
+    mv seeed-voicecard ~/seeed-voicecard
 }
 
 function install_flite_from_source()
@@ -67,30 +66,16 @@ function install_flite_from_source()
     ./configure
     make
     sudo make install
-    rm -rf flite-2.0.0-release*
     cd ..
+    rm -rf flite-2.0.0-release*
 }
 
 function install_dependencies()
 {
+    install_seed_voicecard_driver
     if /usr/bin/dpkg --search /usr/bin/dpkg
     then
-        if ! [ -x "$(command -v swig)" ]
-        then
-            install_swig_from_sources
-        else
-            installed_version=$(swig -version | perl -nae 'print "$F[2]\n" if /SWIG Version/i;')
-            minimum_version="3.0.10"
-            result=$(vercomp ${installed_version} ${minimum_version})
-            if [ ${result} -eq 2 ]
-            then
-                echo "Installing SWIG 3.0.12 from sources"
-                install_swig_from_sources
-            else
-                echo "SWIG version is up to date"
-            fi
-        fi
-        sudo -E apt install libatlas-dev libatlas-base-dev
+        sudo -E apt install -y libatlas-base-dev
     else
         return 1;
     fi
@@ -101,16 +86,12 @@ function install_snowboy()
     if install_dependencies
     then
         root_dir=$(pwd)
-        git clone https://github.com/Kitt-AI/snowboy.git
-        cd snowboy/swig/Python3
-        make -j4
-        if [ -f _snowboydetect.so ]; then
-            echo "Moving files"
-            cp _snowboydetect.so ${root_dir}/main/hotword_engine/snowboy
-            cp snowboydetect.py ${root_dir}/main/hotword_engine/snowboy
-        else
+        sudo pip3 install git+https://github.com/Kitt-AI/snowboy.git
+        if [ $? -ne 0 ]; then
             echo "FAILED: Unable to make Snowboy Detect file. Please follow manual instructions at https://github.com/kitt-AI/snowboy"
             echo "You may also use PocketSphinx Detector if you are unable to install snowboy on your machine"
+        else
+            echo "Snowboy Detect successfully installed"
         fi
         cd "$root_dir"
         rm -rf snowboy
@@ -119,33 +100,32 @@ function install_snowboy()
     fi
 }
 
-pwd
 
-if  [ ! -d "susi_server" ]
-then
-    mkdir $DIR_PATH/susi_server
-    cd $DIR_PATH/susi_server
-    git clone https://github.com/fossasia/susi_server.git
-    git clone https://github.com/fossasia/susi_skill_data.git
-fi
 
-if [ -d "susi_server" ]
-then 
-    echo "Deploying local server"
-    cd $DIR_PATH/susi_server/susi_server
-    git submodule update --recursive --remote
-    git submodule update --init --recursive
-    {
-        ./gradlew build 
-    } || {
-        echo PASS
-    }
+function susi_server(){
+    if  [ ! -d "susi_server" ]
+    then
+        mkdir $DIR_PATH/susi_server
+        cd $DIR_PATH/susi_server
+        git clone https://github.com/fossasia/susi_server.git
+        git clone https://github.com/fossasia/susi_skill_data.git
+    fi
 
-    bin/start.sh
-fi
+    if [ -d "susi_server" ]
+    then
+        echo "Deploying local server"
+        cd $DIR_PATH/susi_server/susi_server
+        git submodule update --recursive --remote
+        git submodule update --init --recursive
+        {
+            ./gradlew build
+        } || {
+            echo PASS
+        }
 
-cd $DIR_PATH
-./media_daemon/media_daemon.sh
+        bin/start.sh
+    fi
+}
 
 echo "Downloading dependency: Susi Python API Wrapper"
 if [ ! -d "susi_python" ]
@@ -162,11 +142,9 @@ echo "Installing required Debian Packages"
 install_debian_dependencies
 
 echo "Downloading Python Dependencies"
-sudo -E pip3 install -r requirements.txt
-sudo -E pip3 install -r requirements-hw.txt
-
-echo "Downloading Tizonia"
-curl -kL https://github.com/tizonia/tizonia-openmax-il/raw/master/tools/install.sh | bash
+pip3 install -r requirements.txt
+pip3 install -r requirements-hw.txt
+sudo -E -H pip3 install -r requirements-special.txt
 
 if ! [ -x "$(command -v flite)" ]
 then
@@ -191,9 +169,30 @@ echo
 
 install_snowboy
 
-python3 media_daemon/media.py
+echo "Updating the Udev Rules"
+cd $DIR_PATH
+sudo ./media_daemon/media_udev_rule.sh
 
+echo "Cloning and building SUSI server"
+susi_server
 
-echo "Setup Complete"
+echo "Updating Systemd Rules"
+sudo bash $DIR_PATH/Deploy/auto_boot.sh
 
-echo "Run configuration script by 'python3 config_generator.py'"
+echo "Creating a backup folder for future factory_reset"
+cd $DIR_PATH/..
+sudo tar -czvf reset_folder.tar.gz susi_linux
+mv reset_folder.tar.gz $DIR_PATH/factory_reset/reset_folder.tar.gz
+cd $DIR_PATH
+
+echo "Converting RasPi into an Access Point"
+sudo bash $DIR_PATH/access_point/wap.sh
+
+echo -e "\033[0;92mSUSI is installed successfully!\033[0m"
+echo -e "Run configuration script by 'python3 config_generator.py \033[0;32m<stt engine> \033[0;33m<tts engine> \033[0;34m<snowboy or pocketsphinx> \033[0;35m<wake button?>' \033[0m"
+echo "For example, to configure SUSI as following: "
+echo -e "\t \033[0;32m-Google for speech-to-text"
+echo -e "\t \033[0;33m-Google for text-to-speech"
+echo -e "\t \033[0;34m-Use snowboy for hot-word detection"
+echo -e "\t \033[0;35m-Do not use GPIO for wake button\033[0m"
+echo -e "python3 config_generator.py \033[0;32mgoogle \033[0;33mgoogle \033[0;34my \033[0;35mn \033[0m"

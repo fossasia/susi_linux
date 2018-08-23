@@ -4,7 +4,6 @@ The SUSI State Machine works on the concept of Finite State Machine.
 import json_config
 import logging
 import requests
-import RPi.GPIO as GPIO
 from speech_recognition import Recognizer, Microphone
 
 import susi_python as susi
@@ -20,10 +19,16 @@ class Components:
     """
 
     def __init__(self, renderer=None):
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(17, GPIO.OUT)
-        GPIO.setup(27, GPIO.OUT)
-        GPIO.setup(22, GPIO.OUT)
+        try:
+            import RPi.GPIO as GPIO
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(17, GPIO.OUT)
+            GPIO.setup(27, GPIO.OUT)
+            GPIO.setup(22, GPIO.OUT)
+        except ImportError:
+            print("Only available for devices with GPIO ports ")
+        except RuntimeError:
+            pass
 
         recognizer = Recognizer()
         recognizer.dynamic_energy_threshold = False
@@ -51,10 +56,10 @@ class Components:
                 print('Some error occurred in login. Check you login details in config.json')
 
         if self.config['hotword_engine'] == 'Snowboy':
-            from main.hotword_engine import SnowboyDetector
+            from main.hotword_engine.snowboy_detector import SnowboyDetector
             self.hotword_detector = SnowboyDetector()
         else:
-            from main.hotword_engine import PocketSphinxDetector
+            from main.hotword_engine.sphinx_detector import PocketSphinxDetector
             self.hotword_detector = PocketSphinxDetector()
 
         if self.config['WakeButton'] == 'enabled':
@@ -92,7 +97,7 @@ class SusiStateMachine(Thread):
         self.__recognizing_state.allowedStateTransitions = \
             {'busy': self.__busy_state, 'error': self.__error_state}
         self.__busy_state.allowedStateTransitions = \
-            {'idle': self.__idle_state, 'error': self.__error_state}
+            {'idle': self.__idle_state, 'error': self.__error_state, 'recognizing': self.__recognizing_state}
         self.__error_state.allowedStateTransitions = \
             {'idle': self.__idle_state}
 

@@ -2,8 +2,8 @@
 """
 from .base_state import State
 import speech_recognition as sr
-import RPi.GPIO as GPIO
 from .internet_test import internet_on
+from .lights import lights
 
 
 class RecognizingState(State):
@@ -40,10 +40,12 @@ class RecognizingState(State):
         :param payload: No payload is expected by this state
         :return: None
         """
+        print('recog')
 
         self.notify_renderer('listening')
         recognizer = self.components.recognizer
         try:
+            import RPi.GPIO as GPIO
             print("Say something!")
             GPIO.output(22, True)
             with self.components.microphone as source:
@@ -51,6 +53,7 @@ class RecognizingState(State):
             self.notify_renderer('recognizing')
             GPIO.output(22, False)
             print("Got it! Now to recognize it...")
+            lights.think()
             try:
                 value = self.__recognize_audio(
                     audio=audio, recognizer=recognizer)
@@ -71,12 +74,22 @@ class RecognizingState(State):
 
         except KeyboardInterrupt:
             pass
+        except RuntimeError:
+            pass
+        except ImportError:
+            print("Only available for devices with GPIO ports")
 
     def on_exit(self):
         """ Method to executed upon exit from Recognizing State.
         :return:
         """
-        GPIO.output(17, False)
-        GPIO.output(27, False)
-        GPIO.output(22, False)
+        try:
+            import RPi.GPIO as GPIO
+            GPIO.output(17, False)
+            GPIO.output(27, False)
+            GPIO.output(22, False)
+        except RuntimeError:
+            pass
+        except ImportError:
+            print("Only available for devices with GPIO ports")
         pass

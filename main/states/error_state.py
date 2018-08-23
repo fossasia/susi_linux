@@ -1,8 +1,9 @@
 """Class to represent Error State
 """
-import os
+import subprocess   # nosec #pylint-disable type: ignore
 import json_config
 from .base_state import State
+from .lights import lights
 
 config = json_config.connect('config.json')
 
@@ -19,16 +20,22 @@ class ErrorState(State):
         """
         if payload == 'RecognitionError':
             self.notify_renderer('error', 'recognition')
-            os.system('play extras/recognition-error.wav')
+            lights.speak()
+            subprocess.call(['play', 'extras/recognition-error.wav'])   # nosec #pylint-disable type: ignore
+            lights.off()
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
             config['default_tts'] = 'flite'
             config['default_stt'] = 'pocket_sphinx'
-            os.system('play extras/connect-error.wav')
+            lights.speak()
+            subprocess.call(['play', 'extras/connect-error.wav'])   # nosec #pylint-disable type: ignore
+            lights.off()
             print("Changed to offline providers")
         else:
             self.notify_renderer('error')
-            os.system('play extras/problem.wav')
+            lights.speak()
+            subprocess.call(['play', 'extras/problem.wav'])   # nosec #pylint-disable type: ignore
+            lights.off()
 
         self.transition(self.allowedStateTransitions.get('idle'))
 
