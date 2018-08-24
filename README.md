@@ -133,6 +133,7 @@ For installation on Ubuntu and other Debian based distributions, read [Ubuntu Se
 
 ### Update Daemon
 
+At any point of time, we may want to check if the current version of susi linux is updated. Hence we compare against the corresponding remote repository and check if there is anything to update. If so we simply pull all the changes and update our base.
 Use the following commands.
 * `cd update_daemon/`
 * `./update_check.sh`
