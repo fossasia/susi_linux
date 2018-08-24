@@ -135,7 +135,7 @@ For installation on Ubuntu and other Debian based distributions, read [Ubuntu Se
 
 Use the following commands.
 * `cd update_daemon/`
-* `./update_daemon.sh`
+* `./update_check.sh`
 
 ### Factory Reset
 
