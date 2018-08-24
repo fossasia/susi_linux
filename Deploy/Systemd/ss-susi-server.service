@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=oneshot
-ExecStart=/home/pi/SUSI.AI/susi_linux/susi_server/susi_server/bin/restart.sh
+ExecStart=/usr/bin/sudo -u pi /home/pi/SUSI.AI/susi_linux/susi_server/susi_server/bin/restart.sh
 
 [Install]
 WantedBy=multi-user.target
