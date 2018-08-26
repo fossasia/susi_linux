@@ -62,6 +62,10 @@ def speaker_config():
     room_name = request.args.get('room_name')
     config = json_config.connect(config_json_folder)
     config['room_name'] = room_name
+    display_message = {"room_name":room_name}
+    resp = jsonify(display_message)
+    resp.status_code = 200
+    return resp
 
 if __name__ == '__main__':
     app.run(debug=False, host= '0.0.0.0') #nosec #pylint-disable type: ignore
