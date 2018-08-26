@@ -20,6 +20,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable ss-startup-audio.service
 sudo systemctl enable ss-susi-linux.service
 sudo systemctl disable ss-python-flask.service
+sudo systemctl enable ss-susi-login.service
 
 echo "Please reboot"
 

@@ -1,15 +1,10 @@
 from main import SusiStateMachine
 import json_config
-import susi_python as susi
 import subprocess  # nosec #pylint-disable type: ignore
 import os
 
 config = json_config.connect('config.json')
 curr_folder = os.path.dirname(os.path.abspath(__file__))
-
-
-def add_device():
-    susi.sign_in(config['login_credentials']['email'], config['login_credentials']['password'], room_name=config['room_name'])
 
 
 def startup_sound():
@@ -18,7 +13,6 @@ def startup_sound():
 
 
 if __name__ == '__main__':
-    add_device()
     startup_sound()
     susiStateMachine = SusiStateMachine()
     susiStateMachine.start()
