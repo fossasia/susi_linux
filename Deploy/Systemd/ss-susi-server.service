@@ -1,6 +1,7 @@
 [Unit]
 Description=Starting SUSI Server for SUSI Linux
 After=multi-user.target
+User=root
 
 [Service]
 Type=oneshot
