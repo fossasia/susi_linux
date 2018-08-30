@@ -4,15 +4,6 @@ SCRIPT_PATH=$(realpath $0)
 DIR_PATH=$(dirname $SCRIPT_PATH)
 
 
-add_fossasia_repo() {
-    echo "Set pip repo for root"
-    if ! sudo test -d /root/.pip; then sudo mkdir /root/.pip; fi
-    echo -e "[global]\nextra-index-url=https://repo.fury.io/fossasia/" | sudo tee /root/.pip/pip.conf
-    echo "Set pip repo for current user"
-    if [ ! -d ~/.config/pip ]; then mkdir -p ~/.config/pip ; fi
-    echo -e "[global]\nextra-index-url=https://repo.fury.io/fossasia/" > ~/.config/pip/pip.conf
-}
-
 add_debian_repo() {
     sudo apt update
 }
@@ -74,7 +65,6 @@ function install_susi_server() {
 }
 
 ####  Main  ####
-add_fossasia_repo
 add_debian_repo
 
 echo "Downloading dependency: Susi Python API Wrapper"
