@@ -1,4 +1,4 @@
-snowboy
+snowboy  # Will be installed from FOSSASIA repo
 speechRecognition==3.8.1
 service_identity
 pocketsphinx==0.1.15
@@ -10,3 +10,6 @@ rx
 python-Levenshtein
 pyalsaaudio
 spidev
+
+# Repo for wheel packages, pre-compiled for ARM
+--extra-index-url https://repo.fury.io/fossasia/
