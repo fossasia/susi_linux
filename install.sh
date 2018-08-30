@@ -4,22 +4,13 @@ SCRIPT_PATH=$(realpath $0)
 DIR_PATH=$(dirname $SCRIPT_PATH)
 
 
-add_fossasia_repo() {
-    echo "Set pip repo for root"
-    if ! sudo test -d /root/.pip; then sudo mkdir /root/.pip; fi
-    echo -e "[global]\nextra-index-url=https://repo.fury.io/fossasia/" | sudo tee /root/.pip/pip.conf
-    echo "Set pip repo for current user"
-    if [ ! -d ~/.config/pip ]; then mkdir -p ~/.config/pip ; fi
-    echo -e "[global]\nextra-index-url=https://repo.fury.io/fossasia/" > ~/.config/pip/pip.conf
-}
-
 add_debian_repo() {
     sudo apt update
 }
 
 install_debian_dependencies()
 {
-    sudo -E apt install -y python3-pip sox libsox-fmt-all flac \
+    sudo -E apt install -y python3-pip sox libsox-fmt-all flac libportaudio2 \
     python3-cairo python3-flask mpv flite ca-certificates-java pixz udisks2
     # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
     # appropriate version of JRE-headless, which can be 8 or 9, depending on ARM6 or ARM7 platform.
@@ -74,7 +65,6 @@ function install_susi_server() {
 }
 
 ####  Main  ####
-add_fossasia_repo
 add_debian_repo
 
 echo "Downloading dependency: Susi Python API Wrapper"
