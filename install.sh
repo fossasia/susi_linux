@@ -12,6 +12,8 @@ install_debian_dependencies()
 {
     sudo -E apt install -y python3-pip sox libsox-fmt-all flac \
     python3-cairo python3-flask mpv flite ca-certificates-java pixz udisks2
+
+    sudo apt-get install python-pyaudio libatlas-base-dev pulseaudio
     # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
     # appropriate version of JRE-headless, which can be 8 or 9, depending on ARM6 or ARM7 platform.
 }
