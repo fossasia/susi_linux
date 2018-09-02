@@ -87,6 +87,7 @@ fi
 
 echo "Installing required Debian Packages"
 install_debian_dependencies
+install_dependencies
 
 echo "Installing Python Dependencies"
 # We don't use "sudo -H pip3" here, so that pip3 cannot store cache.
