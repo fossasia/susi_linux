@@ -10,14 +10,21 @@ add_debian_repo() {
 
 install_debian_dependencies()
 {
-    sudo -E apt install -y python3-pip sox libsox-fmt-all flac libportaudio2 \
+    sudo -E apt install -y python3-pip sox libsox-fmt-all flac \
+    libportaudio2 libatlas3-base libpulse0 libasound2 \
     python3-cairo python3-flask mpv flite ca-certificates-java pixz udisks2
     # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
     # appropriate version of JRE-headless, which can be 8 or 9, depending on ARM6 or ARM7 platform.
+    # libatlas3-base is to provide libf77blas.so, liblapack_atlas.so for snowboy.
+    # libportaudio2 is to provide libportaudio.so for PyAudio, which is snowboy's dependency.
+
+    # TODO: Replace mpv with something else which doesn't pull video-related stuff.
 }
 
 function install_seed_voicecard_driver()
 {
+    # TODO: Modify this driver install script, so that it won't pull libasound-plugins,
+    # which in turn, pull lot of video-related stuff.
     echo "installing Respeaker Mic Array drivers from source"
     git clone https://github.com/respeaker/seeed-voicecard.git
     cd seeed-voicecard
@@ -80,6 +87,7 @@ fi
 
 echo "Installing required Debian Packages"
 install_debian_dependencies
+install_dependencies
 
 echo "Installing Python Dependencies"
 # We don't use "sudo -H pip3" here, so that pip3 cannot store cache.
