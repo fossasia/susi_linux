@@ -133,9 +133,10 @@ For installation on Ubuntu and other Debian based distributions, read [Ubuntu Se
 
 ### Update Daemon
 
+At any point of time, we may want to check if the current version of susi linux is updated. Hence we compare against the corresponding remote repository and we update it accordingly every time the raspberry Pi has started.
 Use the following commands.
 * `cd update_daemon/`
-* `./update_daemon.sh`
+* `./update_check.sh`
 
 ### Factory Reset
 
