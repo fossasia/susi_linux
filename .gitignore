@@ -9,6 +9,5 @@ main/hotword_engine/snowboy/_snowboydetect.so
 main/hotword_engine/snowboy/snowboydetect.py
 /extras/output.wav
 /snowboy/
-config.json
 susi_server/
 seeed-voicecard/

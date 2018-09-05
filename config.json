@@ -1,0 +1,10 @@
+{
+  "WakeButton": "not available",
+  "default_stt": "google",
+  "default_tts": "google",
+  "detection_bell_sound": "extras/detection-bell.wav",
+  "flite_speech_file_path": "extras/cmu_us_slt.flitevox",
+  "hotword_engine": "Snowboy",
+  "usage_mode": "anonymous",
+  "room_name": "livingRoom"
+}
