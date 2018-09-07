@@ -23,5 +23,5 @@ sudo systemctl disable ss-python-flask.service
 sudo systemctl enable ss-susi-login.service
 
 echo "Please reboot"
-
+sleep 10;
 sudo reboot

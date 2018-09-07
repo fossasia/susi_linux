@@ -45,6 +45,7 @@ def config():
     display_message = {"configuration":"successful", "stt": stt, "tts": tts, "hotword": hotword, "wake":wake}
     resp = jsonify(display_message)
     resp.status_code = 200
+    subprocess.Popen(['sudo','bash',os.path.join(wifi_search_folder,'rwap.sh')])
     return resp # pylint-enable
 
 @app.route('/auth', methods=['GET'])
