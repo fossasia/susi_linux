@@ -12,8 +12,7 @@ install_debian_dependencies()
 {
     sudo -E apt install -y python3-pip sox libsox-fmt-all flac \
     libportaudio2 libatlas3-base libpulse0 libasound2 \
-    python3-cairo python3-flask mpv flite ca-certificates-java pixz udisks2 \
-    pulseaudio pavucontrol
+    python3-cairo python3-flask mpv flite ca-certificates-java pixz udisks2
     # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
     # appropriate version of JRE-headless, which can be 8 or 9, depending on ARM6 or ARM7 platform.
     # libatlas3-base is to provide libf77blas.so, liblapack_atlas.so for snowboy.
@@ -22,10 +21,15 @@ install_debian_dependencies()
     # TODO: Replace mpv with something else which doesn't pull video-related stuff.
 }
 
-function install_seed_voicecard_driver()
+function install_seeed_voicecard_driver()
 {
     # TODO: Modify this driver install script, so that it won't pull libasound-plugins,
     # which in turn, pull lot of video-related stuff.
+    if arecord -l | grep -q voicecard
+    then
+        echo "ReSpeaker Mic Array driver was already installed."
+        return 0
+    fi
     echo "installing Respeaker Mic Array drivers from source"
     git clone https://github.com/respeaker/seeed-voicecard.git
     cd seeed-voicecard
@@ -37,7 +41,7 @@ function install_seed_voicecard_driver()
 
 function install_dependencies()
 {
-    install_seed_voicecard_driver
+    install_seeed_voicecard_driver
 }
 
 function install_susi_server() {

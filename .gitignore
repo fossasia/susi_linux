@@ -1,5 +1,6 @@
 
 .idea/
+.vscode
 .response
 extras/cmu_us_slt.flitevox
 requirements.txt

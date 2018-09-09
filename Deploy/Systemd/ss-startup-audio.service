@@ -4,7 +4,8 @@ After=multi-user.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/mpg123 /home/pi/SUSI.AI/susi_linux/wav/ting-ting_susi_is_alive_and_listening.wav
+User=pi
+ExecStart=/usr/bin/play -q /home/pi/SUSI.AI/susi_linux/main/wav/ting-ting_susi_is_alive_and_listening.wav
 
 [Install]
 WantedBy=multi-user.target
