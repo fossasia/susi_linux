@@ -1,9 +1,9 @@
 [Unit]
 Description=Starting SUSI Server for SUSI Linux
-After=multi-user.target
 
 [Service]
 Type=oneshot
+User=pi
 ExecStart=/home/pi/SUSI.AI/susi_linux/susi_server/susi_server/bin/restart.sh
 
 [Install]
