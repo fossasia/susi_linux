@@ -1,10 +1,11 @@
 [Unit]
-Description=Starting SUSI Linux 
+Description=SUSI Linux
 Wants=network-online.target
-After=network-online.target
+After=network-online.target ss-susi-server.service
 
 [Service]
 Type=idle
+User=pi
 WorkingDirectory=/home/pi/SUSI.AI/susi_linux/
 ExecStart=/usr/bin/python3 -m main
 
