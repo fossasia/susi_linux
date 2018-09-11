@@ -11,6 +11,7 @@ python-Levenshtein
 pyalsaaudio
 spidev
 RPi.GPIO
+youtube-dl>2018
 
 # Repo for wheel packages, pre-compiled for ARM
 --extra-index-url https://repo.fury.io/fossasia/
