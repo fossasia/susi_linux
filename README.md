@@ -76,12 +76,12 @@ Step 3:Setting Up the client
 ![SSH_Config](docs/images/ssh-client.png "SSH_Config")
 <p>By default the username of the system is ‘pi’ and the password is ‘raspberry’</p>
 
-### Configuring SUSI.AI
+### Configuring SUSI.AI through the Android App
 * After Running the installation script , you'll have a RasPi in access point mode. With a Flask Server running at port 5000.
 * You can use the mobile clients to configure the device automatically.<br>
 <img src="docs/images/ios_app.gif" height="600px">
 
-* OR you can configure the Smart Speaker manually , in case of any failures in the mobile clients.
+### Configuring SUSI.AI Manually (in case of any failures in the mobile clients)
 
  - First, you have to configure the room name by hitting the url : localhost:5000/speaker_config?room_name=roomName 
     - Where roomName is the name of the room in which the speaker has too be placed
