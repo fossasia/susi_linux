@@ -12,6 +12,8 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 
 ## Link to the Mobile App (Android) for configurations : [Download Here](https://github.com/fossasia/susi_android/blob/apk/app-playStore-debug.apk)
 
+### Video for the smart speaker assembly: https://www.youtube.com/watch?v=jAEmRvQLmc0
+
 **Current Status**
 - Voice Detection working with Google Speech API/ IBM Watson Speech to Text API.
 - Voice Output working with Google TTS/ IBM Watson TTS/ Flite TTS.
