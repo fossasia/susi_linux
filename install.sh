@@ -68,6 +68,8 @@ function install_susi_server() {
         cd $SUSI_SERVER_PATH
         {
             ./gradlew build
+            # Stop Gradle daemons after building
+            ./gradlew --stop
         } || {
             echo PASS
         }
