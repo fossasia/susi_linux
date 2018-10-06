@@ -7,7 +7,7 @@ import pafy
 import vlc
 
 app = Flask(__name__)
-Instance = vlc.Instance()
+Instance = vlc.Instance('--no-video')
 player = Instance.media_player_new()
 url = ''
 
@@ -20,7 +20,8 @@ def youtube():
     vid = request.args.get('vid')
     url = 'https://www.youtube.com/watch?v=' + vid
     video = pafy.new(url)
-    best = video.getbest()
+    streams = video.audiostreams
+    best = streams[3]
     playurl = best.url
     Media = Instance.media_new(playurl)
     Media.get_mrl()
@@ -56,7 +57,7 @@ def restart():
     resp.status_code = 200
     return resp
 
-@app.route('/play')
+@app.route('/resume')
 def play():
     player.play()
     display_message = {"song":"played"}
