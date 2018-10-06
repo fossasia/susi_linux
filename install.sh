@@ -64,15 +64,15 @@ function install_susi_server() {
 
     if [ -d $SUSI_SERVER_PATH ]
     then
-        echo "Deploying local server"
+        echo "Deploying local SUSI server"
         cd $SUSI_SERVER_PATH
         {
             ./gradlew build
+            # Stop Gradle daemons after building
+            ./gradlew --stop
         } || {
             echo PASS
         }
-
-        bin/start.sh
     fi
 }
 
