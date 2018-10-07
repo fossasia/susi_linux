@@ -13,5 +13,3 @@ ACTION==\"remove\", KERNEL==\"sd?\", SUBSYSTEM==\"block\", ENV{ID_BUS}==\"usb\",
 
 echo "Copy udev rules to trigger Media Discovery"
 sudo cp $DIR_PATH/$RULE_NAME /etc/udev/rules.d/
-
-sudo service udev restart
