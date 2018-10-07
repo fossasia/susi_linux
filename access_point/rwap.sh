@@ -16,7 +16,6 @@ sed -i '9,17d' interfaces
 
 #Empty port 5000
 #Remove the server file from auto-boot
-sudo systemctl daemon-reload
 sudo systemctl enable ss-startup-audio.service
 sudo systemctl enable ss-susi-linux.service
 sudo systemctl disable ss-python-flask.service
