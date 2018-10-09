@@ -37,10 +37,7 @@ You should have the following parts:
 a pairing process is started on the mobile phone.
 * First you need an account on http://susi.ai - follow the instructions in the mobile app
 * attach the SUSI.AI speaker to USB power and wait that it boots up.
-* Connect the device with the app:
-  * Open Settings
-  * Connect the speaker
-  * Wait for re-boot of the speaker.
+* Connect the device with the app: Open Settings, Connect the speaker, Wait for re-boot of the speaker.
 
 ## Usage
 
