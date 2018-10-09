@@ -2,14 +2,14 @@
 
 sudo apt-get install qemu
 
-git clone https://github.com/dhruvvyas90/qemu-rpi-kernel.git #jessie
+git clone https://github.com/dhruvvyas90/qemu-rpi-kernel.git
 
 qemu-img convert -f raw -O qcow2 2017-08-16-raspbian-stretch-lite.zip raspbian-stretch-lite.qcow
 
 qemu-img resize raspbian-stretch-lite.qcow +6G
 
 sudo qemu-system-arm \
--kernel ./kernel-qemu-4.4.34-jessie \
+-kernel ./kernel-qemu-4.9.59-stretch \
 -append "root=/dev/sda2 panic=1 rootfstype=ext4 rw" \
 -hda raspbian-stretch-lite.qcow \
 -cpu arm1176 -m 256 \
