@@ -6,7 +6,7 @@ You should have the following parts:
 * A ReSpeaker 2-Mics Pi HAT
 * A speaker (like Audiocore AC870) with attached JST PH 2.0 2-Pin cable
 * A 3D-printed SUSI.AI Faceplate - or DIY print from https://www.thingiverse.com/thing:3124755
-* A 16GB SD card with pre-flashed OS - or DIY flash from https://github.com/fossasia/susi_linux/releases
+* A 16GB SD card with pre-flashed OS - or DIY flash from https://github.com/fossasia/susi_linux/releases/tag/0.3
 * 4x 3cm spacers, 4x 2.5mm nuts, 4x 2.5mm screws, 4x 3mm screws, 4x washer, 4x 3mm nuts
 
 ### What do you require to assemble the device
@@ -25,7 +25,7 @@ You should have the following parts:
 ### Installation
 The device needs an internet connection to work. To configure the device to use the wifi connection,
 a pairing process is started on the mobile phone:
-* Download and install the SUSI.AI App from https://github.com/fossasia/susi_android/releases
+* Download and install the SUSI.AI App from https://github.com/fossasia/susi_android/releases/tag/1.1
 * First you need an account on http://susi.ai - follow the instructions in the mobile app
 * attach the SUSI.AI speaker to USB power and wait that it boots up.
 * Connect the device with the app: Open Settings, Connect the speaker, Wait for re-boot of the speaker.
