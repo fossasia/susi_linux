@@ -1,6 +1,7 @@
 #!/bin/bash
 
-sudo apt-get install qemu
+sudo apt-get update
+sudo apt-get install qemu-kvm qemu virt-manager virt-viewer libvirt-bin
 
 git clone https://github.com/dhruvvyas90/qemu-rpi-kernel.git
 
