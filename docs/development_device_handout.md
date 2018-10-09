@@ -1,4 +1,4 @@
-## The SUSI.AI Development DIY Kit
+## The SUSI.AI Speaker Development DIY Kit
 This is a short tutorial to get started with the parts of the SUSI.AI development kit.
 You should have the following parts:
 
