@@ -56,10 +56,7 @@ echo "denyinterfaces wlan0" >> /etc/dhcpcd.conf
 systemctl enable hostapd
 systemctl enable dnsmasq
 
-sudo service hostapd start
-sudo service dnsmasq start
-
-# add server in the auto-boot up list 
+# add server in the auto-boot up list
 echo "All done! Rebooting"
 
 sudo reboot
