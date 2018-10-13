@@ -2,8 +2,6 @@
 on the ReSpeaker and also to add custom light animations in the future
 """
 
-import sys
-sys.path.append("..")
-from states import lights
+from ..states.lights import lights
 
-lights.lights.off()
+lights.off()
