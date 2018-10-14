@@ -9,6 +9,8 @@ You should have the following parts:
 * A 16GB SD card with pre-flashed OS - or DIY flash from https://github.com/fossasia/susi_linux/releases/tag/0.3
 * 4x 3cm spacers, 4x 2.5mm nuts, 4x 2.5mm screws, 4x 3mm screws, 4x washer, 4x 3mm nuts
 
+An assembly video can be found at https://youtu.be/jAEmRvQLmc0
+
 ### What do you require to assemble the device
 * A small crosstip/philips screwdriver
 * Gripping pliers
