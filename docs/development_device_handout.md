@@ -33,3 +33,16 @@ a pairing process is started on the mobile phone:
 ### Usage
 * To speak to the SUSI.AI speaker, say 'susi' and wait for the 'bing' sound
 * After you hear the sound, talk to susi.
+
+### Problems and Fixes
+The development device may crash and never work again. Here is what may happend:
+* The Raspberry Pi has a huge underpower-problem. Because the processor drains a lot of current and the power must be shared with the speaker amplifier, it may happen that applications crash at any time in the development device. It may even happen during startup. You can recognize this if the red LED goes off.
+* There may be unresolved bugs, configuration mistakes and whatever you might imagine. This is a development device and it is supposed to be the plattform to investigate this.
+
+To get the device running anyway, you can do the following:
+* connect a ethernet cable between the raspberry pi and your computer
+* connect to the device with `ssh pi@raspberrypi.local`. The password is `raspberry`.
+* cd into the application folder: `cd SUSI.AI/susi_linux/`
+* you can manually start the Susi linux client now with (i.e.) `nohup python3 -m main &`
+* if you want to redefine the wifi hotspot, run `cd access_point` and `sudo ./wifi_search.sh <ssid> <pw>`. This writes the information about the wifi access point into `/etc/wpa_supplicant/wpa_supplicant.conf`
+* if you have not configured the device using the android client or the android client crashes, you can trigger the re-start after hot spot configuration with `sudo ./rwap.sh`. The device will restart then in anonymous mode, that means your device is not connected to your Susi account and may share memory with all other anonymous users.
