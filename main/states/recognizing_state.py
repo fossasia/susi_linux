@@ -53,6 +53,7 @@ class RecognizingState(State):
             self.notify_renderer('recognizing')
             GPIO.output(22, False)
             print("Got it! Now to recognize it...")
+            lights.off()
             lights.think()
             try:
                 value = self.__recognize_audio(
