@@ -22,19 +22,29 @@ An assembly video can be found at https://youtu.be/jAEmRvQLmc0
 
 ### What you should do first
 * If your SD card has no image on it: download and flash
-* If your SD card has an image on it: make a copy of the OS from the SD card: i.e.<br/>`sudo dd if=/dev/rdisk5 bs=16m | pv -s 16G > rpi_devstep0.img`
+* If your SD card has an image on it: make a copy of the OS from the SD card: i.e.<br/>`sudo dd if=/dev/rdisk5 bs=16M | pv -s 16G > rpi_devstep0.img`
 
 ### Installation
 The device needs an internet connection to work. To configure the device to use the wifi connection,
 a pairing process is started on the mobile phone:
 * Download and install the SUSI.AI App from https://github.com/fossasia/susi_android/releases/tag/1.1
-* First you need an account on http://susi.ai - follow the instructions in the mobile app
+* First you need an account on http://susi.ai - follow the instructions in the mobile app, remeber to check your email and verify your account.
 * attach the SUSI.AI speaker to USB power and wait that it boots up.
-* Connect the device with the app: Open Settings, Connect the speaker, Wait for re-boot of the speaker.
+* Connect the device with the app: 
+  1. Open the App
+  1. Select the Blue SUSI ICON
+  1. Select the three dots menu (...)
+  1. Open -> Settings
+  1. Scroll down to the Devices and select where is says "Click here to move to device setup screen"
+  1. When prompted select the Wifi Service
+  1. Enter the password/phrase and select Done (maybe twice)
+  1. Enter your SUSI user password to connect the smart speaker device and select Done (maybe twice). 
+  1. Wait for re-boot of the speaker, she will tell you when the start up is complete.
 
 ### Usage
 * To speak to the SUSI.AI speaker, say 'susi' and wait for the 'bing' sound
 * After you hear the sound, talk to susi.
+* If you don't like the speaker quality you can plug external speakers into the 3.5mm jack that is on the **Respeaker Pi Hat card** 
 
 ### Problems and Fixes
 The development device may crash and never work again. Here is what may happend:
