@@ -76,6 +76,12 @@ function install_susi_server() {
     fi
 }
 
+disable_ipv6_avahi() {
+	# Avahi has bug with IPv6, and make it fail to propage mDNS domain.
+	sed -i 's/use-ipv6=yes/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf
+}
+
+
 ####  Main  ####
 add_debian_repo
 
@@ -93,6 +99,7 @@ fi
 echo "Installing required Debian Packages"
 install_debian_dependencies
 install_dependencies
+disable_ipv6_avahi
 
 echo "Installing Python Dependencies"
 # We don't use "sudo -H pip3" here, so that pip3 cannot store cache.
