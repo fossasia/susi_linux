@@ -11,6 +11,11 @@ Make sure you update your system before starting installation using
 ```
 $ sudo apt update && sudo apt upgrade
 ```
+Then install basic requirements
+```
+sudo apt-get install oracle-java8-jdk git gradle
+```
+
 
 ### IMPORTANT
 

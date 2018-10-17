@@ -23,6 +23,7 @@ class BusyState(State):
         # subprocess.call(['killall', 'mpv']
         if hasattr(self, 'audio_process'):
             self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
+            lights.off()
             lights.wakeup()
             subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
             lights.wakeup()
@@ -47,10 +48,12 @@ class BusyState(State):
 
             if 'answer' in reply.keys():
                 print('Susi:' + reply['answer'])
+                lights.off()
                 lights.speak()
                 self.__speak(reply['answer'])
                 lights.off()
             else:
+                lights.off()
                 lights.speak()
                 self.__speak("I don't have an answer to this")
                 lights.off()
@@ -60,7 +63,7 @@ class BusyState(State):
                 stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    requests.get('http://localhost:7070/song/'+video_url)
+                    requests.get('http://localhost:7070/song/' + video_url)
                 else:
                     audio_url = reply['identifier']
                     audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore

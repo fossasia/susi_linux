@@ -1,0 +1,10 @@
+[Unit]
+Description= Control of random lights generated in ReSpeaker 
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3  /home/pi/SUSI.AI/susi_linux/main/light_control/white_light_control.py
+
+[Install]
+WantedBy=multi-user.target

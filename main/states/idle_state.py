@@ -30,6 +30,7 @@ class IdleState(State):
         :param payload: Nothing is expected
         :return: None
         """
+        lights.off()
         print('idle')
         self.isActive = True
         lights.wakeup()
