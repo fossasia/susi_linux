@@ -1,7 +1,5 @@
 from flask import Flask , render_template , request
 from flask import jsonify
-import subprocess   # nosec #pylint-disable type: ignore
-import os
 import json_config
 import pafy
 import vlc
@@ -66,4 +64,4 @@ def play():
     return resp
 
 if __name__ == '__main__':
-    app.run(debug=True,port=7070,host= '0.0.0.0')
+    app.run(debug=false,port=7070,host= '0.0.0.0') # nosec #pylint-disable type: ignore
