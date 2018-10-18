@@ -1,6 +1,5 @@
 from flask import Flask , render_template , request
 from flask import jsonify
-import json_config
 import pafy
 import vlc
 
