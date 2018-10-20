@@ -10,49 +10,57 @@ SUSI AI on Linux
 This project aims at creating an implementation of Susi, capable to run on Linux Devices in a headless mode.
 It will enable you to bring Susi AI intelligence to all devices you may think like a Speaker, Car etc.
 
-## Link to the Mobile App (Android) for configurations : [Download Here](https://github.com/fossasia/susi_android/blob/apk/app-playStore-debug.apk)
+### Mobile App (Android)
 
-### Video for the smart speaker assembly: https://www.youtube.com/watch?v=jAEmRvQLmc0
+This app is for configuration. [Download Here](https://github.com/fossasia/susi_android/blob/apk/app-playStore-debug.apk)
 
-**Current Status**
+### Smart speaker assembly tutorial
+
+How to assembly a smart speaker: [Video](https://www.youtube.com/watch?v=jAEmRvQLmc0)
+
+### Current Status
+
 - Voice Detection working with Google Speech API/ IBM Watson Speech to Text API.
 - Voice Output working with Google TTS/ IBM Watson TTS/ Flite TTS.
-- Susi AI response working through Susi AI API Python Wrapper(https://github.com/fossasia/susi_api_wrapper)
-- Hotword Detection works for hotword 'Susi'
+- Susi AI response working through Susi AI [API Python Wrapper](https://github.com/fossasia/susi_api_wrapper)
+- Hotword Detection works for hotword "Susi"
 - SUSI Wake Button in Raspberry Pi is working.
 - Audio parsing working through SOX
 - Youtube audio working MPV player
 - Connection between the mobile devices and the smart speaker is done through ssh by using Access Point Mode
 
-**Roadmap**
+### Roadmap
+
 - Offline Voice Detection (if possible with satisfactory results)
 - Make Update Daemon check for the updates at regular intervals
 
-**General Working Of SUSI**
+### General working of SUSI
+
 - SUSI.AI follows a finite state system for the code architecture.
 - Multiple daemons are created during installation (Media Daemon, Factory Daemon, Update Daemon)
     - The Update Daemon updates the repo every time the Raspberry Pi is restarted up
     - The Media Daemon detects for USB connection and scans the songs present in it to play from Smart Speaker
     - The factory reset Daemon is a button on Port 17 which delete the repo completely and restores it from the backup
-- A local Server is deployed every time the Rasperry Pi Starts and automatically switches to online server if there are any issues with the local server
-- Google TTS and STT services are used as default services but if the internet fails, a switch to offline services PocketSphinx(STT) and Flite(TTS) is made automatically
+- A local Server is deployed every time the Rasperry Pi starts and automatically switches to online server if there are any issues with the local server
+- Google TTS and STT services are used as default services but if the internet fails, a switch to offline services PocketSphinx (STT) and Flite (TTS) is made automatically
 
 ## Setting up Susi on Linux
 
 Setting up Susi on Linux is pretty easy.
 
-**Note : For the app to work properly, repo must be cloned inside the folder `/home/pi/SUSI.AI/` , i.e. the path of your repo will look like `/home/pi/SUSI.AI/susi_linux/`**
+**Note**:
+
+For the app to work properly, repo must be cloned inside the folder `/home/pi/SUSI.AI/` , i.e. the path of your repo will look like `/home/pi/SUSI.AI/susi_linux/`
 
 ### Minimum Requirements
-* A hardware device capable to run Linux. It includes development boards like Raspberry Pi 
-and other generic machines.
+* A hardware device capable to run Linux. Currently on Raspberry Pi 3 is supported. Other embedded computers, like BeagleBone Black, Orange Pi, will be supported in the future.
 * A Debian based Linux Distribution. Tested on
     - Raspbian on Raspberry Pi 3
     - Ubuntu 64bit on x64 architecture
-* A microphone for input. If you are using a development board like Raspberry Pi which does not have microphone
-inbuilt, you can use a USB Microphone.
-* A Speaker for Output. On development boards like Raspberry Pi, you can use a portable speaker that connects through
-3.5mm audio jack.
+* A microphone for input. Currently the development team is using [ReSpeaker 2-Mics Pi HAT](https://www.seeedstudio.com/ReSpeaker-2-Mics-Pi-HAT-p-2874.html) for Raspberry Pi.
+* A speaker for output. On development boards like Raspberry Pi, you can use a portable speaker that connects through
+3.5mm audio jack. If you are using _ReSpeaker 2-Mics Pi HAT_, the speaker should be plugged to this board.
+
 
 ### Installation on Raspberry Pi
 
@@ -65,7 +73,7 @@ Step 1: Initial Setup
 * One should have an SSH viewer like JuiceSSH(Android) and iTerminal(IOS) installed on their mobile devices
 * Now we must enable SSH on our raspberry Pi
 
-Step 2: Enabling SSH on Raspberry PI
+Step 2: Enabling SSH on Raspberry Pi
 * To enable SSH on your Pi , follow the following steps:
     <br>
     `Menu > Preferences > Raspberry Pi Configuration.`
