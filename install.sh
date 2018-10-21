@@ -147,3 +147,5 @@ echo -e "\t \033[0;33m-Google for text-to-speech"
 echo -e "\t \033[0;34m-Use snowboy for hot-word detection"
 echo -e "\t \033[0;35m-Do not use GPIO for wake button\033[0m"
 echo -e "python3 config_generator.py \033[0;32mgoogle \033[0;33mgoogle \033[0;34my \033[0;35mn \033[0m"
+
+sudo reboot
