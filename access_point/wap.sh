@@ -60,6 +60,4 @@ sudo service hostapd start
 sudo service dnsmasq start
 
 # add server in the auto-boot up list 
-echo "All done! Rebooting"
-
-sudo reboot
+echo "All done! Reboot your Pi"
