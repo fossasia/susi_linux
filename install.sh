@@ -1,16 +1,17 @@
-#!/bin/bash
-set -e
+#!/bin/bash -e
+
 SCRIPT_PATH=$(realpath $0)
 DIR_PATH=$(dirname $SCRIPT_PATH)
 
 
 add_debian_repo() {
-    sudo apt update
+    # Will add additional APT repo in the future
+    sudo apt-get update
 }
 
 install_debian_dependencies()
 {
-    sudo -E apt install -y python3-pip sox libsox-fmt-all flac \
+    sudo -E apt-get install -y python3-pip sox libsox-fmt-all flac \
     libportaudio2 libatlas3-base libpulse0 libasound2 \
     python3-cairo python3-flask mpv flite ca-certificates-java pixz udisks2 vlc-nox \
     # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
@@ -30,7 +31,7 @@ function install_seeed_voicecard_driver()
         echo "ReSpeaker Mic Array driver was already installed."
         return 0
     fi
-    echo "installing Respeaker Mic Array drivers from source"
+    echo "Installing Respeaker Mic Array drivers from source"
     git clone https://github.com/respeaker/seeed-voicecard.git
     cd seeed-voicecard
     sudo ./install.sh
@@ -45,9 +46,11 @@ function install_dependencies()
 }
 
 function install_susi_server() {
+    echo "To install SUSI Server"
     if  [ ! -d "susi_server" ]; then mkdir $DIR_PATH/susi_server; fi
 
     SUSI_SERVER_PATH=$DIR_PATH/susi_server/susi_server
+    echo "Clone susi_server repo to $SUSI_SERVER_PATH"
     if [ ! -d $SUSI_SERVER_PATH ]
     then
         git clone --recurse-submodules https://github.com/fossasia/susi_server.git $SUSI_SERVER_PATH
@@ -78,7 +81,7 @@ function install_susi_server() {
 
 disable_ipv6_avahi() {
 	# Avahi has bug with IPv6, and make it fail to propage mDNS domain.
-	sed -i 's/use-ipv6=yes/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf
+	sudo sed -i 's/use-ipv6=yes/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf || true
 }
 
 
@@ -90,7 +93,7 @@ if [ ! -d "susi_python" ]
 then
     git clone https://github.com/fossasia/susi_api_wrapper.git
 
-    echo "setting correct location"
+    echo "Move susi_python to correct location"
     mv susi_api_wrapper/python_wrapper/susi_python susi_python
     mv susi_api_wrapper/python_wrapper/requirements.txt requirements.txt
     rm -rf susi_api_wrapper
@@ -99,7 +102,6 @@ fi
 echo "Installing required Debian Packages"
 install_debian_dependencies
 install_dependencies
-disable_ipv6_avahi
 
 echo "Installing Python Dependencies"
 # We don't use "sudo -H pip3" here, so that pip3 cannot store cache.
@@ -135,6 +137,8 @@ echo "Creating a backup folder for future factory_reset"
 tar -I 'pixz -p 2' -cf ../reset_folder.tar.xz --checkpoint=.1000 -C .. susi_linux
 echo ""  # To add newline after tar's last checkpoint
 mv ../reset_folder.tar.xz $DIR_PATH/factory_reset/reset_folder.tar.xz
+
+disable_ipv6_avahi
 
 echo "Converting RasPi into an Access Point"
 sudo bash $DIR_PATH/access_point/wap.sh
