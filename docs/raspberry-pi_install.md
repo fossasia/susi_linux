@@ -1,7 +1,56 @@
-# Installation on Raspberry Pi
+# Installation on Raspbian Lite
 
-Tested on
-- Raspberry Pi 3 with Raspbian Stretch Full 
+- Tested on Raspberry Pi 3 with Raspbian Stretch Lite
+
+## Configure before access
+
+Assume that you don't have dedicated monitor and keyboard for your RPi. This is the first setup you need to do, to be able to access it later.
+
+- Insert RPi SD card to your laptop.
+- If you are using Ubuntu on laptop, the SD card should be mounted automatically.
+- Go to the `boot` folder of SD card, put an empty file named _ssh_ there. This is to enable SSH.
+
+```
+sudo touch ssh
+```
+- Go to the `rootfs` folder of SD card. Edit the file _etc/wpa_supplicant/wpa_supplicant.conf_, to let RPi connect to your home wifi network later. The example content will be like this:
+
+```
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+country=VN
+
+network={
+        ssid="My warm home"
+        psk="thisispassword"
+}
+```
+- Now you can unmount, and unplug the SD card.
+
+## Install SUSI Linux
+
+- Install `git` on your RPi with this command `sudo apt-get install git`.
+- Update your system using `sudo apt-get update && sudo apt-get upgrade `
+- Clone repository and install dependencies
+    - In your root directory, make a folder named `SUSI.AI` and move into the folder.
+    - Clone the repository for SUSI Linux and move into the folder.
+    ```
+    $ mkdir SUSI.AI
+    $ cd SUSI.AI
+    $ git clone https://github.com/fossasia/susi_linux.git
+    $ cd susi_linux
+    ```
+- Run the install script by running
+    ```
+    $ ./install.sh
+    ```
+- Enjoy :smile:
+
+
+# Installation on Raspbian with desktop
+
+Tested on Raspberry Pi 3 with Raspbian Stretch.
 
 You will need to have access to Raspberry Pi Screen and terminal for the initial setup.
 You may start from ssh later.
@@ -11,6 +60,11 @@ Make sure you update your system before starting installation using
 ```
 $ sudo apt update && sudo apt upgrade
 ```
+Then install basic requirements
+```
+sudo apt-get install oracle-java8-jdk git
+```
+
 
 ### IMPORTANT
 
@@ -27,7 +81,8 @@ Refer to this article for step by step instructions on changing locale to ```en_
         - `sudo apt install openjdk-8-jre* openjdk-8-jdk*`
 
 ## Steps
-#### **Clone repository and install dependencies**
+
+#### Clone repository and install dependencies
 - In your root directory, make a folder named `SUSI.AI` and move into the folder.
 - Clone the repository for SUSI Linux and move into the folder.
 ```
@@ -120,46 +175,3 @@ bell after pressing button to confirm SUSI has started listening. Ask your query
 
 If you still face any errors in the setup, please provide a screenshot or logs of errors being encountered.
 This would help rectify the issue.
-
-
-# Installation on Raspbian Lite
-- Tested on
-- Raspberry Pi 3 with Raspbian Stretch Lite
-
-You will need to have access to Raspberry Pi Screen and terminal for the initial setup.
-You may start from ssh later.
-
-## STEPS
-- First configure wifi on your pi
-    - Open the following file ```` sudo nano /etc/wpa_supplicant/wpa_supplicant.conf ````
-    - And write the following commands
-    - ![wifi-setup](./images/raspbian-lite-wifi.png)
-- Now, install GIT on your pi.
-    - Use the command ```` sudo apt-get install git ````
-- Update your system using ````sudo apt-get update && sudo apt-get upgrade ````
-- Install Java JDK and JRE for local SUSI server
-    - Use the following command ```` sudo apt install openjdk-8-jre openjdk-8-jdk -y ````
-- Clone repository and install dependencies
-    - In your root directory, make a folder named `SUSI.AI` and move into the folder.
-    - Clone the repository for SUSI Linux and move into the folder.
-    ```
-    $ mkdir SUSI.AI
-    $ cd SUSI.AI
-    $ git clone https://github.com/fossasia/susi_linux.git
-    $ cd susi_linux
-    ```
-- Run the install script by running 
-    ```
-    $ ./install.sh
-    ```
-- Enjoy :smile:
-
-## Enabling SSH
-
-You can use the following commands to enable SSH connection on your pi
-- `sudo systemctl enable ssh`
--`sudo systemctl start ssh `
-
-Similarly, to stop and disable SSH
-- `sudo systemctl stop ssh`
-- `sudo systemctl disable ssh `
