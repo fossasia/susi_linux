@@ -16,7 +16,7 @@ cd SUSI.AI
 
 git clone https://github.com/fossasia/susi_linux
 
-cd susi_linux/travis/
+cd susi_linux/.travis_scripts/
 
 chmod +x travis_install.sh
 
