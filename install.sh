@@ -1,5 +1,5 @@
-#!/bin/bash
-set -e
+#!/bin/bash -e
+
 SCRIPT_PATH=$(realpath $0)
 DIR_PATH=$(dirname $SCRIPT_PATH)
 
@@ -11,7 +11,7 @@ add_debian_repo() {
 
 install_debian_dependencies()
 {
-    sudo apt-get install -y python3-pip sox libsox-fmt-all flac \
+    sudo -E apt-get install -y python3-pip sox libsox-fmt-all flac \
     libportaudio2 libatlas3-base libpulse0 libasound2 \
     python3-cairo python3-flask mpv flite ca-certificates-java pixz udisks2
     # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
@@ -46,6 +46,7 @@ function install_dependencies()
 }
 
 function install_susi_server() {
+    echo "To install SUSI Server"
     if  [ ! -d "susi_server" ]; then mkdir $DIR_PATH/susi_server; fi
 
     SUSI_SERVER_PATH=$DIR_PATH/susi_server/susi_server
@@ -80,7 +81,7 @@ function install_susi_server() {
 
 disable_ipv6_avahi() {
 	# Avahi has bug with IPv6, and make it fail to propage mDNS domain.
-	sed -i 's/use-ipv6=yes/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf
+	sudo sed -i 's/use-ipv6=yes/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf || true
 }
 
 
@@ -101,7 +102,6 @@ fi
 echo "Installing required Debian Packages"
 install_debian_dependencies
 install_dependencies
-disable_ipv6_avahi
 
 echo "Installing Python Dependencies"
 # We don't use "sudo -H pip3" here, so that pip3 cannot store cache.
@@ -137,6 +137,8 @@ echo "Creating a backup folder for future factory_reset"
 tar -I 'pixz -p 2' -cf ../reset_folder.tar.xz --checkpoint=.1000 -C .. susi_linux
 echo ""  # To add newline after tar's last checkpoint
 mv ../reset_folder.tar.xz $DIR_PATH/factory_reset/reset_folder.tar.xz
+
+disable_ipv6_avahi
 
 echo "Converting RasPi into an Access Point"
 sudo bash $DIR_PATH/access_point/wap.sh
