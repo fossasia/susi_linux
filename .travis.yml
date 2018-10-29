@@ -10,7 +10,7 @@ install:
   # - chmod +x .travis_scripts/install.sh
   # - chmod +x qemu_install.sh
   - chmod +x .travis_scripts/travis_script.sh
-  - sudo bash travis_scripts/travis_script.sh  
+  - sudo bash .travis_scripts/travis_script.sh  
   - pip3 install -U pytest
   - pip3 install -U pep8
 script:
