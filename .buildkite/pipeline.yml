@@ -1,0 +1,6 @@
+# This pipeline will trigger another pipeline on pi-gen repo
+- trigger: "build-susibian"
+  label: ":cherries: Build SUSIbian"
+  build:
+    branch: "susi"
+    message: Continue from "${BUILDKITE_MESSAGE}"
