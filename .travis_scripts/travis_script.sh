@@ -11,7 +11,7 @@ cd qemu-2.12.0-rc0
 make
 
 # Downloading the latest Raspbian Qcow
-wget https://drive.google.com/uc?export=download&confirm=DBZl&id=1CJj3sefBr5cj3k-88WSAXbtITg1EU_hW
+wget http://download1476.mediafire.com/c6awtxzajfwg/yujb71p1d2q19k2/raspbian-lite.qcow2
 
 qemu-img resize raspbian-lite.qcow2 +8G
 
