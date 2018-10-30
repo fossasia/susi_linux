@@ -10,7 +10,7 @@ cd qemu-2.12.0-rc0
 ./configure --target-list=arm-softmmu,aarch64-softmmu
 make
 
-sudo apt-get install qemu qemu-system-arm qemu-img
+sudo apt-get install qemu-kvm qemu virt-manager virt-viewer libvirt-bin
 
 # Downloading the latest Raspbian Qcow
 wget http://download1476.mediafire.com/c6awtxzajfwg/yujb71p1d2q19k2/raspbian-lite.qcow2
