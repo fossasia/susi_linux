@@ -98,7 +98,7 @@ fi
 
 echo "Installing required Debian Packages"
 install_debian_dependencies
-install_dependencies
+# install_dependencies
 disable_ipv6_avahi
 
 echo "Installing Python Dependencies"
