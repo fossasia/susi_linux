@@ -7,8 +7,6 @@ install:
   - sudo apt-get update --fix-missing
   # We are going to install realpath, which comes as a separate package in Ubuntu Trusty
   - sudo apt-get install realpath
-  # - chmod +x .travis_scripts/install.sh
-  # - chmod +x qemu_install.sh
   - chmod +x .travis_scripts/travis_script.sh
   - sudo bash .travis_scripts/travis_script.sh  
   - pip3 install -U pytest
