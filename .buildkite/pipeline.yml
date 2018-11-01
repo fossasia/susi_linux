@@ -5,4 +5,4 @@
   label: ":cherries: Build SUSIbian"
   build:
     branch: "susi"
-    message: Continue from "${BUILDKITE_MESSAGE}"
+    message: Continue from "${BUILDKITE_MESSAGE:0:40}"
