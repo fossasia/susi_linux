@@ -1,4 +1,6 @@
-# This pipeline will trigger another pipeline on pi-gen repo
+# This pipeline will trigger another pipeline on pi-gen repo.
+# To trigger this pipeline, merge the code to "build-image" branch and push.
+
 - trigger: "build-susibian"
   label: ":cherries: Build SUSIbian"
   build:
