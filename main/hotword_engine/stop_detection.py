@@ -15,7 +15,7 @@ class StopDetector():
     def __init__(self, detection) -> None:
         super().__init__()
         self.detector = snowboydecoder.HotwordDetector(
-            RESOURCE_FILE, sensitivity=0.6)
+            RESOURCE_FILE, sensitivity=0.45)
         self.detection = detection
 
     def run(self):
