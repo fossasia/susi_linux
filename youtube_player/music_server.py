@@ -63,4 +63,4 @@ def play():
     return resp
 
 if __name__ == '__main__':
-    app.run(debug=false, port=7070, host='0.0.0.0')
+    app.run(debug=False, port=7070, host='0.0.0.0')
