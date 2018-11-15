@@ -1,7 +1,7 @@
 """ Function to test the internet connection
 """
 import urllib.request
-from urllib import URLError
+from urllib.error import URLError
 
 
 def internet_on():
