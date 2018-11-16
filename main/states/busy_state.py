@@ -89,7 +89,7 @@ class BusyState(State):
                     print()
 
             if 'stop' in reply.keys():
-                subprocess.call(['killall', 'mpv'])  # nosec #pylint-disable type: ignore
+                requests.get('http://localhost:7070/stop')
                 subprocess.call(['killall', 'play'])  # nosec #pylint-disable type: ignore
                 self.transition(self.allowedStateTransitions.get('idle'))
 
