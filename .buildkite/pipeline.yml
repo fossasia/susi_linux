@@ -6,3 +6,5 @@
   build:
     branch: "susi"
     message: Continue from "${BUILDKITE_MESSAGE:0:40}"
+    env:
+      SUSI_REVISION: $BUILDKITE_COMMIT
