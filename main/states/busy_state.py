@@ -8,6 +8,7 @@ import os
 from ..hotword_engine.stop_detection import StopDetector
 import signal
 from ..speech import TTS
+import requests
 
 
 class BusyState(State):
@@ -20,14 +21,6 @@ class BusyState(State):
         """
         # subprocess.call(['killall', 'play'])
         # subprocess.call(['killall', 'mpv']
-        if hasattr(self, 'video_process'):
-            self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
-            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.off()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.video_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
         if hasattr(self, 'audio_process'):
             self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
             lights.off()
@@ -70,10 +63,7 @@ class BusyState(State):
                 stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    video_process = subprocess.Popen(['mpv', '--no-video', 'https://www.youtube.com/watch?v=' + video_url[4:], '--really-quiet'])  # nosec #pylint-disable type: ignore
-                    self.video_process = video_process
-                    stopAction.run()
-                    stopAction.detector.terminate()
+                    requests.get('http://localhost:7070/song?vid=' + video_url[4:])
                 else:
                     audio_url = reply['identifier']
                     audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
