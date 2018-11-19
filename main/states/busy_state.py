@@ -63,7 +63,7 @@ class BusyState(State):
                 stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    requests.get('http://localhost:7070/song/' + video_url)
+                    requests.get('http://localhost:7070/song?vid=' + video_url[4:])
                 else:
                     audio_url = reply['identifier']
                     audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
