@@ -1,3 +1,5 @@
+# Setup RPi as Buildkite agent to build SUSIbian image
+
 ## 1. Install software
 
 - The RPi should be flashed with Raspbian Lite. The ReSpeaker driver must not be installed.
@@ -9,7 +11,16 @@
 ## 2. Configuration
 - Let `apt-cacher-ng` start automatically on boot: `sudo systemctl enable apt-cacher-ng`
 - Set token for `buildkite-agent`, it can be grabbed [here](https://buildkite.com/organizations/fossasia/agents#setup-debian).
-- Generate SSH key for `buildkite-agent` user. Note that the home directory of this user is `/var/lib/buildkite-agent`.
+- Generate SSH key for `buildkite-agent` user. Note that the home directory of this user is `/var/lib/buildkite-agent`. You can do it by:
+
+```
+sudo su buildkite-agent
+ssh-keygen -t ed25519
+exit
+```
+
+Here, we use `sudo su` instead of `su`, to type our password, instead of `buildkite-agent`'s password (which doesn't exist). For SSH key type, `Ed25519` is just my personal preference (which is new, fast, short key length), you can use the more common type RSA.
+
 - Add SSH host for the hosting server (the server which the build script will upload image to), by adding these lines to `/var/lib/buildkite-agent/.ssh/config`
 
 ```
