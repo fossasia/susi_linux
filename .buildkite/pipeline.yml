@@ -1,10 +1,13 @@
 # This pipeline will trigger another pipeline on pi-gen repo.
-# To trigger this pipeline, merge the code to "build-image" branch and push.
+# To trigger this pipeline, merge the code to "development" branch and push.
 
 - trigger: "build-susibian"
   label: ":cherries: Build SUSIbian"
   build:
     branch: "susi"
-    message: Continue from "${BUILDKITE_MESSAGE:0:40}"
+    message: Continue from "${BUILDKITE_MESSAGE:0:40}..."
     env:
+      # Ref: https://buildkite.com/docs/pipelines/environment-variables
       SUSI_REVISION: $BUILDKITE_COMMIT
+      SUSI_BRANCH: $BUILDKITE_BRANCH
+      SUSI_PULL_REQUEST: $BUILDKITE_PULL_REQUEST
