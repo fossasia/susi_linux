@@ -12,10 +12,7 @@ add_fossasia_repo() {
 }
 
 add_debian_repo() {
-    echo "Add ReSpeaker Debian repo"
-    # Respeaker driver https://github.com/respeaker/deb
-    wget -qO- http://respeaker.io/deb/public.key | sudo apt-key add -
-    echo "deb http://respeaker.io/deb/ stretch main" | sudo tee /etc/apt/sources.list.d/respeaker.list
+	# Add extra debian repo here, if needed
     sudo apt update
 }
 
