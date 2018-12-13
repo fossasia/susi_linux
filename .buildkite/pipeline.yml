@@ -10,4 +10,5 @@
       # Ref: https://buildkite.com/docs/pipelines/environment-variables
       SUSI_REVISION: $BUILDKITE_COMMIT
       SUSI_BRANCH: $BUILDKITE_BRANCH
-      SUSI_PULL_REQUEST: $BUILDKITE_PULL_REQUEST
+      # A pre-command hook will set value for $SUSI_PULL_REQUEST
+      SUSI_PULL_REQUEST: $SUSI_PULL_REQUEST
