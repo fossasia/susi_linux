@@ -87,7 +87,12 @@ class BusyState(State):
                         print('%s\t' % value, end='')
                         self.__speak(value)
                     print()
-
+            if 'pause' in reply.keys():
+                requests.get('http://localhost:7070/pause')
+            if 'resume' in reply.keys():
+                requests.get('http://localhost:7070/resume')
+            if 'restart' in reply.keys():
+                requests.get('http://localhost:7070/restart')
             if 'stop' in reply.keys():
                 requests.get('http://localhost:7070/stop')
                 subprocess.call(['killall', 'play'])  # nosec #pylint-disable type: ignore
