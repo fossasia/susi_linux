@@ -10,6 +10,12 @@ SUSI AI on Linux
 This project aims at creating an implementation of Susi, capable to run on Linux Devices in a headless mode.
 It will enable you to bring Susi AI intelligence to all devices you may think like a Speaker, Car etc.
 
+## **Important:** Tests Before Releasing New Images
+1. The SUSI Server must be building on the pi on bootup
+2. The hotword detection should have a decent accuracy
+3. SUSI Linux shouldn't crash when switching from online to offline and vice versa(failing as of now)
+4. SUSI Linux should be able to boot offline when no internet connection available(failing)
+
 ### Mobile App (Android)
 
 This app is for configuration. [Download Here](https://github.com/fossasia/susi_android/blob/apk/app-playStore-debug.apk)
