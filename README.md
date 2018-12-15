@@ -13,8 +13,8 @@ It will enable you to bring Susi AI intelligence to all devices you may think li
 ## **Important:** Tests Before Releasing New Images
 1. The SUSI Server must be building on the pi on bootup
 2. The hotword detection should have a decent accuracy
-3. SUSI Linux shouldn't crash when switching from online to offline and vice versa(failing as of now)
-4. SUSI Linux should be able to boot offline when no internet connection available(failing)
+3. SUSI Linux shouldn't crash when switching from online to offline and vice versa (failing as of now)
+4. SUSI Linux should be able to boot offline when no internet connection available (failing as of now)
 
 ### Mobile App (Android)
 
