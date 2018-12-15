@@ -1,4 +1,4 @@
-Fixes #
+Fixes#
 
 Checklist
  []-I have read the Contribution & Best practices Guide and my PR follows them.
@@ -11,8 +11,8 @@ Checklist
 Test Passing
 []- The SUSI Server must be building on the pi on bootup
 []- The hotword detection should have a decent accuracy
-[]- SUSI Linux shouldn't crash when switching from online to offline and vice versa(failing as of now)
-[]- SUSI Linux should be able to boot offline when no internet connection available(failing)
+[]- SUSI Linux shouldn't crash when switching from online to offline and vice versa (failing as of now)
+[]- SUSI Linux should be able to boot offline when no internet connection available (failing)
 
 Short description of what this resolves:
 
