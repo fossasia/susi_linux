@@ -132,6 +132,10 @@ install_susi_server
 echo "Updating Systemd Rules"
 sudo bash $DIR_PATH/Deploy/auto_boot.sh
 
+echo "Enabling the SSH access"
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
 cd $DIR_PATH
 echo "Creating a backup folder for future factory_reset"
 tar -I 'pixz -p 2' -cf ../reset_folder.tar.xz --checkpoint=.1000 -C .. susi_linux
