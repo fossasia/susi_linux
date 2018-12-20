@@ -1,7 +1,11 @@
 import time
+import logging
 import RPi.GPIO as GPIO
 
 from .wake_button import WakeButton
+
+
+logger = logging.getLogger(__name__)
 
 
 class RaspberryPiWakeButton(WakeButton):
@@ -12,8 +16,11 @@ class RaspberryPiWakeButton(WakeButton):
 
     def run(self):
         while True:
-            input_state = GPIO.input(18)
-            if not input_state:
-                print('WakeButton')
-                self.on_detected()
+            is_input = GPIO.input(18)
+            if is_input:
                 time.sleep(0.2)
+                continue
+            # Button pressed
+            logger.debug('WakeButton is pressed')
+            self.on_detected()
+            time.sleep(0.2)

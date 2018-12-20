@@ -1,7 +1,10 @@
 """Definition of Abstract Class State to represent Base State
 """
-from abc import ABC, abstractclassmethod
 import logging
+from abc import ABC, abstractclassmethod
+
+
+logger = logging.getLogger(__name__)
 
 
 class State(ABC):
@@ -36,8 +39,8 @@ class State(ABC):
         :return: None
         """
         if not self.__can_transition(state):
-            print(self.allowedStateTransitions)
-            logging.warning("Invalid transition to State: {0}".format(state))
+            logger.debug("allowedStateTransitions = %s", self.allowedStateTransitions)
+            logger.warning("Invalid transition to State: %s", state)
             return
 
         self.on_exit()
@@ -45,8 +48,8 @@ class State(ABC):
 
     def second_transition(self, state, payload=None):
         if not self.__can_transition(state):
-            print(self.allowedStateTransitions)
-            logging.warning("Invalid transition to State: {0}".format(state))
+            logger.debug("allowedStateTransitions = %s", self.allowedStateTransitions)
+            logger.warning("Invalid transition to State: %s", state)
             return
 
         state.on_enter(payload)

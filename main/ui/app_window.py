@@ -1,5 +1,7 @@
 import os
 import signal
+import logging
+
 import gi
 import json_config
 
@@ -14,6 +16,7 @@ from gi.repository import Gtk
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
 config = json_config.connect('config.json')
+logger = logging.getLogger(__name__)
 
 
 class SusiAppWindow(Renderer):
@@ -94,7 +97,6 @@ class SusiAppWindow(Renderer):
             self.app_window = app_window
 
         def on_delete(self, *args):
-            print('Exiting')
             self.app_window.exit_window()
             os.kill(os.getppid(), signal.SIGHUP)
 
