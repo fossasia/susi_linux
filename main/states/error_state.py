@@ -1,11 +1,13 @@
 """Class to represent Error State
 """
+import logging
 import subprocess   # nosec #pylint-disable type: ignore
 import json_config
 from .base_state import State
 from .lights import lights
 
 config = json_config.connect('config.json')
+logger = logging.getLogger(__name__)
 
 
 class ErrorState(State):
@@ -30,7 +32,7 @@ class ErrorState(State):
             lights.speak()
             subprocess.call(['play', 'extras/connect-error.wav'])   # nosec #pylint-disable type: ignore
             lights.off()
-            print("Changed to offline providers")
+            logger.info("Changed to offline providers")
         else:
             self.notify_renderer('error')
             lights.speak()

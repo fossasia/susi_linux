@@ -1,12 +1,16 @@
-import time
-import RPi.GPIO as GPIO
 import os
+import time
+import logging
 import subprocess  # nosec #pylint-disable type: ignore
+
 import alsaaudio
+import RPi.GPIO as GPIO
 
 
+logger = logging.getLogger(__name__)
 current_folder = os.path.dirname(os.path.abspath(__file__))
-factory_reset = os.path.join(current_folder,'factory_reset.sh')
+factory_reset = os.path.join(current_folder, 'factory_reset.sh')
+
 try:
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(17,GPIO.IN)
@@ -30,7 +34,7 @@ try:
                     mixer.setvolume(0)
                 else:
                     mixer.setvolume(50)
-            print(total)
+            logger.info(total)
             time.sleep(0.1)
 
 except KeyboardInterrupt:

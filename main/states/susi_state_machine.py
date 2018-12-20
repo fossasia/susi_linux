@@ -1,17 +1,21 @@
 """This module declares the SUSI State Machine Class and Component Class.
 The SUSI State Machine works on the concept of Finite State Machine.
 """
-import json_config
 import logging
+from threading import Thread
+
 import requests
+import json_config
+import susi_python as susi
 from speech_recognition import Recognizer, Microphone
 
-import susi_python as susi
 from .busy_state import BusyState
 from .error_state import ErrorState
 from .idle_state import IdleState
 from .recognizing_state import RecognizingState
-from threading import Thread
+
+
+logger = logging.getLogger(__name__)
 
 
 class Components:
@@ -26,8 +30,9 @@ class Components:
             GPIO.setup(27, GPIO.OUT)
             GPIO.setup(22, GPIO.OUT)
         except ImportError:
-            print("Only available for devices with GPIO ports ")
-        except RuntimeError:
+            logger.warning("This device doesn't have GPIO port")
+        except RuntimeError as e:
+            logger.error(e)
             pass
 
         recognizer = Recognizer()
@@ -44,7 +49,7 @@ class Components:
                 longitude=res['lon'], latitude=res['lat'], country_name=res['country'], country_code=res['countryCode'])
 
         except ConnectionError as e:
-            logging.error(e)
+            logger.error(e)
 
         self.config = json_config.connect('config.json')
 
@@ -52,8 +57,8 @@ class Components:
             try:
                 susi.sign_in(email=self.config['login_credentials']['email'],
                              password=self.config['login_credentials']['password'])
-            except Exception:
-                print('Some error occurred in login. Check you login details in config.json')
+            except Exception as e:
+                logger.error('Some error occurred in login. Check you login details in config.json.\n%s', e)
 
         if self.config['hotword_engine'] == 'Snowboy':
             from main.hotword_engine.snowboy_detector import SnowboyDetector
@@ -63,16 +68,16 @@ class Components:
             self.hotword_detector = PocketSphinxDetector()
 
         if self.config['WakeButton'] == 'enabled':
-            print("\nSusi has the wake button enabled")
+            logger.info("Susi has the wake button enabled")
             if self.config['Device'] == 'RaspberryPi':
-                print("\nSusi runs on a RaspberryPi")
+                logger.info("Susi runs on a RaspberryPi")
                 from ..hardware_components import RaspberryPiWakeButton
                 self.wake_button = RaspberryPiWakeButton()
             else:
-                print("\nSusi is not running on a RaspberryPi")
+                logger.warning("Susi is not running on a RaspberryPi")
                 self.wake_button = None
         else:
-            print("\nSusi has the wake button disabled")
+            logger.warning("Susi has the wake button disabled")
             self.wake_button = None
 
 

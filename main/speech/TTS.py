@@ -2,11 +2,15 @@
 You may use any of the speech synthesis services by calling the
 respective method.
 """
+import logging
 import subprocess   # nosec #pylint-disable type: ignore
+
 import json_config
 from google_speech import Speech
 from watson_developer_cloud import TextToSpeechV1
 
+
+logger = logging.getLogger(__name__)
 config = json_config.connect('config.json')
 
 text_to_speech = TextToSpeechV1(
@@ -22,12 +26,11 @@ def speak_flite_tts(text):
     :return: None
     """
     filename = '.response'
-    file = open(filename, 'w')
-    file.write(text)
-    file.close()
+    with open(filename, 'w') as f:
+        f.write(text)
     # Call flite tts to reply the response by Susi
     flite_speech_file = config['flite_speech_file_path']
-    print('flite -voice file://{0} -f {1}'.format(flite_speech_file, filename))
+    logger.debug('flite -voice file://%s -f %s', flite_speech_file, filename)
     subprocess.call(   # nosec #pylint-disable type: ignore
         ['flite', '-v', '-voice', 'file://' + flite_speech_file, '-f', filename, '-o', 'extras/output.wav'])   # nosec #pylint-disable type: ignore
     subprocess.call(['play', 'extras/output.wav'])   # nosec #pylint-disable type: ignore

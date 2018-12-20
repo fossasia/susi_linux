@@ -1,14 +1,20 @@
 """Class to represent the Busy State
 """
-from .base_state import State
-import subprocess   # nosec #pylint-disable type: ignore
-import alsaaudio
-from .lights import lights
 import os
-from ..hotword_engine.stop_detection import StopDetector
 import signal
-from ..speech import TTS
+import logging
+import subprocess   # nosec #pylint-disable type: ignore
+
+import alsaaudio
 import requests
+
+from ..hotword_engine.stop_detection import StopDetector
+from ..speech import TTS
+from .base_state import State
+from .lights import lights
+
+
+logger = logging.getLogger(__name__)
 
 
 class BusyState(State):
@@ -36,7 +42,7 @@ class BusyState(State):
         :param payload: query to be asked to SUSI
         :return: None
         """
-        print('busy')
+        logger.debug('Busy state')
         try:
             import RPi.GPIO as GPIO
             GPIO.output(17, True)
@@ -47,7 +53,7 @@ class BusyState(State):
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
 
             if 'answer' in reply.keys():
-                print('Susi:' + reply['answer'])
+                logger.info('Susi: %s', reply['answer'])
                 lights.off()
                 lights.speak()
                 self.__speak(reply['answer'])
@@ -103,16 +109,15 @@ class BusyState(State):
                 entities = rss['entities']
                 count = rss['count']
                 for entity in entities[0:count]:
-                    print(entity.title)
+                    logger.debug(entity.title)
                     self.__speak(entity.title)
-            print('TMKC')
             self.transition(self.allowedStateTransitions.get('idle'))
 
         except ConnectionError:
             self.transition(self.allowedStateTransitions.get(
                 'error'), payload='ConnectionError')
         except Exception as e:
-            print(e)
+            logger.error('Got error: %s', e)
             self.transition(self.allowedStateTransitions.get('error'))
 
     def on_exit(self):
@@ -123,17 +128,16 @@ class BusyState(State):
             GPIO.output(17, False)
             GPIO.output(27, False)
             GPIO.output(22, False)
-            pass
-        except RuntimeError:
-            pass
+        except RuntimeError as e:
+            logger.error(e)
         except ImportError:
-            print("Only available for devices with RPI.GPIo ports")
+            logger.warning("This device doesn't have GPIO port")
 
     def __speak(self, text):
         if self.components.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
         if self.components.config['default_tts'] == 'flite':
-            print("Using flite for TTS")  # indication for using an offline music player
+            logger.info("Using flite for TTS")  # indication for using an offline music player
             TTS.speak_flite_tts(text)
         elif self.components.config['default_tts'] == 'watson':
             TTS.speak_watson_tts(text)
