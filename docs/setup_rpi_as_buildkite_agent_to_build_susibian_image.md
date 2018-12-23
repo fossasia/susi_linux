@@ -28,7 +28,7 @@ Host img-storage
     User <remote_user>
     Hostname <server_ip>
 ```
-- You must try this SSH configuration, to make sure it works, and to let SSH accept server's fingerprint.
+- You must try this SSH configuration, to make sure it works (with `ssh img-storage`, and to let SSH accept server's fingerprint.
 - Make `buildkite-agent` user have `sudo` permission (`sudo adduser buildkite-agent sudo`) and not require password to execute `sudo`, by adding file _/etc/sudoers.d/buildkite-agent_ with this content:
 
 ```
