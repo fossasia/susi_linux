@@ -7,7 +7,7 @@ After=network-online.target ss-susi-server.service
 Type=idle
 User=pi
 WorkingDirectory=/home/pi/SUSI.AI/susi_linux/
-ExecStart=/usr/bin/python3 -m main
+ExecStart=/usr/bin/python3 -m main -v --short-log
 
 [Install]
 WantedBy=multi-user.target
