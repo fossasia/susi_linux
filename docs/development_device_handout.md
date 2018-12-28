@@ -52,7 +52,7 @@ The development device may crash and never work again. Here is what may happend:
 * There may be unresolved bugs, configuration mistakes and whatever you might imagine. This is a development device and it is supposed to be the plattform to investigate this.
 
 To get the device running anyway, you can do the following:
-* connect a ethernet cable between the raspberry pi and your computer
+* connect a ethernet cable between the raspberry pi and your computer or connect using the wifi connection from the RPI with SSID "SUSI.AI". The password is "password".
 * connect to the device with `ssh pi@raspberrypi.local`. The password is `raspberry`.
 * cd into the application folder: `cd SUSI.AI/susi_linux/`
 * you can manually start the Susi linux client now with (i.e.) `nohup python3 -m main &`
