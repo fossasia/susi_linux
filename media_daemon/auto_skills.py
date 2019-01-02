@@ -35,7 +35,7 @@ def get_media_path(device):
 def make_skill(): # pylint-enable
     devices = list_media_devices()
     path = get_media_path(devices[0])
-    subprocess.call(['udiskctl','mount','-b',path])  #nosec #pylint-disable type: ignore
+    subprocess.call(['udisksctl','mount','-b',path])  #nosec #pylint-disable type: ignore
     name_of_usb = get_mount_points()
     usb = name_of_usb[1]
     mp3_files = glob(str(usb) + '/*.mp3')
