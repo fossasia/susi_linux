@@ -29,8 +29,9 @@ class ErrorState(State):
             self.notify_renderer('error', 'connection')
             config['default_tts'] = 'flite'
             config['default_stt'] = 'pocket_sphinx'
+            print("Internet Connection not available")
             lights.speak()
-            subprocess.call(['play', 'extras/connect-error.wav'])   # nosec #pylint-disable type: ignore
+            # subprocess.call(['play', 'extras/connect-error.wav'])   # nosec #pylint-disable type: ignore
             lights.off()
             logger.info("Changed to offline providers")
         else:
