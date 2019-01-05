@@ -36,7 +36,7 @@ function install_seeed_voicecard_driver()
     cd seeed-voicecard
     sudo ./install.sh
     cd ..
-    tar czf ~/seeed-voicecard.tar.gz seeed-voicecard
+    tar -czf ~/seeed-voicecard.tar.gz seeed-voicecard
     rm -rf seeed-voicecard
 }
 
@@ -50,32 +50,22 @@ function install_susi_server() {
     if  [ ! -d "susi_server" ]; then mkdir $DIR_PATH/susi_server; fi
 
     SUSI_SERVER_PATH=$DIR_PATH/susi_server/susi_server
-    echo "Clone susi_server repo to $SUSI_SERVER_PATH"
     if [ ! -d $SUSI_SERVER_PATH ]
     then
-        git clone --recurse-submodules https://github.com/fossasia/susi_server.git $SUSI_SERVER_PATH
-        # The .git folder is big. Delete it (we don't do susi_server deveplopment here, so no need to keep it)
-        echo "Delete $SUSI_SERVER_PATH/.git"
-        rm -rf $SUSI_SERVER_PATH/.git
+        echo "Download susi_server_binary_latest.tar.gz"
+        wget -P /tmp/ http://download.susi.ai/susi_server/susi_server_binary_latest.tar.gz
+        tar -xzf /tmp/susi_server_binary_latest.tar.gz -C "/tmp"
+        echo "Move susi_server from /tmp to $SUSI_SERVER_PATH"
+        mv "/tmp/susi_server_binary_latest" "$SUSI_SERVER_PATH"
+        rm "/tmp/susi_server_binary_latest.tar.gz" || true
+    else
+        echo "$SUSI_SERVER_PATH already exists."
     fi
 
     SKILL_DATA_PATH=$DIR_PATH/susi_server/susi_skill_data
     if [ ! -d $SKILL_DATA_PATH ]
     then
         git clone https://github.com/fossasia/susi_skill_data.git $SKILL_DATA_PATH
-    fi
-
-    if [ -d $SUSI_SERVER_PATH ]
-    then
-        echo "Deploying local SUSI server"
-        cd $SUSI_SERVER_PATH
-        {
-            ./gradlew build
-            # Stop Gradle daemons after building
-            ./gradlew --stop
-        } || {
-            echo PASS
-        }
     fi
 }
 
@@ -118,10 +108,6 @@ then
     wget "http://www.festvox.org/flite/packed/flite-2.0/voices/cmu_us_slt.flitevox" -P extras
 fi
 
-echo
-echo "NOTE: Snowboy is not compatible with all systems. If the setup indicates failed, use PocketSphinx engine for Hotword"
-echo
-
 echo "Updating the Udev Rules"
 cd $DIR_PATH
 sudo ./media_daemon/media_udev_rule.sh
@@ -131,6 +117,9 @@ install_susi_server
 
 echo "Updating Systemd Rules"
 sudo bash $DIR_PATH/Deploy/auto_boot.sh
+
+echo "Enabling the SSH access"
+sudo systemctl enable ssh
 
 cd $DIR_PATH
 echo "Creating a backup folder for future factory_reset"

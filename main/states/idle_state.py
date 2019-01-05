@@ -1,9 +1,14 @@
 """Class to represent Idle State
 """
+
+import logging
 import subprocess   # nosec #pylint-disable type: ignore
 
 from .base_state import State
 from .lights import lights
+
+
+logger = logging.getLogger(__name__)
 
 
 class IdleState(State):
@@ -31,7 +36,7 @@ class IdleState(State):
         :return: None
         """
         lights.off()
-        print('idle')
+        logger.debug('Idle state')
         self.isActive = True
         lights.wakeup()
         self.notify_renderer('idle')

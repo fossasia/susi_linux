@@ -1,9 +1,13 @@
 """ Implementation of PocketSphinx Detector with PocketSphinx Speech Recognition Engine.
 It works on all the devices.
 """
+import logging
 from pocketsphinx import LiveSpeech
 
 from .hotword_detector import HotwordDetector
+
+
+logger = logging.getLogger(__name__)
 
 
 class PocketSphinxDetector(HotwordDetector):
@@ -22,6 +26,6 @@ class PocketSphinxDetector(HotwordDetector):
         detecting keyword 'susi'
         """
         for phrase in self.liveSpeech:
-            print(phrase)
+            logger.info('Phrase: %s', phrase)
             if str(phrase) == 'susi':
                 self.on_detected()

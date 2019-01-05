@@ -1,14 +1,20 @@
 """Class to represent the Busy State
 """
-from .base_state import State
-import subprocess   # nosec #pylint-disable type: ignore
-import alsaaudio
-from .lights import lights
 import os
-from ..hotword_engine.stop_detection import StopDetector
 import signal
-from ..speech import TTS
+import logging
+import subprocess   # nosec #pylint-disable type: ignore
+
+import alsaaudio
 import requests
+
+from ..hotword_engine.stop_detection import StopDetector
+from ..speech import TTS
+from .base_state import State
+from .lights import lights
+
+
+logger = logging.getLogger(__name__)
 
 
 class BusyState(State):
@@ -36,7 +42,7 @@ class BusyState(State):
         :param payload: query to be asked to SUSI
         :return: None
         """
-        print('busy')
+        logger.debug('Busy state')
         try:
             import RPi.GPIO as GPIO
             GPIO.output(17, True)
@@ -47,7 +53,7 @@ class BusyState(State):
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
 
             if 'answer' in reply.keys():
-                print('Susi:' + reply['answer'])
+                logger.info('Susi: %s', reply['answer'])
                 lights.off()
                 lights.speak()
                 self.__speak(reply['answer'])
@@ -63,7 +69,7 @@ class BusyState(State):
                 stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    requests.get('http://localhost:7070/song/' + video_url)
+                    requests.get('http://localhost:7070/song?vid=' + video_url[4:])
                 else:
                     audio_url = reply['identifier']
                     audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
@@ -72,8 +78,8 @@ class BusyState(State):
                     stopAction.detector.terminate()
 
             if 'volume' in reply.keys():
-                m = alsaaudio.Mixer()
-                m.setvolume(int(reply['volume']))
+                subprocess.call(['amixer', '-c', '1', 'sset', "'Headphone'", ',', '0', str(reply['volume'])])
+                subprocess.call(['amixer', '-c', '1', 'sset', "'Speaker'", ',', '0', str(reply['volume'])])
                 subprocess.call(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
@@ -87,9 +93,14 @@ class BusyState(State):
                         print('%s\t' % value, end='')
                         self.__speak(value)
                     print()
-
+            if 'pause' in reply.keys():
+                requests.get('http://localhost:7070/pause')
+            if 'resume' in reply.keys():
+                requests.get('http://localhost:7070/resume')
+            if 'restart' in reply.keys():
+                requests.get('http://localhost:7070/restart')
             if 'stop' in reply.keys():
-                subprocess.call(['killall', 'mpv'])  # nosec #pylint-disable type: ignore
+                requests.get('http://localhost:7070/stop')
                 subprocess.call(['killall', 'play'])  # nosec #pylint-disable type: ignore
                 self.transition(self.allowedStateTransitions.get('idle'))
 
@@ -98,16 +109,15 @@ class BusyState(State):
                 entities = rss['entities']
                 count = rss['count']
                 for entity in entities[0:count]:
-                    print(entity.title)
+                    logger.debug(entity.title)
                     self.__speak(entity.title)
-            print('TMKC')
             self.transition(self.allowedStateTransitions.get('idle'))
 
         except ConnectionError:
             self.transition(self.allowedStateTransitions.get(
                 'error'), payload='ConnectionError')
         except Exception as e:
-            print(e)
+            logger.error('Got error: %s', e)
             self.transition(self.allowedStateTransitions.get('error'))
 
     def on_exit(self):
@@ -118,17 +128,16 @@ class BusyState(State):
             GPIO.output(17, False)
             GPIO.output(27, False)
             GPIO.output(22, False)
-            pass
-        except RuntimeError:
-            pass
+        except RuntimeError as e:
+            logger.error(e)
         except ImportError:
-            print("Only available for devices with RPI.GPIo ports")
+            logger.warning("This device doesn't have GPIO port")
 
     def __speak(self, text):
         if self.components.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
         if self.components.config['default_tts'] == 'flite':
-            print("Using flite for TTS")  # indication for using an offline music player
+            logger.info("Using flite for TTS")  # indication for using an offline music player
             TTS.speak_flite_tts(text)
         elif self.components.config['default_tts'] == 'watson':
             TTS.speak_watson_tts(text)

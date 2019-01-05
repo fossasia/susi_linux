@@ -1,8 +1,9 @@
-import gi
 import os
-import json_config
 import re
+
+import gi
 import requests
+import json_config
 gi.require_version('Gtk', '3.0')  # nopep8
 
 from gi.repository import Gtk
@@ -88,7 +89,6 @@ class LoginWindow():
             self.login_window = login_window
 
         def onDeleteWindow(self, *args):
-            print('Exiting')
             self.login_window.exit_window()
 
         def signInButtonClicked(self, *args):
@@ -100,7 +100,6 @@ class LoginWindow():
                 '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
 
             if result is None:
-                print("None")
                 self.login_window.email_field.modify_fg(
                     Gtk.StateFlags.NORMAL, COLOR_INVALID)
                 return

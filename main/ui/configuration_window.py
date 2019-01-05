@@ -1,7 +1,8 @@
 import os
+import logging
+
 import json_config
 import gi
-import logging
 
 gi.require_version('Gtk', '3.0')  # nopep8
 
@@ -138,7 +139,6 @@ class ConfigurationWindow:
             parent_dir = os.path.dirname(TOP_DIR)
             snowboyDetectFile = Path(os.path.join(
                 parent_dir, "hotword_engine/snowboy/_snowboydetect.so"))
-            print(snowboyDetectFile)
             if not snowboyDetectFile.exists():
                 self.snowboy_switch.set_sensitive(False)
                 config['hotword_engine'] = 'PocketSphinx'
@@ -169,7 +169,6 @@ class ConfigurationWindow:
             self.config_window = config_window
 
         def on_delete_window(self, *args):
-            print('Exiting')
             self.config_window.exit_window()
 
         def on_stt_combobox_changed(self, combo: Gtk.ComboBox):

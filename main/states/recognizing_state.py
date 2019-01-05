@@ -1,9 +1,15 @@
 """ Class to Represent Recognizing State
 """
-from .base_state import State
+import logging
+
 import speech_recognition as sr
+
+from .base_state import State
 from .internet_test import internet_on
 from .lights import lights
+
+
+logger = logging.getLogger(__name__)
 
 
 class RecognizingState(State):
@@ -40,36 +46,36 @@ class RecognizingState(State):
         :param payload: No payload is expected by this state
         :return: None
         """
-        print('\nEntered Recognising State \n')
+        logger.info('Recognizing')
 
         self.notify_renderer('listening')
         recognizer = self.components.recognizer
         try:
             import RPi.GPIO as GPIO
-            print("Say something!")
+            logger.info("Let's say something!")
             GPIO.output(22, True)
             with self.components.microphone as source:
                 audio = recognizer.listen(source, phrase_time_limit=5)
             self.notify_renderer('recognizing')
             GPIO.output(22, False)
-            print("Got it! Now to recognize it...")
+            logger.info("Got it! Now to recognize it...")
             lights.off()
             lights.think()
             try:
                 value = self.__recognize_audio(
                     audio=audio, recognizer=recognizer)
-                print(value)
+                logger.debug("__recognize_audio => %s", value)
                 self.notify_renderer('recognized', value)
                 self.transition(self.allowedStateTransitions.get(
                     'busy'), payload=value)
-            except sr.UnknownValueError:
-                print("Oops! Didn't catch that")
-                self.transition(self.allowedStateTransitions.get(
-                    'error'), payload='RecognitionError')
+            except sr.UnknownValueError as e:
+                logger.error("UnknownValueError from SpeechRecognition: %s", e)
+                self.transition(self.allowedStateTransitions.get('error'),
+                                payload='RecognitionError')
 
             except sr.RequestError as e:
-                print(
-                    "Uh oh! Couldn't request results from Speech Recognition service; {0}".format(e))
+                logger.error(
+                    "Uh oh! Couldn't request results from Speech Recognition service. Error: %s", e)
                 self.transition(self.allowedStateTransitions.get(
                     'error'), payload='ConnectionError')
 
@@ -78,7 +84,7 @@ class RecognizingState(State):
         except RuntimeError:
             pass
         except ImportError:
-            print("Only available for devices with GPIO ports")
+            logger.warning("This device doesn't have GPIO port")
 
     def on_exit(self):
         """ Method to executed upon exit from Recognizing State.
@@ -92,5 +98,5 @@ class RecognizingState(State):
         except RuntimeError:
             pass
         except ImportError:
-            print("Only available for devices with GPIO ports")
+            logger.warning("This device doesn't have GPIO port")
         pass

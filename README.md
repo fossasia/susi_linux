@@ -1,7 +1,7 @@
 # Susi Linux
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/167b701c744841c5a05269d06b863732)](https://app.codacy.com/app/fossasia/susi_linux?utm_source=github.com&utm_medium=referral&utm_content=fossasia/susi_linux&utm_campaign=badger)
-[![Build Status](https://travis-ci.org/fossasia/susi_linux.svg?branch=master)](https://travis-ci.org/fossasia/susi_linux) 
+[![Build Status](https://travis-ci.org/fossasia/susi_linux.svg?branch=master)](https://travis-ci.org/fossasia/susi_linux)
 [![Join the chat at https://gitter.im/fossasia/susi_hardware](https://badges.gitter.im/fossasia/susi_hardware.svg)](https://gitter.im/fossasia/susi_hardware?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Dependency Status](https://beta.gemnasium.com/badges/github.com/fossasia/susi_linux.svg)](https://beta.gemnasium.com/projects/github.com/fossasia/susi_linux)
 
@@ -9,6 +9,12 @@ SUSI AI on Linux
 
 This project aims at creating an implementation of Susi, capable to run on Linux Devices in a headless mode.
 It will enable you to bring Susi AI intelligence to all devices you may think like a Speaker, Car etc.
+
+## **Important:** Tests Before Releasing New Images
+1. The SUSI Server must be building on the pi on bootup
+2. The hotword detection should have a decent accuracy
+3. SUSI Linux shouldn't crash when switching from online to offline and vice versa (failing as of now)
+4. SUSI Linux should be able to boot offline when no internet connection available (failing as of now)
 
 ### Mobile App (Android)
 
@@ -69,7 +75,7 @@ For installation on Raspberry Pi, read [Raspberry Pi setup guide.](docs/raspberr
 ### Configuring a connection through SSH
 
 Step 1: Initial Setup
-* Both the raspberry Pi with raspbian installed and the mobile device should be on a same wireless network 
+* Both the raspberry Pi with raspbian installed and the mobile device should be on a same wireless network
 * One should have an SSH viewer like JuiceSSH(Android) and iTerminal(IOS) installed on their mobile devices
 * Now we must enable SSH on our raspberry Pi
 
@@ -95,7 +101,7 @@ Step 3:Setting Up the client
 
 ### Configuring SUSI.AI Manually (in case of any failures in the mobile clients)
 
- - First, you have to configure the room name by hitting the url : localhost:5000/speaker_config?room_name=roomName 
+ - First, you have to configure the room name by hitting the url : localhost:5000/speaker_config?room_name=roomName
     - Where roomName is the name of the room in which the speaker has too be placed
  - Second, to configure the wifi credentials, use the URL : localhost:5000/wifi_credentials?wifissid=WIFISSID&wifipassd=WIFIPASSD
     - Where WIFISSID is the name of your Wifi SSID and Wifi Password
@@ -107,17 +113,17 @@ Step 3:Setting Up the client
 
 * To login in the speaker , start the configuration script by<br>
     `python3 config_generator.py <stt> <tts> <hotword_detection> <wake_button>`
-    Where 
+    Where
     - stt is the speech to text service
         - You have the following choices
         - 'google' if you want to use google as the stt service
-        - 'ibm' if you want to use ibm as the stt service 
-        - 'sphinx'(offline) if you want to use pocket-sphinx as the stt service 
+        - 'ibm' if you want to use ibm as the stt service
+        - 'sphinx'(offline) if you want to use pocket-sphinx as the stt service
     - tts is the text to speech service
         - Similarly,
         - You have the following choices
         -'google' if you want to use google as the tts service
-        - 'ibm' if you want to use ibm as the tts service 
+        - 'ibm' if you want to use ibm as the tts service
         - 'flite'(offline) if you want to use flite as the tts service
     - hotword_detection is the choice if you want to use snowboy detector as the hotword detection or not
         - 'y' to use snowboy
@@ -128,7 +134,7 @@ Step 3:Setting Up the client
 * Eg. To google as the default stt and tts and using snowboy as the default hotword detection engine and no wake button , you have to use the following command
 ````python3 config_generator.py google google y n ````
 
-### Using SUSI in a Authenticated Mode 
+### Using SUSI in a Authenticated Mode
 <br>
 * To use SUSI in an authenticated mode, you have to use the script 'authentication.py'<br>
     `python3 authentication.py <authentication_choice> <email> <password>`
@@ -136,10 +142,10 @@ Step 3:Setting Up the client
     - authentication_choice is the choice if you want to use SUSI in an authenticated mode or not
     -  email is your registered email id with SUSI.AI
     -  password is your registered password of the corresponding email registered with SUSI.AI
-* Eg. to use SUSI.AI in authenticated mode use 
+* Eg. to use SUSI.AI in authenticated mode use
 `python3 authentication.py y example@example.com password`
 
-### Installing on Ubuntu and other Debian based distributions 
+### Installing on Ubuntu and other Debian based distributions
 
 For installation on Ubuntu and other Debian based distributions, read [Ubuntu Setup Guide](docs/ubuntu_install.md)
 
@@ -157,6 +163,42 @@ Use the following commands.
 * `cd factory_reset/`
 * `chmod +x factory_reset.sh`
 * `./factory_reset.sh`
+
+## Run SUSI Linux
+
+This section is intended for developer.
+
+SUSI Linux application is run automatically by `systemd`. The main component is run as _ss-susi-linux.service_. By default, it is ran in _production_ mode, where log messages are limited to _error_ and _warning_ only. In development, you may want to see more logs, to help debugging. You can switch it to "verbose" mode by 2 ways:
+
+1. Run it manually
+
+- Stop systemd service by `sudo systemctl stop ss-susi-linux`
+- Use Terminal, _cd_ to `susi_linux` directory and run
+
+```
+python3 -m main -v
+```
+or repeat `v` to increase verbosity:
+
+```
+python3 -m main -vv
+```
+
+2. Change command run by `systemd`
+
+- Edit the _/lib/systemd/system/ss-susi-linux.service_ and change the command in `ExecStart` parameter:
+
+```ini
+ExecStart=/usr/bin/python3 -m main -v --short-log
+```
+- Reload systemd daemon: `sudo systemctl daemon-reload`
+- Restart the servive: `sudo systemctl restart ss-susi-linux`
+- Now you can read the log via `journalctl`:
+
+    + `journalctl -u ss-susi-linux`
+    + or `journalctl -fu ss-susi-linux` to get updated when the log is continuously produced.
+
+The `-v` option is actually the same as the 1st method. The `--short-log` option is to exclude some info which is already provided by `journalctl`. For more info about `logging` feature, see this GitHub [issue](https://github.com/fossasia/susi_linux/issues/423).
 
 ## Setting Up the access point mode
 
@@ -183,4 +225,3 @@ To allow the raspberry Pi to behave as an access point
   - Open the file `default.pa`
   - Replace line 38 by `load-module module-alsa-sink device=hw:2,1` (This will disable the default soundacards from loading up)
   - To enable default sound cards(usb mic,built-in headphone jack,etc ) , comment/delete out the above line
-

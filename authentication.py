@@ -2,10 +2,13 @@
  to generate a file for using SUSI in authenticated mode
  To run this file use python3 authentication.py <choice_to_be authenticated> <email> <password>
 """
-import json_config
 import sys
 
+import json_config
+
+
 config = json_config.connect('config.json')
+
 
 def authenticating():
     """Method for setting authentication parameters in the configuration
