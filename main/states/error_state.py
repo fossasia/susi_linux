@@ -32,6 +32,7 @@ class ErrorState(State):
             lights.off()
             print("Changed to offline providers")
         else:
+            print("Error: {} \n".format(payload))
             self.notify_renderer('error')
             lights.speak()
             subprocess.call(['play', 'extras/problem.wav'])   # nosec #pylint-disable type: ignore

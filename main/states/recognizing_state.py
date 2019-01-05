@@ -40,7 +40,7 @@ class RecognizingState(State):
         :param payload: No payload is expected by this state
         :return: None
         """
-        print('recog')
+        print('\nEntered Recognising State \n')
 
         self.notify_renderer('listening')
         recognizer = self.components.recognizer
