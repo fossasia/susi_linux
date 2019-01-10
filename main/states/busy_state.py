@@ -51,12 +51,12 @@ class BusyState(State):
         """
         actions = {"pause": "signal.SIGSTOP", "play": "signal.SIGCONT", "stop": "signal.SIGKILL"}
 
-        if(process == 'video_process'):
+        if (process == 'video_process'):
             self.video_process.send_signal(actions[action])
             lights.off()
             lights.wakeup()
 
-        elif(process == 'audio_process'):
+        elif (process == 'audio_process'):
             self.video_process.send_signal(actions[action])
             lights.off()
             lights.wakeup()
@@ -99,7 +99,8 @@ class BusyState(State):
                     video_url = reply['identifier']
                     x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
                     data = x.json()
-                    video_process = subprocess.Popen(['cvlc', data['url'], '--no-video'])
+                    url = data['url']
+                    video_process = subprocess.Popen(['cvlc', 'http' + url[5:], '--no-video'])
                     self.video_process = video_process
                     stopAction.run()
                     stopAction.detector.terminate()
