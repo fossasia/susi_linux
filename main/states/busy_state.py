@@ -62,7 +62,7 @@ class BusyState(State):
             lights.wakeup()
 
         else:
-            print("error")
+            logger.debug("No ongoing media process")
 
     def on_enter(self, payload=None):
         """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
@@ -97,11 +97,14 @@ class BusyState(State):
                 stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
-                    data = x.json()
-                    url = data['url']
-                    video_process = subprocess.Popen(['cvlc', 'http' + url[5:], '--no-video'])
-                    self.video_process = video_process
+                    try:
+                        x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
+                        data = x.json()
+                        url = data['url']
+                        video_process = subprocess.Popen(['cvlc', 'http' + url[5:], '--no-video'])
+                        self.video_process = video_process
+                    except Exception as e:
+                        logger.error(e);
                     stopAction.run()
                     stopAction.detector.terminate()
 
