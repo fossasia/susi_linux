@@ -9,17 +9,26 @@ add_debian_repo() {
     sudo apt-get update
 }
 
+add_latest_drivers_vlc() {
+    # function to update the latest vlc drivers which will allow it to play MRL of latest videos
+    wget -P /home/pi  https://github.com/videolan/vlc/blob/master/share/lua/playlist/youtube.lua
+    sudo mv /home/pi/youtube.lua /usr/lib/arm-linux-gnueabihf/vlc/lua/playlist/youtube.luac
+}
+
+
 install_debian_dependencies()
 {
     sudo -E apt-get install -y python3-pip sox libsox-fmt-all flac \
-    libportaudio2 libatlas3-base libpulse0 libasound2 \
-    python3-cairo python3-flask flite ca-certificates-java pixz udisks2 vlc-nox \
+    libportaudio2 libatlas3-base libpulse0 libasound2 vlc\
+    python3-cairo python3-flask flite ca-certificates-java pixz udisks2 \
     # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
     # appropriate version of JRE-headless, which can be 8 or 9, depending on ARM6 or ARM7 platform.
     # libatlas3-base is to provide libf77blas.so, liblapack_atlas.so for snowboy.
     # libportaudio2 is to provide libportaudio.so for PyAudio, which is snowboy's dependency.
 
-    # TODO: Replace mpv with something else which doesn't pull video-related stuff.
+    # Updating to the latest VLC drivers
+    echo "Updating the latest Vlc Drivers"
+    add_latest_drivers_vlc
 }
 
 function install_seeed_voicecard_driver()

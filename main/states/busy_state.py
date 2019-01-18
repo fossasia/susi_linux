@@ -23,10 +23,20 @@ class BusyState(State):
     """
     def detection(self):
         """This callback is fired when a Hotword Detector detects a hotword.
+        All the songs/videos are paused for a brief moment and then played again.
         :return: None
         """
         # subprocess.call(['killall', 'play'])
         # subprocess.call(['killall', 'mpv']
+        if hasattr(self, 'video_process'):
+            self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
+            lights.off()
+            lights.wakeup()
+            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+            lights.wakeup()
+            self.transition(self.allowedStateTransitions.get('recognizing'))
+            self.video_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
+
         if hasattr(self, 'audio_process'):
             self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
             lights.off()
@@ -35,6 +45,24 @@ class BusyState(State):
             lights.wakeup()
             self.transition(self.allowedStateTransitions.get('recognizing'))
             self.audio_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
+
+    def song_modulation(self, process, action):
+        """ A method to modulate(pause/play/restart) the songs and videos being played through the Speaker.
+        """
+        actions = {"pause": "signal.SIGSTOP", "play": "signal.SIGCONT", "stop": "signal.SIGKILL"}
+
+        if (process == 'video_process'):
+            self.video_process.send_signal(actions[action])
+            lights.off()
+            lights.wakeup()
+
+        elif (process == 'audio_process'):
+            self.video_process.send_signal(actions[action])
+            lights.off()
+            lights.wakeup()
+
+        else:
+            logger.debug("No ongoing media process")
 
     def on_enter(self, payload=None):
         """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
@@ -69,7 +97,17 @@ class BusyState(State):
                 stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    requests.get('http://localhost:7070/song?vid=' + video_url[4:])
+                    try:
+                        x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
+                        data = x.json()
+                        url = data['url']
+                        video_process = subprocess.Popen(['cvlc', 'http' + url[5:], '--no-video'])
+                        self.video_process = video_process
+                    except Exception as e:
+                        logger.error(e);
+                    stopAction.run()
+                    stopAction.detector.terminate()
+
                 else:
                     audio_url = reply['identifier']
                     audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
@@ -93,15 +131,33 @@ class BusyState(State):
                         print('%s\t' % value, end='')
                         self.__speak(value)
                     print()
+
             if 'pause' in reply.keys():
-                requests.get('http://localhost:7070/pause')
+                if hasattr(self, 'video_process'):
+                    self.song_modulation('video_process', 'pause')
+                elif hasattr(self, 'audio_process'):
+                    self.song_modulation('audio_process', 'pause')
+
             if 'resume' in reply.keys():
-                requests.get('http://localhost:7070/resume')
+                if hasattr(self, 'video_process'):
+                    self.song_modulation('video_process', 'play')
+                elif hasattr(self, 'audio_process'):
+                    self.song_modulation('audio_process', 'play')
+
             if 'restart' in reply.keys():
-                requests.get('http://localhost:7070/restart')
+                if hasattr(self, 'video_process'):
+                    self.song_modulation('video_process', 'stop')
+                    self.song_modulation('video_process', 'play')
+                elif hasattr(self, 'audio_process'):
+                    self.song_modulation('audio_process', 'stop')
+                    self.song_modulation('audio_process', 'play')
+
             if 'stop' in reply.keys():
-                requests.get('http://localhost:7070/stop')
-                subprocess.call(['killall', 'play'])  # nosec #pylint-disable type: ignore
+                if hasattr(self, 'video_process'):
+                    self.song_modulation('video_process', 'stop')
+                elif hasattr(self, 'audio_process'):
+                    self.song_modulation('audio_process', 'stop')
+
                 self.transition(self.allowedStateTransitions.get('idle'))
 
             if 'rss' in reply.keys():
@@ -134,6 +190,8 @@ class BusyState(State):
             logger.warning("This device doesn't have GPIO port")
 
     def __speak(self, text):
+        """Method to set the default TTS for the Speaker
+        """
         if self.components.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
         if self.components.config['default_tts'] == 'flite':

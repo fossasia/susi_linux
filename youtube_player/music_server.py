@@ -8,9 +8,11 @@ Instance = vlc.Instance('--no-video')
 player = Instance.media_player_new()
 url = ''
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/song', methods=['GET'])
 def youtube():
@@ -20,47 +22,11 @@ def youtube():
     streams = video.audiostreams
     best = streams[3]
     playurl = best.url
-    Media = Instance.media_new(playurl)
-    Media.get_mrl()
-    player.set_media(Media)
-    player.play()
-    display_message = {"song":"started"}
+    display_message = {"song": "started", "url": playurl}
     resp = jsonify(display_message)
     resp.status_code = 200
     return resp
 
-@app.route('/pause')
-def pause():
-    player.pause()
-    display_message = {"song":"paused"}
-    resp = jsonify(display_message)
-    resp.status_code = 200
-    return resp
-
-@app.route('/stop')
-def stop():
-    player.stop()
-    display_message = {"song":"stopped"}
-    resp = jsonify(display_message)
-    resp.status_code = 200
-    return resp
-
-@app.route('/restart')
-def restart():
-    player.stop()
-    player.player()
-    display_message = {"song":"restarted"}
-    resp = jsonify(display_message)
-    resp.status_code = 200
-    return resp
-
-@app.route('/resume')
-def play():
-    player.play()
-    display_message = {"song":"played"}
-    resp = jsonify(display_message)
-    resp.status_code = 200
-    return resp
 
 if __name__ == '__main__':
     app.run(debug=False, port=7070, host='0.0.0.0')
