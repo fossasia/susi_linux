@@ -77,10 +77,15 @@ def request_hotword_choice():
         choice = sys.argv[3]
         if choice == 'y':
             config['hotword_engine'] = 'Snowboy'
-            print('\nSnowboy set as default Hotword Detection Engine\n')
+            print('\n Snowboy set as default Hotword Detection Engine \n')
         else:
-            config['hotword_engine'] = 'PocketSphinx'
-            print('\nPocketSphinx set as default Hotword Detection Engine\n')
+            config['hotword_engine'] = 'pocket_sphinx'
+            print('\n PocketSphinx set as default Hotword Detection Engine \n')
+    else:
+        print('\n Snowboy not configured Properly\n')
+        config['hotword_engine'] = 'pocket_sphinx'
+        print('\n PocketSphinx set as default Hotword Detection Engine \n')
+
 
 
 def request_stt_choice():
