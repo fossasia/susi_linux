@@ -10,7 +10,10 @@
 
 ## 2. Configuration
 - Let `apt-cacher-ng` start automatically on boot: `sudo systemctl enable apt-cacher-ng`
-- Set token for `buildkite-agent`, it can be grabbed [here](https://buildkite.com/organizations/fossasia/agents#setup-debian).
+- Set token for `buildkite-agent`, it can be grabbed [here](https://buildkite.com/organizations/fossasia/agents#setup-debian) i.e. by running
+ ```
+ sudo sed -i "s/xxx/THETOKEN/g" /etc/buildkite-agent/buildkite-agent.cfg
+ ```
 - Generate SSH key for `buildkite-agent` user. Note that the home directory of this user is `/var/lib/buildkite-agent`. You can do it by:
 
 ```
