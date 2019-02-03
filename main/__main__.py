@@ -29,7 +29,7 @@ def get_colorlog_handler(short=False):
 def startup_sound():
     curr_folder = os.path.dirname(os.path.abspath(__file__))
     audio_file = os.path.join(curr_folder, 'wav/ting-ting_susi_has_started.wav')
-    subprocess.Popen(['play', audio_file])  # nosec #pylint-disable type: ignore
+    subprocess.Popen(['play', audio_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 
 
 if __name__ == '__main__':
