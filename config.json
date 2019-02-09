@@ -6,5 +6,8 @@
   "flite_speech_file_path": "extras/cmu_us_slt.flitevox",
   "hotword_engine": "Snowboy",
   "usage_mode": "anonymous",
-  "room_name": "livingRoom"
+  "room_name": "livingRoom",
+  "watson_tts_config": {
+      "username": "", "password": ""
+  }
 }
