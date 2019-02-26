@@ -20,9 +20,14 @@ install_debian_dependencies()
 {
     sudo -E apt-get install -y python3-pip sox libsox-fmt-all flac \
     libportaudio2 libatlas3-base libpulse0 libasound2 vlc-bin vlc-plugin-base vlc-plugin-video-splitter \
-    python3-cairo python3-flask flite ca-certificates-java pixz udisks2 \
-    # We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
+    python3-cairo python3-flask flite openjdk-8-jdk-headless pixz udisks2 \
+    # Previously: We specify ca-certificates-java instead of openjdk-(8/9)-jre-headless, so that it will pull the
     # appropriate version of JRE-headless, which can be 8 or 9, depending on ARM6 or ARM7 platform.
+    # installing ca-certificates-java triggers installation of openjdk-9-jre-headless which then results in the following error:
+    # > Errors were encountered while processing:
+    # > ca-certificates-java
+    # > openjdk-9-jre-headless:armhf
+    # > E: Sub-process /usr/bin/dpkg returned an error code (1)
     # libatlas3-base is to provide libf77blas.so, liblapack_atlas.so for snowboy.
     # libportaudio2 is to provide libportaudio.so for PyAudio, which is snowboy's dependency.
 

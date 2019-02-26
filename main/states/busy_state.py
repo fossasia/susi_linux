@@ -49,7 +49,7 @@ class BusyState(State):
     def song_modulation(self, process, action):
         """ A method to modulate(pause/play/restart) the songs and videos being played through the Speaker.
         """
-        actions = {"pause": "signal.SIGSTOP", "play": "signal.SIGCONT", "stop": "signal.SIGKILL"}
+        actions = { "pause": signal.SIGSTOP, "play": signal.SIGCONT, "stop": signal.SIGKILL }
 
         if (process == 'video_process'):
             self.video_process.send_signal(actions[action])
@@ -101,7 +101,7 @@ class BusyState(State):
                         x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
                         data = x.json()
                         url = data['url']
-                        video_process = subprocess.Popen(['cvlc', 'http' + url[5:], '--no-video'])
+                        video_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
                         self.video_process = video_process
                     except Exception as e:
                         logger.error(e);
