@@ -32,14 +32,14 @@ a pairing process is started on the mobile phone:
 * attach the SUSI.AI speaker to USB power and wait that it boots up.
 * Connect the device with the app: 
   1. Open the App
-  1. Select the Blue SUSI ICON
-  1. Select the three dots menu (...)
-  1. Open -> Settings
-  1. Scroll down to the Devices and select where is says "Click here to move to device setup screen"
-  1. When prompted select the Wifi Service
-  1. Enter the password/phrase and select Done (maybe twice)
-  1. Enter your SUSI user password to connect the smart speaker device and select Done (maybe twice). 
-  1. Wait for re-boot of the speaker, she will tell you when the start up is complete.
+  2. Select the Blue SUSI ICON
+  3. Select the three dots menu (...)
+  4. Open -> Settings
+  5. Scroll down to the Devices and select where is says "Click here to move to device setup screen"
+  6. When prompted select the Wifi Service
+  7. Enter the password/phrase and select Done (maybe twice)
+  8. Enter your SUSI user password to connect the smart speaker device and select Done (maybe twice). 
+  9. Wait for re-boot of the speaker, she will tell you when the start up is complete.
 
 ### Usage
 * To speak to the SUSI.AI speaker, say 'susi' and wait for the 'bing' sound
@@ -58,3 +58,38 @@ To get the device running anyway, you can do the following:
 * you can manually start the Susi linux client now with (i.e.) `nohup python3 -m main &`
 * if you want to redefine the wifi hotspot, run `cd access_point` and `sudo ./wifi_search.sh <ssid> <pw>`. This writes the information about the wifi access point into `/etc/wpa_supplicant/wpa_supplicant.conf`
 * if you have not configured the device using the android client or the android client crashes, you can trigger the re-start after hot spot configuration with `sudo ./rwap.sh`. The device will restart then in anonymous mode, that means your device is not connected to your Susi account and may share memory with all other anonymous users.
+
+### Manual call to the configuration API
+While the Susi speaker is waiting to be configured, an api is available to pass the configuration data.
+
+The endpoints should be hit in the following order:
+
+1. Room Name
+http://10.0.0.1:5000/speaker_config?room_name=<room_name>
+writes <room_name> into the config "room_name"
+
+2. Wifi Credentials
+http://10.0.0.1:5000/wifi_credentials?wifissid<wifi_ssid>=&wifipassd=<wifi_password>
+calls wifi_search.sh <wifi_ssid> <wifi_password>
+
+3. Authentication
+http://10.0.0.1:5000/auth?auth=<auth>&email=<email>&password=<password>
+calls authentication.py <auth> <email> <password>
+where <auth> is either "y" (authenticated) or "n" (anonymous).
+If "y" is first parameter, then an email and password must be given as well.
+
+4. Configuration, this causes a restart
+http://10.0.0.1:5000/config?stt=<stt>&tts=<tts>&hotword=<hotword>&wake=<wake>
+calls config_generator.py <stt> <tts> <hotword> <wake>
+Here the following option are possible:
+<stt> one of "google", "ibm", "bing", "sphinx"
+<tts> one of "google", "flite", "ibm"
+<hotword> either "y" for snowboy or "n" for pocket sphinx
+<wake> either "y" to enable the hardware wake button or "n" to disable the wake button
+
+This can be used to manually configure the devices without logging into the shell.
+For example, call:
+curl http://10.0.0.1:5000/speaker_config?room_name=nowhere
+curl http://10.0.0.1:5000/wifi_credentials?wifissid=myssid&wifipassd=mypw
+curl http://10.0.0.1:5000/auth?auth=n&&email=&password=
+curl http://10.0.0.1:5000/config?stt=google&tts=google&hotword=y&wake=n
