@@ -92,7 +92,6 @@ class RecognizingState(State):
         """
         try:
             import RPi.GPIO as GPIO
-            GPIO.output(17, False)
             GPIO.output(27, False)
             GPIO.output(22, False)
         except RuntimeError:

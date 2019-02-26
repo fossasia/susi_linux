@@ -73,9 +73,7 @@ class BusyState(State):
         logger.debug('Busy state')
         try:
             import RPi.GPIO as GPIO
-            GPIO.output(17, True)
             reply = self.components.susi.ask(payload)
-            GPIO.output(17, False)
             GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
@@ -181,7 +179,6 @@ class BusyState(State):
         """
         try:
             import RPi.GPIO as GPIO
-            GPIO.output(17, False)
             GPIO.output(27, False)
             GPIO.output(22, False)
         except RuntimeError as e:
