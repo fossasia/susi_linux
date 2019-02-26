@@ -8,6 +8,7 @@ import requests
 import json_config
 import susi_python as susi
 from speech_recognition import Recognizer, Microphone
+from requests.exceptions import ConnectionError
 
 from .busy_state import BusyState
 from .error_state import ErrorState
@@ -46,7 +47,8 @@ class Components:
         try:
             res = requests.get('http://ip-api.com/json').json()
             self.susi.update_location(
-                longitude=res['lon'], latitude=res['lat'], country_name=res['country'], country_code=res['countryCode'])
+                longitude=res['lon'], latitude=res['lat'],
+                country_name=res['country'], country_code=res['countryCode'])
 
         except ConnectionError as e:
             logger.error(e)
