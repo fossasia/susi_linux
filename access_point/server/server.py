@@ -20,7 +20,7 @@ config_json_file  = os.path.join(access_point_folder, '../../config.json')
 configuration_script =  os.path.join(access_point_folder, '../../config_generator.py')
 authentication_script =  os.path.join(access_point_folder, '../../authentication.py')
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 
 @app.route('/')
 def index():
@@ -80,6 +80,27 @@ def speaker_config():
     resp = jsonify(display_message)
     resp.status_code = 200
     return resp
+
+@app.route('/reboot', methods=['POST'])
+def reboot():
+    wifi_ssid = request.form['wifissid']
+    wifi_password = request.form['wifipassd']
+    os.chdir(config_json_folder)
+    subprocess.call(['sudo', 'bash', wifi_search_folder + '/wifi_search.sh', wifi_ssid, wifi_password])  #nosec #pylint-disable type: ignore
+    stt = 'google'
+    tts = 'google'
+    hotword = 'y'
+    wake = 'n'
+    subprocess.Popen(['sudo', 'python3', configuration_script, stt, tts, hotword, wake])  #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'daemon-reload']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'disable', 'ss-python-flask.service']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'enable', 'ss-susi-linux.service']) #nosec #pylint-disable type: ignore
+    subprocess.call(['sudo', 'systemctl', 'enable', 'ss-factory-daemon.service']) #nosec #pylint-disable type: ignore
+    subprocess.Popen(['sudo','bash',os.path.join(wifi_search_folder,'rwap.sh')])
+    display_message = {"wifi":"configured", "wifi_ssid":wifi_ssid, "message":"SUSI is rebooting"}
+    resp = jsonify(display_message)
+    resp.status_code = 200
+    return resp  # pylint-enable
 
 if __name__ == '__main__':
     app.run(debug=False, host= '0.0.0.0') #nosec #pylint-disable type: ignore

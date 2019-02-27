@@ -1,9 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>SUSI Smart Speaker server</title>
-</head>
-<body>
-    Welcome to SUSI Smart Speaker Server
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SUSI AI Wifi Setup</title>
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='signin.css') }}" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+    <form class="form-signin" action="/reboot" method="post" accept-charset="UTF-8">
+      <img class="mb-4" src="{{ url_for('static', filename='SUSI.AI_Icon_2017a.svg') }}" alt="" width="256" height="256">
+      <h1 class="h4 mb-3 font-weight-normal">Set Up Your Wifi for SUSI</h1>
+      <label for="inputSSID" class="sr-only">SSID</label>
+      <input type="text" id="inputSSID" class="form-control" name="wifissid" placeholder="SSID" required autofocus>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" id="inputPassword" class="form-control" name="wifipassd" placeholder="Password" required>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Reboot Smart Speaker</button>
+      <p class="mt-5 mb-3 text-muted">To reset your SUSI smart speaker (..to get back here..), hold the button for 10 seconds.</p>
+    </form>
+  </body>
 </html>
+
