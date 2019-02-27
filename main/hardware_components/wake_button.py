@@ -1,10 +1,14 @@
 from abc import ABC, abstractclassmethod
 from threading import Thread
 
+from rx.subjects import Subject
+
 
 class WakeButton(ABC, Thread):
     def __init__(self):
         super().__init__()
+        self.subject = Subject()
+
 
     @abstractclassmethod
     def run(self):
