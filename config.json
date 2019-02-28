@@ -1,4 +1,5 @@
 {
+  "Device": "RaspberryPi",
   "WakeButton": "not available",
   "default_stt": "google",
   "default_tts": "google",
