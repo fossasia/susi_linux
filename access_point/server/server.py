@@ -81,12 +81,27 @@ def speaker_config():
     resp.status_code = 200
     return resp
 
+# the reboot service combines all other services in one call
+# the current version allows anonymous operation mode
+# todo: the front-end should provide an option for this
+
 @app.route('/reboot', methods=['POST'])
 def reboot():
+    # speaker_config
+    room_name = 'nowhere'
+    config = json_config.connect(config_json_file)
+    config['room_name'] = room_name
+
+    # wifi_credentials
     wifi_ssid = request.form['wifissid']
     wifi_password = request.form['wifipassd']
     os.chdir(config_json_folder)
     subprocess.call(['sudo', 'bash', wifi_search_folder + '/wifi_search.sh', wifi_ssid, wifi_password])  #nosec #pylint-disable type: ignore
+
+    # auth
+    auth = 'n'
+
+    # config
     stt = 'google'
     tts = 'google'
     hotword = 'y'
