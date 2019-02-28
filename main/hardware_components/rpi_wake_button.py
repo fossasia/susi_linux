@@ -12,11 +12,11 @@ class RaspberryPiWakeButton(WakeButton):
     def __init__(self):
         super().__init__()
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     def run(self):
         while True:
-            is_input = GPIO.input(18)
+            is_input = GPIO.input(17)
             if is_input:
                 time.sleep(0.2)
                 continue
