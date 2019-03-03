@@ -87,9 +87,10 @@ def speaker_config():
 
 @app.route('/reboot', methods=['POST'])
 def reboot():
-    # speaker_config
-    room_name = 'nowhere'
     config = json_config.connect(config_json_file)
+
+    # speaker_config
+    room_name = request.form['room_name'] 
     config['room_name'] = room_name
 
     # wifi_credentials
@@ -99,20 +100,22 @@ def reboot():
     subprocess.call(['sudo', 'bash', wifi_search_folder + '/wifi_search.sh', wifi_ssid, wifi_password])  #nosec #pylint-disable type: ignore
 
     # auth
-    auth = 'n'
+    auth = request.form['auth']
+    email = request.form['email']
+    password = request.form['password']
 
     # config
-    stt = 'google'
-    tts = 'google'
-    hotword = 'y'
-    wake = 'n'
+    stt = request.form['stt']
+    tts = request.form['tts']
+    hotword = request.form['hotword']
+    wake = request.form['wake']
     subprocess.Popen(['sudo', 'python3', configuration_script, stt, tts, hotword, wake])  #nosec #pylint-disable type: ignore
     subprocess.call(['sudo', 'systemctl', 'daemon-reload']) #nosec #pylint-disable type: ignore
     subprocess.call(['sudo', 'systemctl', 'disable', 'ss-python-flask.service']) #nosec #pylint-disable type: ignore
     subprocess.call(['sudo', 'systemctl', 'enable', 'ss-susi-linux.service']) #nosec #pylint-disable type: ignore
     subprocess.call(['sudo', 'systemctl', 'enable', 'ss-factory-daemon.service']) #nosec #pylint-disable type: ignore
     subprocess.Popen(['sudo','bash',os.path.join(wifi_search_folder,'rwap.sh')])
-    display_message = {"wifi":"configured", "wifi_ssid":wifi_ssid, "message":"SUSI is rebooting"}
+    display_message = {"wifi":"configured", "room_name":room_name, "wifi_ssid":wifi_ssid, "auth":auth, "email":email, "stt":stt, "tts":tts, "hotword":hotword, "wake":wake, "message":"SUSI is rebooting"}
     resp = jsonify(display_message)
     resp.status_code = 200
     return resp  # pylint-enable
