@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 
 logger = logging.getLogger(__name__)
 current_folder = os.path.dirname(os.path.abspath(__file__))
-factory_reset = os.path.join(current_folder, '/home/pi/SUSI.AI/susi_linux/factory_reset/factory_reset.sh')
+factory_reset = '/home/pi/SUSI.AI/susi_linux/factory_reset/factory_reset.sh'
 
 try:
     GPIO.setmode(GPIO.BCM)
@@ -25,7 +25,7 @@ try:
             total = end - start
             if total >= 10 :
                 print("FACTORY RESET")
-                subprocess.call(['bash','factory_reset.sh'])  # nosec #pylint-disable type: ignore
+                subprocess.call(['bash', factory_reset])  # nosec #pylint-disable type: ignore
             logger.info(total)
             time.sleep(0.2)
 
