@@ -1,14 +1,22 @@
 #! /bin/bash
-# To be executed using a physical button
 
-SCRIPT_PATH=$(realpath $0)
-DIR_PATH=$(dirname $SCRIPT_PATH)
+# extract backup
+sudo tar -Ipixz -C $DIR_PATH/ -xf $DIR_PATH/reset_folder.tar.xz
 
-pwd
+# stop running processes
+sudo killall python3
+sudo killall java
 
-sudo tar -Ipixz -C $DIR_PATH/ -xvf $DIR_PATH/reset_folder.tar.xz  # extracting the backup folder
-mv $DIR_PATH/susi_linux $DIR_PATH/../../susi_temp  # moving the backup file as a temp file
-mv $DIR_PATH/../../susi_linux $DIR_PATH/../../susi_temp2  # making the original file to a temp file to delete it
-mv $DIR_PATH/../susi_temp $DIR_PATH/../../susi_linux  # making the backupfile as a new one
+# replace running version with backup
+mv /home/pi/SUSI.AI/susi_linux/factory_reset/susi_linux /home/pi/SUSI.AI/susi_temp
+mv /home/pi/SUSI.AI/susi_linux /home/pi/SUSI.AI/susi_old
+mv /home/pi/SUSI.AI/susi_temp /home/pi/SUSI.AI/susi_linux
 
-rm -rf $DIR_PATH/../../susi_temp2 # finally removing the file
+# clean up
+rm -rf /home/pi/SUSI.AI/susi_old
+
+# prepare to run susi smart speaker as hot spot again
+sudo bash /home/pi/SUSI.AI/susi_linux/access_point/wap.sh
+
+# restart
+sudo shutdown -r now
