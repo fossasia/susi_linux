@@ -19,6 +19,18 @@ mv /home/pi/SUSI.AI/susi_old/factory_reset/reset_folder.tar.xz /home/pi/SUSI.AI/
 sudo rm -rf /home/pi/SUSI.AI/susi_old
 
 # prepare to run susi smart speaker as hot spot again
-sudo bash /home/pi/SUSI.AI/susi_linux/access_point/wap.sh
+# here we undo the /home/pi/SUSI.AI/susi_linux/access_point/rwap.sh script
+cd /etc/hostapd/
+cp hostapd.conf.bak hostapd.conf
+cd /etc/
+cp dhcpcd.conf.bak dhcpcd.conf
+cd /etc/network/
+cp interfaces.bak interfaces
 
-# restart: the wap script is doing the restart
+sudo systemctl disable ss-startup-audio.service
+sudo systemctl disable ss-susi-linux.service
+sudo systemctl enable ss-python-flask.service
+sudo systemctl disable ss-susi-login.service
+
+# restart
+sudo reboot
