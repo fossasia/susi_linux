@@ -6,12 +6,15 @@ if [ "$EUID" -ne 0 ]
 fi
 
 cd /etc/hostapd/
+cp hostapd.conf hostapd.conf.bak
 sed -i '1,14d' hostapd.conf
 
 cd /etc/
+cp dhcpcd.conf dhcpcd.conf.bak
 sed -i '57,60d' dhcpcd.conf
 
 cd /etc/network/
+cp interfaces interfaces.bak
 sed -i '9,17d' interfaces
 
 #Empty port 5000
