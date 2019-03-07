@@ -9,6 +9,7 @@ import json_config
 import susi_python as susi
 from speech_recognition import Recognizer, Microphone
 from requests.exceptions import ConnectionError
+import threading
 
 from .busy_state import BusyState
 from .error_state import ErrorState
@@ -34,7 +35,9 @@ class Components:
         except RuntimeError as e:
             logger.error(e)
             pass
-
+        t = threading.Thread(target=susi.check_local_server, name="Thread1")
+        t.daemon = True
+        t.start()
         recognizer = Recognizer()
         recognizer.dynamic_energy_threshold = False
         recognizer.energy_threshold = 1000
@@ -56,7 +59,7 @@ class Components:
 
         if self.config['usage_mode'] == 'authenticated':
             try:
-                susi.sign_in(email=self.config['login_credentials']['email'],
+                self.susi.sign_in(email=self.config['login_credentials']['email'],
                              password=self.config['login_credentials']['password'])
             except Exception as e:
                 logger.error('Some error occurred in login. Check you login details in config.json.\n%s', e)
