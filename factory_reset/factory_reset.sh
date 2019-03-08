@@ -21,11 +21,11 @@ sudo rm -rf /home/pi/SUSI.AI/susi_old
 # prepare to run susi smart speaker as hot spot again
 # here we undo the /home/pi/SUSI.AI/susi_linux/access_point/rwap.sh script
 cd /etc/hostapd/
-cp hostapd.conf.bak hostapd.conf
+sudo cp hostapd.conf.bak hostapd.conf
 cd /etc/
-cp dhcpcd.conf.bak dhcpcd.conf
+sudo cp dhcpcd.conf.bak dhcpcd.conf
 cd /etc/network/
-cp interfaces.bak interfaces
+sudo cp interfaces.bak interfaces
 
 sudo systemctl disable ss-startup-audio.service
 sudo systemctl disable ss-susi-linux.service
