@@ -25,7 +25,7 @@ try:
             total = end - start
             if total >= 10 :
                 print("FACTORY RESET")
-                subprocess.call(['bash', factory_reset])  # nosec #pylint-disable type: ignore
+                subprocess.Popen(['sudo','bash', factory_reset])
             logger.info(total)
             time.sleep(0.2)
 
