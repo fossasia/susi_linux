@@ -1,39 +1,54 @@
 #! /bin/bash
-SSID="$1"
-PSK="$2"
+SSID=""
+PSK=""
 
-if [ "$EUID" -ne 0 ]
-	then echo "Must be root"
-	exit
+if [ "$EUID" -ne 0 ]; then
+  echo "Must be root"
+  exit
 fi
 
-
-if [[ $# -lt 1 ]]; 
-	then echo "You need to pass a SSID!"
-	echo "Usage:"
-	echo "sudo $0 SSID PASSWORD"
-	exit
+if [[ $# -gt 0 ]]; then
+  SSID="$1"
 fi
 
-if [[ $# -lt 2 ]]; 
-	then echo "You need to pass a PASSWORD!"
-	echo "Usage:"
-	echo "sudo $0 SSID PASSWORD"
-	exit
+if [[ $# -gt 1 ]]; then
+  PSK="$2"
 fi
 
-if [[ $# -gt 2 ]]; 
-	then echo "You supplied an extra third command. Only two parameters needed!"
-	echo "Usage:"
-	echo "sudo $0 SSID PASSWORD"
-	exit
+cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.bak
+
+if [[ -z $SSID ]]; then
+  echo "zero parameter, any open network"
+  cat > /etc/wpa_supplicant/wpa_supplicant.conf <<EOF
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+network={
+    key_mgmt=NONE
+    priority=-999
+}
+EOF
+  exit
 fi
 
-cat >> /etc/wpa_supplicant/wpa_supplicant.conf <<EOF
+if [[ -z $PSK ]]; then
+  echo "open network $SSID"
+  cat > /etc/wpa_supplicant/wpa_supplicant.conf <<EOF
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+network={
+    ssid="$SSID"
+    key_mgmt=NONE
+}
+EOF
+  exit
+fi
+
+echo "secure network $SSID"
+cat > /etc/wpa_supplicant/wpa_supplicant.conf <<EOF
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
 network={
     ssid="$SSID"
     psk="$PSK"
 }
 EOF
-
-echo "Connections configured, now reboot"
