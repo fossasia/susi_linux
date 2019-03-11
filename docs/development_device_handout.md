@@ -6,7 +6,7 @@ You should have the following parts:
 * A ReSpeaker 2-Mics Pi HAT
 * A speaker (like Audiocore AC870) with attached JST PH 2.0 2-Pin cable
 * A 3D-printed SUSI.AI Faceplate - or DIY print from https://www.thingiverse.com/thing:3124755
-* A 16GB SD card with pre-flashed OS - or DIY flash from https://github.com/fossasia/susi_linux/releases/tag/0.3
+* A 16GB Micro SD card with pre-flashed OS - or DIY flash from http://download.susi.ai/susibian/
 * 4x 3cm spacers, 4x 2.5mm nuts, 4x 2.5mm screws, 4x 3mm screws, 4x washer, 4x 3mm nuts
 
 An assembly video can be found at https://youtu.be/jAEmRvQLmc0
@@ -16,15 +16,12 @@ An assembly video can be found at https://youtu.be/jAEmRvQLmc0
 * Gripping pliers
 
 ### What else do you require to operate the device
-* A Wifi hotspot and the access credentials
-* A mobile phone (only android tested successfully so far)
-* USB power/charger and cable
-
-### What you should do first
-* If your SD card has no image on it: download and flash
-* If your SD card has an image on it: make a copy of the OS from the SD card: i.e.<br/>`sudo dd if=/dev/rdisk5 bs=16M | pv -s 16G > rpi_devstep0.img`
+* A Wifi hotspot and the access credentials - or an open hot spot
+* USB (very string!) power/charger (2.5A recommended) and a USB charging cable
 
 ### Installation
+* check the source of this document and compare if the installation instructions has been enhanced: https://github.com/fossasia/susi_linux/edit/development/docs/development_device_handout.md
+* If your SD card has no SUSI.AI operation system on it (or is too old), download the image from http://download.susi.ai/susibian/ and flash it yourself
 The device needs an internet connection to work. To configure the device to use a wifi connection, it starts a Wifi hotspot with SSID "SUSI.AI" itself.
 * Power on the device
 * Connect your computer or mobile phone to the SUSI.AI hotspot using the password "password".
