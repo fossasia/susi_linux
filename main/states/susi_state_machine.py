@@ -3,6 +3,7 @@ The SUSI State Machine works on the concept of Finite State Machine.
 """
 import logging
 from threading import Thread
+import time
 
 import requests
 import json_config
@@ -14,6 +15,8 @@ from .busy_state import BusyState
 from .error_state import ErrorState
 from .idle_state import IdleState
 from .recognizing_state import RecognizingState
+from requests_futures.sessions import FuturesSession
+
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +37,9 @@ class Components:
         except RuntimeError as e:
             logger.error(e)
             pass
+        thread1 = Thread(target=self.server_checker, name="Thread1") 
+        thread1.daemon = True
+        thread1.start()
 
         recognizer = Recognizer()
         recognizer.dynamic_energy_threshold = False
@@ -80,6 +86,25 @@ class Components:
         else:
             logger.warning("Susi has the wake button disabled")
             self.wake_button = None
+    
+    def server_checker(self):
+        response_one = None
+        test_params = {
+        'q': 'Hello',
+        'timezoneOffset': int(time.timezone / 60)
+        }
+        while response_one is None:
+            try:
+                response_one = requests.get('https://127.0.0.1:4000/susi/chat.json?q={}&timezoneOffset={}'
+                .format(test_params.q, test_params.timezoneOffset) ).result()
+                api_endpoint = 'https://127.0.0.1:4000'
+                susi.use_api_endpoint(api_endpoint)
+            except AttributeError:
+                time.sleep(10)
+                continue
+            except ConnectionError:
+                time.sleep(10)
+                continue
 
 
 class SusiStateMachine(Thread):
