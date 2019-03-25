@@ -5,6 +5,11 @@ if [ "$EUID" -ne 0 ]
 	exit
 fi
 
+# stop and disable hostapd, it cannot run once we have set up wifi
+# and would be re-enabled in wap.sh if necessary
+systemctl stop hostapd
+systemctl disable hostapd
+
 cd /etc/hostapd/
 cp hostapd.conf hostapd.conf.bak
 sed -i '1,14d' hostapd.conf
