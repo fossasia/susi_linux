@@ -48,6 +48,10 @@ function install_seeed_voicecard_driver()
     echo "Installing Respeaker Mic Array drivers from source"
     git clone https://github.com/respeaker/seeed-voicecard.git
     cd seeed-voicecard
+    #
+    # change respeaker install.sh to *not* check for bare metal raspi
+    # PR sent to upstream https://github.com/respeaker/seeed-voicecard/pull/147
+    sed -i -e 's/^is_Raspberry=.*/is_Raspberry=Raspberry/' install.sh
     sudo ./install.sh
     cd ..
     #tar -czf ~/seeed-voicecard.tar.gz seeed-voicecard
