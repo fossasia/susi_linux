@@ -38,9 +38,9 @@ The device needs an internet connection to work. To configure the device to use 
 * If you don't like the speaker quality you can plug external speakers into the 3.5mm jack that is on the **Respeaker Pi Hat card** 
 
 ### Problems and Fixes
-The development device may crash and never work again. Here is what may happend:
+The development device may crash and never work again. Here is what may happen:
 * The Raspberry Pi has a huge underpower-problem. Because the processor drains a lot of current and the power must be shared with the speaker amplifier, it may happen that applications crash at any time in the development device. It may even happen during startup. You can recognize this if the red LED goes off.
-* There may be unresolved bugs, configuration mistakes and whatever you might imagine. This is a development device and it is supposed to be the plattform to investigate this.
+* There may be unresolved bugs, configuration mistakes and whatever you might imagine. This is a development device and it is supposed to be the platform to investigate this.
 
 To get the device running anyway, you can do the following:
 * connect a ethernet cable between the raspberry pi and your computer or connect using the wifi connection from the RPI with SSID "SUSI.AI". The password is "password".
