@@ -137,7 +137,7 @@ sudo systemctl enable ssh
 
 cd $DIR_PATH
 echo "Creating a backup folder for future factory_reset"
-rm -Rf .git
+sudo rm -Rf .git
 tar -I 'pixz -p 2' -cf ../reset_folder.tar.xz --checkpoint=.1000 -C .. susi_linux
 echo ""  # To add newline after tar's last checkpoint
 mv ../reset_folder.tar.xz $DIR_PATH/factory_reset/reset_folder.tar.xz
