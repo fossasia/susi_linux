@@ -135,6 +135,9 @@ sudo bash $DIR_PATH/Deploy/auto_boot.sh
 echo "Enabling the SSH access"
 sudo systemctl enable ssh
 
+echo "Disable dhcpcd"
+sudo systemctl disable dhcpcd
+
 cd $DIR_PATH
 echo "Creating a backup folder for future factory_reset"
 sudo rm -Rf .git
