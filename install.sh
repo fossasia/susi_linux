@@ -147,7 +147,7 @@ disable_ipv6_avahi
 # install wlan config files: files with . in the name are *NOT* include
 # into the global /etc/network/interfaces file, so we can keep them there.
 echo "Installing ETH/WLAN device configuration files"
-sudo bash cp $DIR_PATH/access_point/interfaces.d/* /etc/network/interfaces.d/
+sudo cp $DIR_PATH/access_point/interfaces.d/* /etc/network/interfaces.d/
 
 echo "Converting RasPi into an Access Point"
 sudo bash $DIR_PATH/access_point/wap.sh
