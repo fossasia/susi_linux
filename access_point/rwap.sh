@@ -14,13 +14,8 @@ cd /etc/hostapd/
 cp hostapd.conf hostapd.conf.bak
 sed -i '1,14d' hostapd.conf
 
-cd /etc/
-cp dhcpcd.conf dhcpcd.conf.bak
-sed -i '57,60d' dhcpcd.conf
-
-cd /etc/network/
-cp interfaces interfaces.bak
-sed -i '9,17d' interfaces
+rm -f /etc/network/interfaces.d/wlan-hostap
+cp /etc/network/interfaces.d/wlan.client /etc/network/interfaces.d/wlan-client
 
 #Empty port 5000
 #Remove the server file from auto-boot

@@ -135,14 +135,22 @@ sudo bash $DIR_PATH/Deploy/auto_boot.sh
 echo "Enabling the SSH access"
 sudo systemctl enable ssh
 
+echo "Disable dhcpcd"
+sudo systemctl disable dhcpcd
+
 cd $DIR_PATH
 echo "Creating a backup folder for future factory_reset"
-rm -Rf .git
+sudo rm -Rf .git
 tar -I 'pixz -p 2' -cf ../reset_folder.tar.xz --checkpoint=.1000 -C .. susi_linux
 echo ""  # To add newline after tar's last checkpoint
 mv ../reset_folder.tar.xz $DIR_PATH/factory_reset/reset_folder.tar.xz
 
 disable_ipv6_avahi
+
+# install wlan config files: files with . in the name are *NOT* include
+# into the global /etc/network/interfaces file, so we can keep them there.
+echo "Installing ETH/WLAN device configuration files"
+sudo cp $DIR_PATH/access_point/interfaces.d/* /etc/network/interfaces.d/
 
 echo "Converting RasPi into an Access Point"
 sudo bash $DIR_PATH/access_point/wap.sh
