@@ -1,6 +1,10 @@
-import spidev
+try:
+    import spidev
+except ImportError:
+    print("No spidev, probably no raspi ...")
 import subprocess
 import sys
+import os
 from math import ceil
 
 RGB_MAP = {'rgb': [3, 2, 1], 'rbg': [3, 1, 2], 'grb': [
@@ -15,9 +19,12 @@ class LED_COLOR:
 
     def __init__(self, num_led, global_brightness=MAX_BRIGHTNESS,
                  order='rgb', bus=0, device=1, max_speed_hz=8000000):
-        output = subprocess.check_output(
-            ["cat", "/proc/asound/cards"]).decode(sys.stdout.encoding)
-        self.seeed_attached = output.find("seeed") != -1
+        if (os.access("/proc/asound/cards", os.R_OK)):
+            output = subprocess.check_output(
+                ["cat", "/proc/asound/cards"]).decode(sys.stdout.encoding)
+            self.seeed_attached = output.find("seeed") != -1
+        else:
+            self.seeed_attached = False
         if (not self.seeed_attached):
             return
         self.num_led = num_led  # The number of LEDs in the Strip

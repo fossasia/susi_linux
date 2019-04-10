@@ -12,7 +12,7 @@ add_debian_repo() {
 add_latest_drivers_vlc() {
     # function to update the latest vlc drivers which will allow it to play MRL of latest videos
     wget -P /home/pi  https://raw.githubusercontent.com/videolan/vlc/master/share/lua/playlist/youtube.lua
-    sudo mv /home/pi/youtube.lua /usr/lib/arm-linux-gnueabihf/vlc/lua/playlist/youtube.luac
+    sudo mv /home/pi/youtube.lua /usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/vlc/lua/playlist/youtube.luac
 }
 
 

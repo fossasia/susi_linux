@@ -72,9 +72,9 @@ class BusyState(State):
         """
         logger.debug('Busy state')
         try:
-            import RPi.GPIO as GPIO
             reply = self.components.susi.ask(payload)
-            GPIO.output(27, True)
+            if self.useGPIO:
+                GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
 
@@ -177,14 +177,12 @@ class BusyState(State):
     def on_exit(self):
         """Method executed on exit from the Busy State.
         """
-        try:
-            import RPi.GPIO as GPIO
-            GPIO.output(27, False)
-            GPIO.output(22, False)
-        except RuntimeError as e:
-            logger.error(e)
-        except ImportError:
-            logger.warning("This device doesn't have GPIO port")
+        if self.useGPIO:
+            try:
+                GPIO.output(27, False)
+                GPIO.output(22, False)
+            except RuntimeError as e:
+                logger.error(e)
 
     def __speak(self, text):
         """Method to set the default TTS for the Speaker
