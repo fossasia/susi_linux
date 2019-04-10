@@ -51,13 +51,14 @@ class RecognizingState(State):
         self.notify_renderer('listening')
         recognizer = self.components.recognizer
         try:
-            import RPi.GPIO as GPIO
             logger.info("Let's say something!")
-            GPIO.output(22, True)
+            if self.useGPIO:
+                GPIO.output(22, True)
             with self.components.microphone as source:
                 audio = recognizer.listen(source, phrase_time_limit=5)
             self.notify_renderer('recognizing')
-            GPIO.output(22, False)
+            if self.useGPIO:
+                GPIO.output(22, False)
             logger.info("Got it! Now to recognize it...")
             lights.off()
             lights.think()
@@ -90,12 +91,10 @@ class RecognizingState(State):
         """ Method to executed upon exit from Recognizing State.
         :return:
         """
-        try:
-            import RPi.GPIO as GPIO
-            GPIO.output(27, False)
-            GPIO.output(22, False)
-        except RuntimeError:
-            pass
-        except ImportError:
-            logger.warning("This device doesn't have GPIO port")
+        if self.useGPIO:
+            try:
+                GPIO.output(27, False)
+                GPIO.output(22, False)
+            except RuntimeError:
+                pass
         pass

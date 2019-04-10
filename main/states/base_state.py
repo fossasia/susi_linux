@@ -15,6 +15,13 @@ class State(ABC):
     def __init__(self, components):
         self.components = components
         self.allowedStateTransitions = {}
+        try:
+            import RPi.GPIO as GPIO
+            self.useGPIO = True
+        except ImportError:
+            logger.warning("This device doesn't have GPIO port")
+            self.useGPIO = False
+
 
     @abstractclassmethod
     def on_enter(self, payload=None):
