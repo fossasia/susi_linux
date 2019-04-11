@@ -77,10 +77,12 @@ Update `susi_linux` git submodules
 	git submodule update --init --recursive
 ```
 
-We need to link a directory from `susi_api_wrapper` to `susi_linux`:
+We need to link a directory from `susi_api_wrapper` to `susi_linux`.
+We also add this link to the ignored files of git:
 ```
 	cd $DEVDIR
 	ln -s ../susi_api_wrapper/python_wrapper/susi_python susi_linux/
+	echo "/susi_python" >> susi_linux/.git/info/exclude
 ```
 
 install other necessary pip modules
