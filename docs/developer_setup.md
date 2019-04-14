@@ -65,10 +65,10 @@ git clone git@github.com:fossasia/susi_server.git
 git clone git@github.com:fossasia/susi_skill_data.git
 ```
 
-Update `susi_linux` git submodules
+Update `susi_server` git submodules
 ```
 cd $DEVDIR
-cd susi_linux
+cd susi_server
 git submodule update --recursive --remote
 git submodule update --init --recursive
 ```
