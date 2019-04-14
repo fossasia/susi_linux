@@ -10,7 +10,7 @@ import json_config
 import susi_python as susi
 from speech_recognition import Recognizer, Microphone
 from requests.exceptions import ConnectionError
-
+from urllib.parse import urlencode
 from .busy_state import BusyState
 from .error_state import ErrorState
 from .idle_state import IdleState
@@ -48,6 +48,7 @@ class Components:
         self.microphone = Microphone()
         self.susi = susi
         self.renderer = renderer
+        self.server_url = "https://127.0.0.1:4000"
 
         try:
             res = requests.get('http://ip-api.com/json').json()
@@ -95,9 +96,9 @@ class Components:
         }
         while response_one is None:
             try:
-                response_one = requests.get('https://127.0.0.1:4000/susi/chat.json?q={}&timezoneOffset={}'
-                .format(test_params.q, test_params.timezoneOffset) ).result()
-                api_endpoint = 'https://127.0.0.1:4000'
+                response_one = requests.get('{}/susi/chat.json?{}'
+                .format(self.server_url,urlencode(test_params)) ).result()
+                api_endpoint = self.server_url
                 susi.use_api_endpoint(api_endpoint)
             except AttributeError:
                 time.sleep(10)
