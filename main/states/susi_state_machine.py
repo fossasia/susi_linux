@@ -37,7 +37,7 @@ class Components:
         except RuntimeError as e:
             logger.error(e)
             pass
-        thread1 = Thread(target=self.server_checker, name="Thread1") 
+        thread1 = Thread(target=self.server_checker, name="Thread1")
         thread1.daemon = True
         thread1.start()
 
@@ -87,7 +87,7 @@ class Components:
         else:
             logger.warning("Susi has the wake button disabled")
             self.wake_button = None
-    
+
     def server_checker(self):
         response_one = None
         test_params = {
