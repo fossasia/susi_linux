@@ -3,17 +3,20 @@ The SUSI State Machine works on the concept of Finite State Machine.
 """
 import logging
 from threading import Thread
+import time
 
 import requests
 import json_config
 import susi_python as susi
 from speech_recognition import Recognizer, Microphone
 from requests.exceptions import ConnectionError
-
+from urllib.parse import urlencode
 from .busy_state import BusyState
 from .error_state import ErrorState
 from .idle_state import IdleState
 from .recognizing_state import RecognizingState
+from requests_futures.sessions import FuturesSession
+
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +37,9 @@ class Components:
         except RuntimeError as e:
             logger.error(e)
             pass
+        thread1 = Thread(target=self.server_checker, name="Thread1")
+        thread1.daemon = True
+        thread1.start()
 
         recognizer = Recognizer()
         recognizer.dynamic_energy_threshold = False
@@ -42,6 +48,7 @@ class Components:
         self.microphone = Microphone()
         self.susi = susi
         self.renderer = renderer
+        self.server_url = "https://127.0.0.1:4000"
 
         try:
             res = requests.get('http://ip-api.com/json').json()
@@ -80,6 +87,25 @@ class Components:
         else:
             logger.warning("Susi has the wake button disabled")
             self.wake_button = None
+
+    def server_checker(self):
+        response_one = None
+        test_params = {
+        'q': 'Hello',
+        'timezoneOffset': int(time.timezone / 60)
+        }
+        while response_one is None:
+            try:
+                response_one = requests.get('{}/susi/chat.json?{}'
+                .format(self.server_url,urlencode(test_params)) ).result()
+                api_endpoint = self.server_url
+                susi.use_api_endpoint(api_endpoint)
+            except AttributeError:
+                time.sleep(10)
+                continue
+            except ConnectionError:
+                time.sleep(10)
+                continue
 
 
 class SusiStateMachine(Thread):
