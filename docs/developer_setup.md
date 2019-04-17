@@ -97,6 +97,17 @@ sudo pip3 install pip3 install speechRecognition==3.8.1 service_identity pockets
 sudo pip3 install -r susi_linux/requirements-special.txt
 ```
 
+download speech sata for flite TTS
+-----------------------------------
+We need to get the TTS data files
+```
+cd $DEVDIR
+cd susi_linux
+if [ ! -f "extras/cmu_us_slt.flitevox" ]
+then
+    wget "http://www.festvox.org/flite/packed/flite-2.0/voices/cmu_us_slt.flitevox" -P extras
+fi
+```
 
 Optional: update youtube.lua
 ----------------------------
