@@ -7,8 +7,7 @@ The endpoints will be hit through the mobile clients in the following order (SYN
 4. Configuration (/config)
 """
 
-from flask import Flask , render_template , request
-from flask import jsonify
+from flask import Flask , render_template , request , jsonify
 import subprocess   # nosec #pylint-disable type: ignore
 import os
 import json_config
