@@ -13,6 +13,10 @@ from ..speech import TTS
 from .base_state import State
 from .lights import lights
 
+try:
+    import RPi.GPIO as GPIO
+except:
+    pass
 
 logger = logging.getLogger(__name__)
 
