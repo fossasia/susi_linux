@@ -8,6 +8,10 @@ from .base_state import State
 from .internet_test import internet_on
 from .lights import lights
 
+try:
+    import RPi.GPIO as GPIO
+except:
+    pass
 
 logger = logging.getLogger(__name__)
 
