@@ -56,6 +56,9 @@ def set_extras():
     """
     config['flite_speech_file_path'] = 'extras/cmu_us_slt.flitevox'
     config['detection_bell_sound'] = 'extras/detection-bell.wav'
+    config['problem_sound'] = 'extras/problem.wav'
+    config['recognition_error_sound'] = 'extras/recognition-error.wav'
+
 
 
 def request_hotword_choice():
