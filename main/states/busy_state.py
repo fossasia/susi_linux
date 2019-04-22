@@ -36,7 +36,8 @@ class BusyState(State):
             self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
             lights.off()
             lights.wakeup()
-            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
+                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
             lights.wakeup()
             self.transition(self.allowedStateTransitions.get('recognizing'))
             self.video_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
@@ -45,7 +46,8 @@ class BusyState(State):
             self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
             lights.off()
             lights.wakeup()
-            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
+                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
             lights.wakeup()
             self.transition(self.allowedStateTransitions.get('recognizing'))
             self.audio_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
@@ -120,7 +122,8 @@ class BusyState(State):
             if 'volume' in reply.keys():
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Headphone'", ',', '0', str(reply['volume'])])
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Speaker'", ',', '0', str(reply['volume'])])
-                subprocess.call(['play', str(self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'], 
+                                                      self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
                 table = reply['table']

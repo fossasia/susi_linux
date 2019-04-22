@@ -3,6 +3,7 @@ You may use any of the speech synthesis services by calling the
 respective method.
 """
 import logging
+import os
 import subprocess   # nosec #pylint-disable type: ignore
 
 import json_config
@@ -29,7 +30,7 @@ def speak_flite_tts(text):
     with open(filename, 'w') as f:
         f.write(text)
     # Call flite tts to reply the response by Susi
-    flite_speech_file = config['flite_speech_file_path']
+    flite_speech_file = os.path.join(config['data_base_dir'], config['flite_speech_file_path'])
     logger.debug('flite -voice file://%s -f %s', flite_speech_file, filename)
     subprocess.call(   # nosec #pylint-disable type: ignore
         ['flite', '-v', '-voice', 'file://' + flite_speech_file, '-f', filename, '-o', 'extras/output.wav'])   # nosec #pylint-disable type: ignore
