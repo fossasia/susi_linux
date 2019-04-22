@@ -136,17 +136,10 @@ class ConfigurationWindow:
 
     def init_hotword_switch(self):
         try:
-            parent_dir = os.path.dirname(TOP_DIR)
-            snowboyDetectFile = Path(os.path.join(
-                parent_dir, "hotword_engine/snowboy/_snowboydetect.so"))
-            if not snowboyDetectFile.exists():
-                self.snowboy_switch.set_sensitive(False)
-                config['hotword_engine'] = 'PocketSphinx'
-
-        except Exception as e:
-            logging.error(e)
+            import snowboy
+        except ImportError:
+            self.snowboy_switch.set_sensitive(False)
             config['hotword_engine'] = 'PocketSphinx'
-
         if config['hotword_engine'] == 'Snowboy':
             self.snowboy_switch.set_active(True)
         else:
