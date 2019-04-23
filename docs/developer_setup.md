@@ -33,7 +33,7 @@ cd $DEVDIR
 wget https://github.com/Kitt-AI/snowboy/archive/v1.3.0.tar.gz
 tar -xf v1.3.0.tar.gz
 cd snowboy-1.3.0
-sed -u -e "s/version='1\.2\.0b1'/version='1.3.0'/" setup.py
+sed -i -e "s/version='1\.2\.0b1'/version='1.3.0'/" setup.py
 python3 setup.py build
 sudo python3 setup.py install
 cd ..
@@ -85,7 +85,7 @@ sudo pip3 install pip3 install speechRecognition==3.8.1 service_identity pockets
 sudo pip3 install -r susi_linux/requirements-special.txt
 ```
 
-Download speech sata for flite TTS
+Download speech data for flite TTS
 -----------------------------------
 We need to get the TTS data files
 ```
