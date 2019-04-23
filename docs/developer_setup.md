@@ -81,7 +81,7 @@ then
 cd $DEVDIR
 sudo pip3 install -r susi_api_wrapper/python_wrapper/requirements.txt
 # these are the reqs from sus_linux/requirements-hw.txt adjusted and cleaned
-sudo pip3 install pip3 install speechRecognition==3.8.1 service_identity pocketsphinx==0.1.15 pyaudio json_config google_speech async_promises python-Levenshtein pyalsaaudio 'youtube-dl>2018' python-vlc pafy colorlog rx
+sudo pip3 install pip3 install speechRecognition==3.8.1 service_identity pocketsphinx==0.1.15 pyaudio json_config google_speech async_promises python-Levenshtein pyalsaaudio 'youtube-dl>2018' python-vlc pafy colorlog rx requests_futures
 sudo pip3 install -r susi_linux/requirements-special.txt
 ```
 
