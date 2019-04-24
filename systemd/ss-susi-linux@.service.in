@@ -1,0 +1,19 @@
+[Unit]
+Description=SUSI Linux
+Wants=network-online.target
+After=network-online.target ss-susi-server.service
+
+[Service]
+Type=idle
+User=%i
+# Example:
+# WorkingDirectory=/home/%i/SUSI.AI
+WorkingDirectory=@SUSI_WORKING_DIR@
+# Example
+# Environment=PYTHONPATH=/home/%i/SUSI.AI/susi_linux
+Environment=PYTHONPATH=@INSTALL_DIR@
+ExecStart=/usr/bin/python3 -m main -v --short-log
+
+[Install]
+WantedBy=multi-user.target
+
