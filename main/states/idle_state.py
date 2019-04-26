@@ -2,6 +2,7 @@
 """
 
 import logging
+import os
 import subprocess   # nosec #pylint-disable type: ignore
 
 from .base_state import State
@@ -43,7 +44,8 @@ class IdleState(State):
 
     def __detected(self):
         if self.isActive:
-            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
+            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
+                                                   self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
 

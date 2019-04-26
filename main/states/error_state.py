@@ -1,6 +1,7 @@
 """Class to represent Error State
 """
 import logging
+import os
 import subprocess   # nosec #pylint-disable type: ignore
 import json_config
 from .base_state import State
@@ -23,7 +24,8 @@ class ErrorState(State):
         if payload == 'RecognitionError':
             self.notify_renderer('error', 'recognition')
             lights.speak()
-            subprocess.call(['play', 'extras/recognition-error.wav'])   # nosec #pylint-disable type: ignore
+            subprocess.call(['play', os.path.join(self.components.config['data_base_dir'],
+                                                  self.components.config['recognition_error_sound'])])
             lights.off()
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
@@ -38,7 +40,8 @@ class ErrorState(State):
             print("Error: {} \n".format(payload))
             self.notify_renderer('error')
             lights.speak()
-            subprocess.call(['play', 'extras/problem.wav'])   # nosec #pylint-disable type: ignore
+            subprocess.call(['play', os.path.join(self.components.config['data_base_dir'],
+                                                  self.components.config['problem_sound'])])   # nosec #pylint-disable type: ignore
             lights.off()
 
         self.transition(self.allowedStateTransitions.get('idle'))

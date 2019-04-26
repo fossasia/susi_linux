@@ -54,8 +54,12 @@ def set_extras():
     """ Method for setting miscellaneous configuration parameters.
     :return: None
     """
-    config['flite_speech_file_path'] = 'extras/cmu_us_slt.flitevox'
-    config['detection_bell_sound'] = 'extras/detection-bell.wav'
+    config.setdefault('data_base_dir', os.path.dirname(os.path.abspath(__file__)))
+    config.setdefault('flite_speech_file_path', 'extras/cmu_us_slt.flitevox')
+    config.setdefault('detection_bell_sound', 'extras/detection-bell.wav')
+    config.setdefault('problem_sound', 'extras/problem.wav')
+    config.setdefault('recognition_error_sound', 'extras/recognition-error.wav')
+
 
 
 def request_hotword_choice():
