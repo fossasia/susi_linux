@@ -26,30 +26,18 @@ On Debian/stretch add vlc-nox at least
 Install snowboy
 ---------------
 
-installation of snowboy does not succeed out of the box, see
-issue https://github.com/Kitt-AI/snowboy/issues/568 and also
-https://github.com/Kitt-AI/snowboy/pull/493
-
-There is another problem that the installed snowboydecoder.py wrongly loads
-and used snowboydetect, fix that, too.
-
+We install snowboy from the Github release. The only useful fix is to
+correctly identify the version in the pip install cache
 ```
 cd $DEVDIR
-pip3 download --no-deps snowboy
-tar -xf snowboy-1.2.0b1.tar.gz
-cd snowboy-1.2.0b1
-# fix loading errors
-sed -i -e 's/^import snowboydetect/import snowboy.snowboydetect as snowboydetect/' examples/Python/snowboydecoder.py
-# fix compile error
-cd swig/Python
-make clean
-# we are running on python3
-sed -i -e 's/python-config/python3-config/g' Makefile
-cd ../..
+wget https://github.com/Kitt-AI/snowboy/archive/v1.3.0.tar.gz
+tar -xf v1.3.0.tar.gz
+cd snowboy-1.3.0
+sed -i -e "s/version='1\.2\.0b1'/version='1.3.0'/" setup.py
 python3 setup.py build
 sudo python3 setup.py install
-rm -f snowboy-1.2.0b1.tar.gz
-rm -rf snowboy-1.2.0b1
+cd ..
+rm -rf snowboy-1.3.0 v1.3.0.tar.gz
 ```
 
 
@@ -93,11 +81,11 @@ then
 cd $DEVDIR
 sudo pip3 install -r susi_api_wrapper/python_wrapper/requirements.txt
 # these are the reqs from sus_linux/requirements-hw.txt adjusted and cleaned
-sudo pip3 install pip3 install speechRecognition==3.8.1 service_identity pocketsphinx==0.1.15 pyaudio json_config google_speech async_promises python-Levenshtein pyalsaaudio 'youtube-dl>2018' python-vlc pafy colorlog rx
+sudo pip3 install pip3 install speechRecognition==3.8.1 service_identity pocketsphinx==0.1.15 pyaudio json_config google_speech async_promises python-Levenshtein pyalsaaudio 'youtube-dl>2018' python-vlc pafy colorlog rx requests_futures
 sudo pip3 install -r susi_linux/requirements-special.txt
 ```
 
-Download speech sata for flite TTS
+Download speech data for flite TTS
 -----------------------------------
 We need to get the TTS data files
 ```
