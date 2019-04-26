@@ -5,6 +5,7 @@ respective method.
 import logging
 import os
 import subprocess   # nosec #pylint-disable type: ignore
+import tempfile
 
 import json_config
 from google_speech import Speech
@@ -26,15 +27,17 @@ def speak_flite_tts(text):
     :param text: Text which is needed to be spoken
     :return: None
     """
-    filename = '.response'
-    with open(filename, 'w') as f:
-        f.write(text)
-    # Call flite tts to reply the response by Susi
-    flite_speech_file = os.path.join(config['data_base_dir'], config['flite_speech_file_path'])
-    logger.debug('flite -voice file://%s -f %s', flite_speech_file, filename)
-    subprocess.call(   # nosec #pylint-disable type: ignore
-        ['flite', '-v', '-voice', 'file://' + flite_speech_file, '-f', filename, '-o', 'extras/output.wav'])   # nosec #pylint-disable type: ignore
-    subprocess.call(['play', 'extras/output.wav'])   # nosec #pylint-disable type: ignore
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        fd, filename = tempfile.mkstemp(text=True, dir=tmpdirname)
+        with open(fd, 'w') as f:
+            f.write(text)
+        # Call flite tts to reply the response by Susi
+        flite_speech_file = os.path.join(config['data_base_dir'], config['flite_speech_file_path'])
+        logger.debug('flite -voice file://%s -f %s', flite_speech_file, filename)
+        fdout, wav_output = tempfile.mkstemp(suffix='.wav', dir=tmpdirname)
+        subprocess.call(   # nosec #pylint-disable type: ignore
+            ['flite', '-v', '-voice', 'file://' + flite_speech_file, '-f', filename, '-o', wav_output])   # nosec #pylint-disable type: ignore
+        subprocess.call(['play', wav_output])   # nosec #pylint-disable type: ignore
 
 
 def speak_watson_tts(text):
@@ -43,12 +46,14 @@ def speak_watson_tts(text):
     :param text: Text which is needed to be spoken
     :return: None
     """
-    with open('extras/output.wav', 'wb') as audio_file:
-        audio_file.write(
-            text_to_speech.synthesize(text, accept='audio/wav',
-                                      voice=config['watson_tts_config']['voice']))
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        fd, wav_output = tempfile.mkstemp(suffix='.wav', dir=tmpdirname)
+        with open(fd, 'wb') as audio_file:
+            audio_file.write(
+                text_to_speech.synthesize(text, accept='audio/wav',
+                                          voice=config['watson_tts_config']['voice']))
 
-    subprocess.call(['play', 'extras/output.wav'])   # nosec #pylint-disable type: ignore
+        subprocess.call(['play', wav_output])   # nosec #pylint-disable type: ignore
 
 
 def speak_google_tts(text):
