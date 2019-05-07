@@ -10,7 +10,6 @@ rx
 python-Levenshtein
 pyalsaaudio
 spidev
-RPi.GPIO
 youtube-dl>2018
 python-vlc
 pafy
