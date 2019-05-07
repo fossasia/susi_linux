@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. @INSTALL_DIR@/wrapper/common-script-start
+
+exec python3 -m susi_linux -v --short-log
+
