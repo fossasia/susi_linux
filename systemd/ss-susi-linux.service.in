@@ -5,9 +5,7 @@ After=network-online.target ss-susi-server.service
 
 [Service]
 Type=idle
-WorkingDirectory=@SUSI_WORKING_DIR@
-Environment=PYTHONPATH=@INSTALL_DIR@
-ExecStart=/usr/bin/python3 -m main -v --short-log
+ExecStart=@BINDIR@/start-susi-linux
 
 [Install]
 WantedBy=multi-user.target
