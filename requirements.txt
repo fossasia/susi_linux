@@ -11,7 +11,7 @@ python-vlc
 requests_futures
 rx
 service_identity
-snowboy  # Will be installed from FOSSASIA repo
+snowboy==1.3.0
 speechRecognition==3.8.1
 spidev
 watson-developer-cloud
