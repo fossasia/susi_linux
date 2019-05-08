@@ -1,20 +1,22 @@
+async_promises
+colorlog
+google_speech
+json_config
+pafy
+pocketsphinx==0.1.15
+pyalsaaudio
+pyaudio
+python-Levenshtein
+python-vlc
+requests_futures
+rx
+service_identity
 snowboy  # Will be installed from FOSSASIA repo
 speechRecognition==3.8.1
-service_identity
-pocketsphinx==0.1.15
-pyaudio
-json_config
-google_speech
-async_promises
-rx
-python-Levenshtein
-pyalsaaudio
 spidev
+watson-developer-cloud
+websocket-server
 youtube-dl>2018
-python-vlc
-pafy
-colorlog
-requests_futures
 
 # Repo for wheel packages, pre-compiled for ARM
 --extra-index-url https://repo.fury.io/fossasia/
