@@ -1,0 +1,22 @@
+async_promises
+colorlog
+google_speech
+json_config
+pafy
+pocketsphinx==0.1.15
+pyalsaaudio
+pyaudio
+python-Levenshtein
+python-vlc
+requests_futures
+rx
+service_identity
+snowboy==1.3.0
+speechRecognition==3.8.1
+spidev
+watson-developer-cloud
+websocket-server
+youtube-dl>2018
+
+# Repo for wheel packages, pre-compiled for ARM
+--extra-index-url https://repo.fury.io/fossasia/
