@@ -63,7 +63,7 @@ class BusyState(State):
             lights.wakeup()
 
         elif (process == 'audio_process'):
-            self.video_process.send_signal(actions[action])
+            self.audio_process.send_signal(actions[action])
             lights.off()
             lights.wakeup()
 
