@@ -25,6 +25,16 @@ An assembly video can be found at https://youtu.be/jAEmRvQLmc0
 * If your SD card has an image on it: make a copy of the OS from the SD card: i.e.<br/>`sudo dd if=/dev/rdisk5 bs=16M | pv -s 16G > rpi_devstep0.img`
 
 ### Installation
+
+There are two separate options to get the device running, choose one of the following:
+
+#### Anonymous Usage
+* Connect using the wifi connection from the RPI with SSID "SUSI.AI". The password is "password“.
+* open http://10.0.0.1:5000
+* you get a web formular where you can enter the WIFI credentials of your network.
+* after you enter the formular fields, the device reboots and is ready for usage.
+
+#### With an susi-account using the Android app
 The device needs an internet connection to work. To configure the device to use the wifi connection,
 a pairing process is started on the mobile phone:
 * Download and install the SUSI.AI App from https://github.com/fossasia/susi_android/releases/tag/1.1
