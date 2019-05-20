@@ -1,11 +1,4 @@
-# Susi Linux
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/167b701c744841c5a05269d06b863732)](https://app.codacy.com/app/fossasia/susi_linux?utm_source=github.com&utm_medium=referral&utm_content=fossasia/susi_linux&utm_campaign=badger)
-[![Build Status](https://travis-ci.org/fossasia/susi_linux.svg?branch=master)](https://travis-ci.org/fossasia/susi_linux)
-[![Join the chat at https://gitter.im/fossasia/susi_hardware](https://badges.gitter.im/fossasia/susi_hardware.svg)](https://gitter.im/fossasia/susi_hardware?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Dependency Status](https://beta.gemnasium.com/badges/github.com/fossasia/susi_linux.svg)](https://beta.gemnasium.com/projects/github.com/fossasia/susi_linux)
-
-SUSI AI on Linux
+# SUSI AI on Linux
 
 This project aims at creating an implementation of Susi, capable to run on Linux
 computers and Linux devices in headless mode. It will enable you to bring Susi AI
@@ -13,14 +6,75 @@ intelligence to all computers and devices you may think like a Speaker, Car etc.
 
 This project provides the following functionality:
 
+- Hotword Detection works for hotword "Susi"
 - Voice Detection working with Google Speech API / IBM Watson Speech to Text API.
 - Voice Output working with Google TTS / IBM Watson TTS / Flite TTS.
 - Susi AI response working through Susi AI [API Python Wrapper](https://github.com/fossasia/susi_python)
-- Hotword Detection works for hotword "Susi"
-- Audio parsing working through SOX
-- Youtube audio working MPV player
 
-## **Important:** Tests before making a new release
+## Installation
+
+`susi_linux` is normally installed via the [SUSI Installer](https://github.com/fossasia/susi_installer).
+In this case there are binaries for configuration, starting, authentication and
+others available in `$HOME/SUSI.AI/bin` (under default installation settings).
+
+In case of manual installations, the wrappers in [`wrapper` directory](wrapper/) need to
+be configured to point to the respective installation directories and location of
+the `config.json` file.
+
+## Setting up and configuring Susi on Linux / RaspberryPi
+
+Configuration is done via the file [config.json](config.json) which normally
+resides in `$HOME/SUSI.AI/config.json`.
+
+If correctly installed, `susi-linux-configure` provides a GUI interface to the configuration
+of `susi_linux`, while `susi-linux-config-generator` provides a CLI interface:
+```
+susi-linux-config-generator <stt> <tts> <hotword_detection> <wake_button>
+```
+where
+- `stt` is the speech to text service, one of the following choices:
+    - `google` - use Google STT service
+    - `ibm` - IBM/Watson STT
+    - `sphinx` - PocketSphinx STT system, working offline
+- `tts` is the text to speech service, one of the following choices:
+    - `google` - use Google TTS
+    - `ibm`  - IBM/Watson TTS (login credential necessary)
+    - `flite` - flite TTS service working offline
+- `hotword_detection` is the choice if you want to use snowboy detector as the hotword detection or not
+    - `y` to use snowboy
+    - `n` to use pocket sphinx
+- `wake_button` is the choice if you want to use an external wake button or not
+    - `y` to use an external wake button
+    - `n` to disable the external wake button
+
+Other interfaces for configuration are available for Android and iOS.
+
+Manual configuration is possible, the allowed keys in [`config.json`](config.json) are
+- `Device`: the name of the current device
+- `WakeButton`: whether a wake button is available or not
+- `default_stt`: see above for possible settings
+- `default_tts`: see above for possible settings
+- `data_base_dir`: directory where support files are installed
+- `detection_bell_sound`: sound file that is played when detection starts, relative to `data_base_dir`
+- `problem_sound`: sound file that is played on general errors, relative to `data_base_dir`
+- `recognition_error_sound`: sound file that is played on detection errors, relative to `data_base_dir`
+- `flite_speech_file_path`: flitevox speech file, relative to `data_base_dir`
+- `hotword_engine`: see above for possible settings
+- `usage_mode`: access mode to `accounts.susi.ai`, either `anonymous` or `authenticated`
+- `room_name`: free form description of the room
+- `watson_tts_config`: a JSON array with `username` and `password` as keys, providing the credentials for IBM/Watson
+
+
+For details concerning installation, setup, and operation on RaspberryPi, see
+the documentation at [SUSI Installer](https://github.com/fossasia/susi_installer).
+
+
+
+## Information for developers
+
+This section is intended for developer.
+
+### **Important:** Tests before making a new release
 
 1. The hotword detection should have a decent accuracy
 2. SUSI Linux shouldn't crash when switching from online to offline and vice versa (failing as of now)
@@ -36,16 +90,16 @@ This project provides the following functionality:
 - Google TTS and STT services are used as default services but if the internet fails, a switch to offline services PocketSphinx (STT) and Flite (TTS) is made automatically
 
 
-## Setting up and configuring Susi on Linux / RaspberryPi
 
-See the documentation at [SUSI Installer](https://github.com/fossasia/susi_installer).
+### Run SUSI Linux for development purposes
 
+If installed via the SUSI Installer, systemd unit files are installed:
+- `ss-susi-linux.service` for the user bus, use as user with `systemctl --user start/enable ss-susi-linux`
+- `ss-susi-linux@.service` for the system bus, use as `root` user to start a job for a specific user, 
+  independent from whether the user is logged in or not: `sudo systemctl start/enable ss-susi-linux@USER`
 
-## Run SUSI Linux for development purposes
-
-This section is intended for developer.
-
-SUSI Linux application is run automatically by `systemd`. The main component is run as _ss-susi-linux.service_. By default, it is ran in _production_ mode, where log messages are limited to _error_ and _warning_ only. In development, you may want to see more logs, to help debugging. You can switch it to "verbose" mode by 2 ways:
+By default, it is ran in _production_ mode, where log messages are limited to _error_ and _warning_ only.
+In development, you may want to see more logs, to help debugging. You can switch it to "verbose" mode by 2 ways:
 
 1. Run it manually
 
