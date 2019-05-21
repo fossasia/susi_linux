@@ -90,7 +90,6 @@ This section is intended for developer.
 - Google TTS and STT services are used as default services but if the internet fails, a switch to offline services PocketSphinx (STT) and Flite (TTS) is made automatically
 
 
-
 ### Run SUSI Linux for development purposes
 
 If installed via the SUSI Installer, systemd unit files are installed:
