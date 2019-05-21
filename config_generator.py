@@ -24,12 +24,7 @@ def is_valid(email, password):
     }
     sign_in_url = 'http://api.susi.ai/aaa/login.json?type=access-token'
     api_response = requests.get(sign_in_url, params)
-
-    if api_response.status_code == 200:
-        return True
-    else:
-        return False
-
+    return (api_response.status_code == 200)
 
 def setup_wake_button():
     try:
