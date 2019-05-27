@@ -122,7 +122,7 @@ class BusyState(State):
             if 'volume' in reply.keys():
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Headphone'", ',', '0', str(reply['volume'])])
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Speaker'", ',', '0', str(reply['volume'])])
-                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'], 
+                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'],
                                                       self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
@@ -157,7 +157,8 @@ class BusyState(State):
                     self.song_modulation('audio_process', 'stop')
                     self.song_modulation('audio_process', 'play')
 
-            if 'stop' in reply.keys():
+            #asking SUSI to stop yields {'answer': ' stopped.'} as a reply
+            if 'stop' in reply.keys() or reply['answer'] == ' stopped.':
                 if hasattr(self, 'video_process'):
                     self.song_modulation('video_process', 'stop')
                 elif hasattr(self, 'audio_process'):
