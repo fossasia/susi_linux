@@ -29,9 +29,9 @@ The whole SUSI.AI ecosystem consists of the following parts:
  
  * Smart Speaker - Software to turn a Raspberry Pi into a Personal Assistant
  | Several sub-projects come together in this device
- |_ susi_installer     (Framework which can install all parts on a RPi and also is able to create SUSIbian disk images)
- |_ susi_python        (Python API for the susi_server at https://api.susi.ai)
- |_ susi_server        (The same server as on api.susi.ai, hostel locally for maximum privacy. No cloud needed)
+ |_ susi_installer     (Framework which can install all parts on a RPi and Desktops, and also is able to create SUSIbian disk images)
+ |_ susi_python        (Python API for the susi_server at https://api.susi.ai or local instance)
+ |_ susi_server        (The same server as on api.susi.ai, hosted locally for maximum privacy. No cloud needed)
  |_ susi_skill_data    (The skills as provided by susi_server on api.susi.ai; pulled from the git repository automatically)
  |_ susi_linux         (a state machine in python which uses susi_python, Speech-to-text and Text-to-speech functions)
 ```
