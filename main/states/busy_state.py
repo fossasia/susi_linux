@@ -24,32 +24,6 @@ class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
     """
-    def detection(self):
-        """This callback is fired when a Hotword Detector detects a hotword.
-        All the songs/videos are paused for a brief moment and then played again.
-        :return: None
-        """
-        # subprocess.call(['killall', 'play'])
-        # subprocess.call(['killall', 'mpv']
-        if hasattr(self, 'video_process'):
-            self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.video_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
-
-        if hasattr(self, 'audio_process'):
-            self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.audio_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
 
     def song_modulation(self, process, action):
         """ A method to modulate(pause/play/restart) the songs and videos being played through the Speaker.
