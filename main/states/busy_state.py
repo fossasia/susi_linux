@@ -107,22 +107,26 @@ class BusyState(State):
                         url = data['url']
                         video_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
                         self.video_process = video_process
+                        State.video_process = video_process
                     except Exception as e:
                         logger.error(e);
-                    stopAction.run()
-                    stopAction.detector.terminate()
+                    self.transition(self.allowedStateTransitions.get('idle'))
+                    #stopAction.run()
+                    #stopAction.detector.terminate()
 
                 else:
                     audio_url = reply['identifier']
                     audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
                     self.audio_process = audio_process
-                    stopAction.run()
-                    stopAction.detector.terminate()
+                    State.audio_process = audio_process
+                    self.transition(self.allowedStateTransitions.get('idle'))
+                    #stopAction.run()
+                    #stopAction.detector.terminate()
 
             if 'volume' in reply.keys():
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Headphone'", ',', '0', str(reply['volume'])])
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Speaker'", ',', '0', str(reply['volume'])])
-                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'], 
+                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'],
                                                       self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
