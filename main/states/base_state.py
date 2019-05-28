@@ -12,6 +12,7 @@ class State(ABC):
     transition method to facilitate transition between states.
     """
     video_process = None
+    audio_process = None
     def __init__(self, components):
         self.components = components
         self.allowedStateTransitions = {}
