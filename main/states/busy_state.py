@@ -8,7 +8,6 @@ import subprocess   # nosec #pylint-disable type: ignore
 import alsaaudio
 import requests
 
-from ..hotword_engine.stop_detection import StopDetector
 from ..speech import TTS
 from .base_state import State
 from .lights import lights
@@ -98,7 +97,7 @@ class BusyState(State):
 
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
-                stopAction = StopDetector(self.detection)
+                #stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
                     try:
