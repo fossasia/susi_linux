@@ -98,7 +98,7 @@ class BusyState(State):
 
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
-                stopAction = StopDetector(self.detection)
+                #stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
                     try:
