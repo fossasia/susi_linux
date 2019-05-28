@@ -8,7 +8,6 @@ import subprocess   # nosec #pylint-disable type: ignore
 import alsaaudio
 import requests
 
-from ..hotword_engine.stop_detection import StopDetector
 from ..speech import TTS
 from .base_state import State
 from .lights import lights
