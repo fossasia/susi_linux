@@ -78,23 +78,17 @@ class BusyState(State):
                         x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
                         data = x.json()
                         url = data['url']
-                        video_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
-                        self.video_process = video_process
-                        State.video_process = video_process
+                        audio_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
+                        State.audio_process = audio_process
                     except Exception as e:
                         logger.error(e);
                     self.transition(self.allowedStateTransitions.get('idle'))
-                    #stopAction.run()
-                    #stopAction.detector.terminate()
 
                 else:
                     audio_url = reply['identifier']
                     audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
-                    self.audio_process = audio_process
                     State.audio_process = audio_process
                     self.transition(self.allowedStateTransitions.get('idle'))
-                    #stopAction.run()
-                    #stopAction.detector.terminate()
 
             if 'volume' in reply.keys():
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Headphone'", ',', '0', str(reply['volume'])])

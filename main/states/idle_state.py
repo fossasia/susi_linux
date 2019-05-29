@@ -44,33 +44,15 @@ class IdleState(State):
         self.notify_renderer('idle')
 
     def __detected(self):
-        if hasattr(self, 'video_process') and self.video_process != None:
-            self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
+        if (self.isActive):
+            if self.audio_process != None:
+                self.audio_process.send_signal(signal.SIGSTOP)
             subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.video_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
-
-        elif hasattr(self, 'audio_process') and self.audio_process != None:
-            self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.audio_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
-
-
-        else:
-            if (self.isActive):
-                subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                       self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
-                self.transition(state=self.allowedStateTransitions.get(
-                    'recognizing'), payload=None)
+                                                   self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
+            self.transition(state=self.allowedStateTransitions.get(
+                'recognizing'), payload=None)
+            if self.audio_process != None:
+                self.audio_process.send_signal(signal.SIGCONT)
 
     def on_exit(self):
         """Method to be executed on exit from Idle State. Detection of Hotword and Wake Button is paused.
