@@ -8,7 +8,6 @@ import subprocess   # nosec #pylint-disable type: ignore
 import alsaaudio
 import requests
 
-from ..hotword_engine.stop_detection import StopDetector
 from ..speech import TTS
 from .base_state import State
 from .lights import lights
@@ -25,32 +24,6 @@ class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
     """
-    def detection(self):
-        """This callback is fired when a Hotword Detector detects a hotword.
-        All the songs/videos are paused for a brief moment and then played again.
-        :return: None
-        """
-        # subprocess.call(['killall', 'play'])
-        # subprocess.call(['killall', 'mpv']
-        if hasattr(self, 'video_process'):
-            self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.video_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
-
-        if hasattr(self, 'audio_process'):
-            self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.audio_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
 
     def song_modulation(self, process, action):
         """ A method to modulate(pause/play/restart) the songs and videos being played through the Speaker.
@@ -98,31 +71,29 @@ class BusyState(State):
 
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
-                stopAction = StopDetector(self.detection)
+                #stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
                     try:
                         x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
                         data = x.json()
                         url = data['url']
-                        video_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
-                        self.video_process = video_process
+                        audio_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
+                        State.audio_process = audio_process
                     except Exception as e:
                         logger.error(e);
-                    stopAction.run()
-                    stopAction.detector.terminate()
+                    self.transition(self.allowedStateTransitions.get('idle'))
 
                 else:
                     audio_url = reply['identifier']
                     audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
-                    self.audio_process = audio_process
-                    stopAction.run()
-                    stopAction.detector.terminate()
+                    State.audio_process = audio_process
+                    self.transition(self.allowedStateTransitions.get('idle'))
 
             if 'volume' in reply.keys():
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Headphone'", ',', '0', str(reply['volume'])])
                 subprocess.call(['amixer', '-c', '1', 'sset', "'Speaker'", ',', '0', str(reply['volume'])])
-                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'], 
+                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'],
                                                       self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
 
             if 'table' in reply.keys():
