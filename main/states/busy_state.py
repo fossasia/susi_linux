@@ -7,6 +7,7 @@ import subprocess   # nosec #pylint-disable type: ignore
 
 import alsaaudio
 import requests
+import pafy
 
 from ..speech import TTS
 from .base_state import State
@@ -75,9 +76,10 @@ class BusyState(State):
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
                     try:
-                        x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
-                        data = x.json()
-                        url = data['url']
+                        yturl = 'https://www.youtube.com/watch?v=' + video_url[4:]
+                        video = pafy.new(yturl)
+                        best = video.getbestaudio()
+                        url = best.url
                         audio_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
                         State.audio_process = audio_process
                     except Exception as e:
