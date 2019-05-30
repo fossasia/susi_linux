@@ -3,7 +3,6 @@
 import os
 import signal
 import logging
-import subprocess   # nosec #pylint-disable type: ignore
 
 import alsaaudio
 import requests
@@ -12,6 +11,7 @@ import pafy
 from ..speech import TTS
 from .base_state import State
 from .lights import lights
+from ..player import player
 
 try:
     import RPi.GPIO as GPIO
@@ -25,24 +25,6 @@ class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
     """
-
-    def song_modulation(self, process, action):
-        """ A method to modulate(pause/play/restart) the songs and videos being played through the Speaker.
-        """
-        actions = { "pause": signal.SIGSTOP, "play": signal.SIGCONT, "stop": signal.SIGKILL }
-
-        if (process == 'video_process'):
-            self.video_process.send_signal(actions[action])
-            lights.off()
-            lights.wakeup()
-
-        elif (process == 'audio_process'):
-            self.audio_process.send_signal(actions[action])
-            lights.off()
-            lights.wakeup()
-
-        else:
-            logger.debug("No ongoing media process")
 
     def on_enter(self, payload=None):
         """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
@@ -75,28 +57,18 @@ class BusyState(State):
                 #stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    try:
-                        yturl = 'https://www.youtube.com/watch?v=' + video_url[4:]
-                        video = pafy.new(yturl)
-                        best = video.getbestaudio()
-                        url = best.url
-                        audio_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
-                        State.audio_process = audio_process
-                    except Exception as e:
-                        logger.error(e);
+                    player.playytb(ideo_url[4:])
                     self.transition(self.allowedStateTransitions.get('idle'))
 
                 else:
                     audio_url = reply['identifier']
-                    audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
-                    State.audio_process = audio_process
+                    player.play(audio_url[6:])
                     self.transition(self.allowedStateTransitions.get('idle'))
 
             if 'volume' in reply.keys():
-                subprocess.call(['amixer', '-c', '1', 'sset', "'Headphone'", ',', '0', str(reply['volume'])])
-                subprocess.call(['amixer', '-c', '1', 'sset', "'Speaker'", ',', '0', str(reply['volume'])])
-                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'],
-                                                      self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+                player.volume(reply['volume'])
+                player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
+                                                        self.components.config['detection_bell_sound'])))
 
             if 'table' in reply.keys():
                 table = reply['table']
@@ -111,32 +83,18 @@ class BusyState(State):
                     print()
 
             if 'pause' in reply.keys():
-                if hasattr(self, 'video_process'):
-                    self.song_modulation('video_process', 'pause')
-                elif hasattr(self, 'audio_process'):
-                    self.song_modulation('audio_process', 'pause')
+                player.pause()
+                lights.off()
+                lights.wakeup()
 
             if 'resume' in reply.keys():
-                if hasattr(self, 'video_process'):
-                    self.song_modulation('video_process', 'play')
-                elif hasattr(self, 'audio_process'):
-                    self.song_modulation('audio_process', 'play')
+                player.resume()
 
             if 'restart' in reply.keys():
-                if hasattr(self, 'video_process'):
-                    self.song_modulation('video_process', 'stop')
-                    self.song_modulation('video_process', 'play')
-                elif hasattr(self, 'audio_process'):
-                    self.song_modulation('audio_process', 'stop')
-                    self.song_modulation('audio_process', 'play')
+                player.restart()    # TODO not implemented!
 
             if 'stop' in reply.keys():
-                if hasattr(self, 'video_process'):
-                    self.song_modulation('video_process', 'stop')
-                elif hasattr(self, 'audio_process'):
-                    self.song_modulation('audio_process', 'stop')
-
-                self.transition(self.allowedStateTransitions.get('idle'))
+                player.stop()
 
             if 'rss' in reply.keys():
                 rss = reply['rss']
@@ -145,6 +103,7 @@ class BusyState(State):
                 for entity in entities[0:count]:
                     logger.debug(entity.title)
                     self.__speak(entity.title)
+
             self.transition(self.allowedStateTransitions.get('idle'))
 
         except ConnectionError:

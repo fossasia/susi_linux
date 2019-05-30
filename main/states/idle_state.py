@@ -3,12 +3,11 @@
 
 import logging
 import os
-import subprocess   # nosec #pylint-disable type: ignore
 import signal
 
 from .base_state import State
 from .lights import lights
-
+from ..player import player
 
 logger = logging.getLogger(__name__)
 
@@ -45,14 +44,10 @@ class IdleState(State):
 
     def __detected(self):
         if (self.isActive):
-            if self.audio_process != None:
-                self.audio_process.send_signal(signal.SIGSTOP)
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
+            player.beep(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
+                                                     self.components.config['detection_bell_sound'])))
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
-            if self.audio_process != None:
-                self.audio_process.send_signal(signal.SIGCONT)
 
     def on_exit(self):
         """Method to be executed on exit from Idle State. Detection of Hotword and Wake Button is paused.
