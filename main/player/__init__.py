@@ -37,13 +37,11 @@ class Player():
         if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
             send_request('play?ytb=' + vid)
         else:
-            print("==direct playing youtube video ", vid)
             vlcplayer.playytb(vid)
     def play(self, mrl, mode = None):
         if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
             send_request('play?mrl=' + mrl)
         else:
-            print("==direct playing mrl ", str(mrl))
             vlcplayer.play(mrl)
     def pause(self, mode = None):
         if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
