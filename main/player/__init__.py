@@ -50,7 +50,7 @@ class Player():
             vlcplayer.say(mrl)
     def volume(self, val, use_server = True):
         if use_server:
-            send_request('volume?val=' + val)
+            send_request('volume?val=' + str(val))
         else:
             vlcplayer.volume(val)
     def save_volume(self, use_server = True):

@@ -54,10 +54,9 @@ class BusyState(State):
 
             if 'identifier' in reply.keys():
                 classifier = reply['identifier']
-                #stopAction = StopDetector(self.detection)
                 if classifier[:3] == 'ytd':
                     video_url = reply['identifier']
-                    player.playytb(ideo_url[4:])
+                    player.playytb(video_url[4:])
                     self.transition(self.allowedStateTransitions.get('idle'))
 
                 else:
