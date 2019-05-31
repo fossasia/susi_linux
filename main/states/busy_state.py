@@ -34,11 +34,46 @@ class BusyState(State):
         """
         logger.debug('Busy state')
         try:
+            no_answer_needed = False
+
             reply = self.components.susi.ask(payload)
             if self.useGPIO:
                 GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
+
+            #
+            # first responses WITHOUT answer key!
+
+            # {'answer': 'Audio volume is now 10 percent.', 'volume': '10'}
+            if 'volume' in reply.keys():
+                no_answer_needed = True
+                player.volume(reply['volume'])
+                player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
+                                                        self.components.config['detection_bell_sound'])))
+
+            if 'media_action' in reply.keys():
+                action = reply['media_action']
+                if action == 'pause':
+                    no_answer_needed = True
+                    player.pause()
+                    lights.off()
+                    lights.wakeup()
+                elif action == 'resume':
+                    no_answer_needed = True
+                    player.resume()
+                elif action == 'restart':
+                    no_answer_needed = True
+                    player.restart()    # TODO not implemented!
+                else:
+                    logger.error("Unknown media action: ", action)
+
+            # {'stop': <susi_python.models.StopAction object at 0x7f4641598d30>}
+            if 'stop' in reply.keys():
+                no_answer_needed = True
+                player.stop()
+
+
 
             if 'answer' in reply.keys():
                 logger.info('Susi: %s', reply['answer'])
@@ -47,27 +82,21 @@ class BusyState(State):
                 self.__speak(reply['answer'])
                 lights.off()
             else:
-                lights.off()
-                lights.speak()
-                self.__speak("I don't have an answer to this")
-                lights.off()
+                if not no_answer_needed:
+                    lights.off()
+                    lights.speak()
+                    self.__speak("I don't have an answer to this")
+                    lights.off()
 
+            # answer to "play ..."
+            # {'identifier': 'ytd-04854XqcfCY', 'answer': 'Playing Queen -  We Are The Champions (Official Video)'}
             if 'identifier' in reply.keys():
-                classifier = reply['identifier']
-                if classifier[:3] == 'ytd':
-                    video_url = reply['identifier']
-                    player.playytb(video_url[4:])
-                    self.transition(self.allowedStateTransitions.get('idle'))
-
+                url = reply['identifier']
+                if url[:3] == 'ytd':
+                    player.playytb(url[4:])
                 else:
-                    audio_url = reply['identifier']
-                    player.play(audio_url[6:])
-                    self.transition(self.allowedStateTransitions.get('idle'))
-
-            if 'volume' in reply.keys():
-                player.volume(reply['volume'])
-                player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
-                                                        self.components.config['detection_bell_sound'])))
+                    player.play(url[6:])
+                self.transition(self.allowedStateTransitions.get('idle'))
 
             if 'table' in reply.keys():
                 table = reply['table']
@@ -80,20 +109,6 @@ class BusyState(State):
                         print('%s\t' % value, end='')
                         self.__speak(value)
                     print()
-
-            if 'pause' in reply.keys():
-                player.pause()
-                lights.off()
-                lights.wakeup()
-
-            if 'resume' in reply.keys():
-                player.resume()
-
-            if 'restart' in reply.keys():
-                player.restart()    # TODO not implemented!
-
-            if 'stop' in reply.keys():
-                player.stop()
 
             if 'rss' in reply.keys():
                 rss = reply['rss']
