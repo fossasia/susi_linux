@@ -10,7 +10,7 @@ baseurl = 'http://localhost:7070/'
 
 def send_request(req):
     try:
-        x = requests.get(baseurl + req)
+        requests.get(baseurl + req)
     except Exception as e:
         logger.error(e)
 
@@ -19,19 +19,19 @@ class Player():
         if mode is None:
             mode = default_mode
         if (not mode == 'server') and (not mode == 'direct'):
-            logger.error('unknown mode ', mode, ' trying default mode')
+            logger.error('unknown mode %s, trying default mode', mode)
             mode = default_mode
         if mode == 'server':
             # try to check whether server is available
             try:
                 requests.get(baseurl + 'status')
                 self.mode = 'server'
-            except:
+            except Exception:
                 self.mode = 'direct'
                 logger.info('sound server not available, switching to direct play mode')
         else:
             self.mode = 'direct'
-        logger.info("Player is working in mode: ", self.mode)
+        logger.info('Player is working in mode: %s', self.mode)
 
     def playytb(self, vid, mode = None):
         if (mode == 'server') or ((mode is None) and (self.mode == 'server')):

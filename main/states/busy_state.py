@@ -66,7 +66,7 @@ class BusyState(State):
                     no_answer_needed = True
                     player.restart()    # TODO not implemented!
                 else:
-                    logger.error("Unknown media action: ", action)
+                    logger.error('Unknown media action: %s', action)
 
             # {'stop': <susi_python.models.StopAction object at 0x7f4641598d30>}
             if 'stop' in reply.keys():
