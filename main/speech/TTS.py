@@ -11,6 +11,7 @@ import json_config
 from google_speech import Speech
 from watson_developer_cloud import TextToSpeechV1
 
+from ..player import player
 
 logger = logging.getLogger(__name__)
 config = json_config.connect('config.json')
@@ -37,7 +38,7 @@ def speak_flite_tts(text):
         fdout, wav_output = tempfile.mkstemp(suffix='.wav', dir=tmpdirname)
         subprocess.call(   # nosec #pylint-disable type: ignore
             ['flite', '-v', '-voice', 'file://' + flite_speech_file, '-f', filename, '-o', wav_output])   # nosec #pylint-disable type: ignore
-        subprocess.call(['play', wav_output])   # nosec #pylint-disable type: ignore
+        player.say(wav_output)
 
 
 def speak_watson_tts(text):
@@ -53,7 +54,7 @@ def speak_watson_tts(text):
                 text_to_speech.synthesize(text, accept='audio/wav',
                                           voice=config['watson_tts_config']['voice']))
 
-        subprocess.call(['play', wav_output])   # nosec #pylint-disable type: ignore
+        player.say(wav_output)
 
 
 def speak_google_tts(text):
@@ -63,4 +64,7 @@ def speak_google_tts(text):
     :return: None
     """
     sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
+    player.save_volume()
+    player.volume(20)
     Speech(text=text, lang='en').play(sox_effects)
+    player.restore_volume()

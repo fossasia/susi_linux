@@ -7,6 +7,7 @@ import speech_recognition as sr
 from .base_state import State
 from .internet_test import internet_on
 from .lights import lights
+from ..player import player
 
 try:
     import RPi.GPIO as GPIO
@@ -95,6 +96,8 @@ class RecognizingState(State):
         """ Method to executed upon exit from Recognizing State.
         :return:
         """
+        # we saved the volume when doing a beep
+        player.restore_volume()
         if self.useGPIO:
             try:
                 GPIO.output(27, False)

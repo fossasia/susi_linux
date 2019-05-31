@@ -2,10 +2,10 @@
 """
 import logging
 import os
-import subprocess   # nosec #pylint-disable type: ignore
 import json_config
 from .base_state import State
 from .lights import lights
+from ..player import player
 
 config = json_config.connect('config.json')
 logger = logging.getLogger(__name__)
@@ -24,8 +24,8 @@ class ErrorState(State):
         if payload == 'RecognitionError':
             self.notify_renderer('error', 'recognition')
             lights.speak()
-            subprocess.call(['play', os.path.join(self.components.config['data_base_dir'],
-                                                  self.components.config['recognition_error_sound'])])
+            player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
+                                                    self.components.config['recognition_error_sound'])))
             lights.off()
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
@@ -33,15 +33,14 @@ class ErrorState(State):
             config['default_stt'] = 'pocket_sphinx'
             print("Internet Connection not available")
             lights.speak()
-            # subprocess.call(['play', 'extras/connect-error.wav'])   # nosec #pylint-disable type: ignore
             lights.off()
             logger.info("Changed to offline providers")
         else:
             print("Error: {} \n".format(payload))
             self.notify_renderer('error')
             lights.speak()
-            subprocess.call(['play', os.path.join(self.components.config['data_base_dir'],
-                                                  self.components.config['problem_sound'])])   # nosec #pylint-disable type: ignore
+            player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
+                                                    self.components.config['problem_sound'])))
             lights.off()
 
         self.transition(self.allowedStateTransitions.get('idle'))
