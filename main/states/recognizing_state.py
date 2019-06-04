@@ -97,7 +97,7 @@ class RecognizingState(State):
         :return:
         """
         # we saved the volume when doing a beep
-        player.restore_volume()
+        player.restore_softvolume()
         if self.useGPIO:
             try:
                 GPIO.output(27, False)

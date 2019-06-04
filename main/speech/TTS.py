@@ -63,8 +63,13 @@ def speak_google_tts(text):
     :param text: Text which is needed to be spoken
     :return: None
     """
-    sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
-    player.save_volume()
-    player.volume(20)
-    Speech(text=text, lang='en').play(sox_effects)
-    player.restore_volume()
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        fd, mpiii = tempfile.mkstemp(suffix='.mp3', dir=tmpdirname)
+        Speech(text=text, lang='en').save(mpiii)
+        player.say(mpiii)
+
+    #sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
+    #player.save_softvolume()
+    #player.volume(20)
+    #Speech(text=text, lang='en').play(sox_effects)
+    #player.restore_volume()

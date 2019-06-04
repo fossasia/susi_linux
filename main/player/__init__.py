@@ -73,16 +73,26 @@ class Player():
             send_request('volume?val=' + str(val))
         else:
             vlcplayer.volume(val)
-    def save_volume(self, mode = None):
+    def save_softvolume(self, mode = None):
         if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
-            send_request('save_volume')
+            send_request('save_softvolume')
         else:
-            vlcplayer.save_volume()
-    def restore_volume(self, mode = None):
+            vlcplayer.save_softvolume()
+    def restore_softvolume(self, mode = None):
         if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
-            send_request('restore_volume')
+            send_request('restore_softvolume')
         else:
-            vlcplayer.restore_volume()
+            vlcplayer.restore_softvolume()
+    def save_hardvolume(self, mode = None):
+        if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
+            send_request('save_hardvolume')
+        else:
+            vlcplayer.save_hardvolume()
+    def restore_hardvolume(self, mode = None):
+        if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
+            send_request('restore_hardvolume')
+        else:
+            vlcplayer.restore_hardvolume()
 
 
 player = Player()
