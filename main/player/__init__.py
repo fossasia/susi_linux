@@ -53,6 +53,16 @@ class Player():
             send_request('resume')
         else:
             vlcplayer.resume()
+    def next(self, mode = None):
+        if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
+            send_request('next')
+        else:
+            vlcplayer.next()
+    def previous(self, mode = None):
+        if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
+            send_request('previous')
+        else:
+            vlcplayer.previous()
     def stop(self, mode = None):
         if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
             send_request('stop')
@@ -96,4 +106,3 @@ class Player():
 
 
 player = Player()
-
