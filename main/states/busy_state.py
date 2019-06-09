@@ -64,7 +64,7 @@ class BusyState(State):
                     player.resume()
                 elif action == 'restart':
                     no_answer_needed = True
-                    player.restart()    # TODO not implemented!
+                    player.restart()
                 elif action == 'next':
                     no_answer_needed = True
                     player.next()
