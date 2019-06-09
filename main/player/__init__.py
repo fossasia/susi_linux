@@ -63,6 +63,11 @@ class Player():
             send_request('previous')
         else:
             vlcplayer.previous()
+    def restart(self, mode = None):
+        if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
+            send_request('restart')
+        else:
+            vlcplayer.restart()
     def stop(self, mode = None):
         if (mode == 'server') or ((mode is None) and (self.mode == 'server')):
             send_request('stop')
