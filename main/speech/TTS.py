@@ -12,6 +12,7 @@ from google_speech import Speech
 from watson_developer_cloud import TextToSpeechV1
 
 from ..player import player
+from ..config import susi_config
 
 logger = logging.getLogger(__name__)
 config = json_config.connect('config.json')
@@ -65,7 +66,7 @@ def speak_google_tts(text):
     """
     with tempfile.TemporaryDirectory() as tmpdirname:
         fd, mpiii = tempfile.mkstemp(suffix='.mp3', dir=tmpdirname)
-        Speech(text=text, lang='en').save(mpiii)
+        Speech(text=text, lang=susi_config["language"]).save(mpiii)
         player.say(mpiii)
 
     #sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
