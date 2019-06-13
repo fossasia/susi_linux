@@ -24,6 +24,7 @@ class RecognizingState(State):
     """
 
     def __recognize_audio(self, recognizer, audio):
+        logger.info("Trying to recogize audio in language: %s", susi_config["language"])
         if self.components.config['default_stt'] == 'google':
             return recognizer.recognize_google(audio, language=susi_config["language"])
 

@@ -37,6 +37,7 @@ class BusyState(State):
         try:
             no_answer_needed = False
 
+            logger.debug("Sending payload to susi server: %s", payload)
             reply = self.components.susi.ask(payload)
             if self.useGPIO:
                 GPIO.output(27, True)
@@ -101,6 +102,7 @@ class BusyState(State):
             if 'language' in reply.keys():
                 answer_lang = reply['language']
                 if answer_lang != susi_config["language"]:
+                    logger.info("Switching language to: %s", answer_lang)
                     # switch language
                     susi_config["language"] = answer_lang
 
