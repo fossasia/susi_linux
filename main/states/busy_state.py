@@ -71,6 +71,9 @@ class BusyState(State):
                 elif action == 'previous':
                     no_answer_needed = True
                     player.previous()
+                elif action == 'shuffle':
+                    no_answer_needed = True
+                    player.shuffle()
                 else:
                     logger.error('Unknown media action: %s', action)
 
