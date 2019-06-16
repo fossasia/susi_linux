@@ -24,12 +24,7 @@ def is_valid(email, password):
     }
     sign_in_url = 'http://api.susi.ai/aaa/login.json?type=access-token'
     api_response = requests.get(sign_in_url, params)
-
-    if api_response.status_code == 200:
-        return True
-    else:
-        return False
-
+    return (api_response.status_code == 200)
 
 def setup_wake_button():
     try:
@@ -54,8 +49,12 @@ def set_extras():
     """ Method for setting miscellaneous configuration parameters.
     :return: None
     """
-    config['flite_speech_file_path'] = 'extras/cmu_us_slt.flitevox'
-    config['detection_bell_sound'] = 'extras/detection-bell.wav'
+    config.setdefault('data_base_dir', os.path.dirname(os.path.abspath(__file__)))
+    config.setdefault('flite_speech_file_path', 'extras/cmu_us_slt.flitevox')
+    config.setdefault('detection_bell_sound', 'extras/detection-bell.wav')
+    config.setdefault('problem_sound', 'extras/problem.wav')
+    config.setdefault('recognition_error_sound', 'extras/recognition-error.wav')
+
 
 
 def request_hotword_choice():
@@ -77,10 +76,15 @@ def request_hotword_choice():
         choice = sys.argv[3]
         if choice == 'y':
             config['hotword_engine'] = 'Snowboy'
-            print('\nSnowboy set as default Hotword Detection Engine\n')
+            print('\n Snowboy set as default Hotword Detection Engine \n')
         else:
-            config['hotword_engine'] = 'PocketSphinx'
-            print('\nPocketSphinx set as default Hotword Detection Engine\n')
+            config['hotword_engine'] = 'pocket_sphinx'
+            print('\n PocketSphinx set as default Hotword Detection Engine \n')
+    else:
+        print('\n Snowboy not configured Properly\n')
+        config['hotword_engine'] = 'pocket_sphinx'
+        print('\n PocketSphinx set as default Hotword Detection Engine \n')
+
 
 
 def request_stt_choice():

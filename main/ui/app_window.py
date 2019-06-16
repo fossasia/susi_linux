@@ -5,13 +5,13 @@ import logging
 import gi
 import json_config
 
-from main.ui import ConfigurationWindow
+from . import ConfigurationWindow
 
 gi.require_version('Gtk', '3.0')  # nopep8
 
 from async_promises import Promise
-from main.ui.animators import ListeningAnimator, ThinkingAnimator
-from main.ui.renderer import Renderer
+from .animators import ListeningAnimator, ThinkingAnimator
+from .renderer import Renderer
 from gi.repository import Gtk
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))

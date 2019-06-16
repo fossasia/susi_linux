@@ -31,8 +31,8 @@ function install_seed_voicecard_driver()
     cd seeed-voicecard
     sudo ./install.sh
     cd ..
-    tar czf ~/seeed-voicecard.tar.gz seeed-voicecard
-    rm -rf seeed-voicecard
+    #tar czf ~/seeed-voicecard.tar.gz seeed-voicecard
+    #rm -rf seeed-voicecard
 }
 
 function install_dependencies()

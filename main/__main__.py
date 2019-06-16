@@ -2,11 +2,11 @@ import os
 import sys
 import logging
 import argparse
-import subprocess
 
 import colorlog
 
 from . import SusiStateMachine
+from .player import player
 
 
 parser = argparse.ArgumentParser(prog='python3 -m main',
@@ -29,7 +29,7 @@ def get_colorlog_handler(short=False):
 def startup_sound():
     curr_folder = os.path.dirname(os.path.abspath(__file__))
     audio_file = os.path.join(curr_folder, 'wav/ting-ting_susi_has_started.wav')
-    subprocess.Popen(['play', audio_file])  # nosec #pylint-disable type: ignore
+    player.say(audio_file)
 
 
 if __name__ == '__main__':

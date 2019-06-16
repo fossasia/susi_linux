@@ -2,11 +2,12 @@
 """
 
 import logging
-import subprocess   # nosec #pylint-disable type: ignore
+import os
+import signal
 
 from .base_state import State
 from .lights import lights
-
+from ..player import player
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +43,9 @@ class IdleState(State):
         self.notify_renderer('idle')
 
     def __detected(self):
-        if self.isActive:
-            subprocess.Popen(['play', str(self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
+        if (self.isActive):
+            player.beep(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
+                                                     self.components.config['detection_bell_sound'])))
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
 

@@ -7,7 +7,12 @@ import speech_recognition as sr
 from .base_state import State
 from .internet_test import internet_on
 from .lights import lights
+from ..player import player
 
+try:
+    import RPi.GPIO as GPIO
+except:
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -51,13 +56,14 @@ class RecognizingState(State):
         self.notify_renderer('listening')
         recognizer = self.components.recognizer
         try:
-            import RPi.GPIO as GPIO
             logger.info("Let's say something!")
-            GPIO.output(22, True)
+            if self.useGPIO:
+                GPIO.output(22, True)
             with self.components.microphone as source:
                 audio = recognizer.listen(source, phrase_time_limit=5)
             self.notify_renderer('recognizing')
-            GPIO.output(22, False)
+            if self.useGPIO:
+                GPIO.output(22, False)
             logger.info("Got it! Now to recognize it...")
             lights.off()
             lights.think()
@@ -90,13 +96,12 @@ class RecognizingState(State):
         """ Method to executed upon exit from Recognizing State.
         :return:
         """
-        try:
-            import RPi.GPIO as GPIO
-            GPIO.output(17, False)
-            GPIO.output(27, False)
-            GPIO.output(22, False)
-        except RuntimeError:
-            pass
-        except ImportError:
-            logger.warning("This device doesn't have GPIO port")
+        # we saved the volume when doing a beep
+        player.restore_softvolume()
+        if self.useGPIO:
+            try:
+                GPIO.output(27, False)
+                GPIO.output(22, False)
+            except RuntimeError:
+                pass
         pass

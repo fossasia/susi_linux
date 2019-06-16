@@ -1,5 +1,0 @@
-git+https://github.com/Pithikos/python-websocket-server
-watson-developer-cloud
-
-# Repo for wheel packages, pre-compiled for ARM
---extra-index-url https://repo.fury.io/fossasia/
