@@ -48,12 +48,32 @@ def speak_watson_tts(text):
     :param text: Text which is needed to be spoken
     :return: None
     """
+    if "voice" in config['watson_tts_config']:
+        voice = config['watson_tts_config']['voice']
+    elif susi_config["language"][0:2] == "en":
+        voice = "en-US_AllisonVoice"
+    elif susi_config["language"][0:2] == "de":
+        voice = "de-DE_BirgitVoice"
+    elif susi_config["language"][0:2] == "es":
+        voice = "es-ES_LauraVoice"
+    elif susi_config["language"][0:2] == "fr":
+        voice = "fr-FR_ReneeVoice"
+    elif susi_config["language"][0:2] == "it":
+        voice = "it-IT_FrancescaVoice"
+    elif susi_config["language"][0:2] == "ja":
+        voice = "ja-JP_EmiVoice"
+    elif susi_config["language"][0:2] == "pt":
+        voice = "pt-BR_IsabelaVoice"
+    else:
+        # switch to English as default
+        voice = "en-US_AllisonVoice"
+
+
     with tempfile.TemporaryDirectory() as tmpdirname:
         fd, wav_output = tempfile.mkstemp(suffix='.wav', dir=tmpdirname)
         with open(fd, 'wb') as audio_file:
             audio_file.write(
-                text_to_speech.synthesize(text, accept='audio/wav',
-                                          voice=config['watson_tts_config']['voice']))
+                text_to_speech.synthesize(text, accept='audio/wav', voice=voice))
 
         player.say(wav_output)
 
