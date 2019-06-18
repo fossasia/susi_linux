@@ -1,6 +1,6 @@
 import json_config
 
-import susi_python as susi
+from susi_python import susi_client as susi
 
 
 if __name__ == '__main__':
