@@ -7,7 +7,7 @@ import time
 
 import requests
 import json_config
-import susi_python as susi
+from susi_python import susi_client as susi
 from speech_recognition import Recognizer, Microphone
 from requests.exceptions import ConnectionError
 from urllib.parse import urlencode
