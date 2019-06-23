@@ -79,6 +79,7 @@ class BusyState(State):
                 else:
                     logger.error('Unknown media action: %s', action)
 
+            # {'stop': <susi_python.models.StopAction object at 0x7f4641598d30>}
             if 'stop' in reply.keys():
                 no_answer_needed = True
                 player.stop()
