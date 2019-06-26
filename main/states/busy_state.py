@@ -12,6 +12,7 @@ from ..speech import TTS
 from .base_state import State
 from .lights import lights
 from ..player import player
+from ..config import susi_config
 
 try:
     import RPi.GPIO as GPIO
@@ -36,6 +37,7 @@ class BusyState(State):
         try:
             no_answer_needed = False
 
+            logger.debug("Sending payload to susi server: %s", payload)
             reply = self.components.susi.ask(payload)
             if self.useGPIO:
                 GPIO.output(27, True)
@@ -96,6 +98,14 @@ class BusyState(State):
                     lights.speak()
                     self.__speak("I don't have an answer to this")
                     lights.off()
+
+            if 'language' in reply.keys():
+                answer_lang = reply['language']
+                if answer_lang != susi_config["language"]:
+                    logger.info("Switching language to: %s", answer_lang)
+                    # switch language
+                    susi_config["language"] = answer_lang
+
 
             # answer to "play ..."
             # {'identifier': 'ytd-04854XqcfCY', 'answer': 'Playing Queen -  We Are The Champions (Official Video)'}

@@ -8,6 +8,7 @@ from .base_state import State
 from .internet_test import internet_on
 from .lights import lights
 from ..player import player
+from ..config import susi_config
 
 try:
     import RPi.GPIO as GPIO
@@ -23,8 +24,9 @@ class RecognizingState(State):
     """
 
     def __recognize_audio(self, recognizer, audio):
+        logger.info("Trying to recogize audio in language: %s", susi_config["language"])
         if self.components.config['default_stt'] == 'google':
-            return recognizer.recognize_google(audio)
+            return recognizer.recognize_google(audio, language=susi_config["language"])
 
         elif self.components.config['default_stt'] == 'watson':
             username = self.components.config['watson_stt_config']['username']
@@ -32,17 +34,18 @@ class RecognizingState(State):
             return recognizer.recognize_ibm(
                 username=username,
                 password=password,
+                language=susi_config["language"],
                 audio_data=audio)
         elif self.components.config['default_stt'] == 'pocket_sphinx':
             if internet_on():
                 self.components.config['default_stt'] = 'google'
-                return recognizer.recognize_google(audio)
+                return recognizer.recognize_google(audio, language=susi_config["language"])
             else:
-                return recognizer.recognize_sphinx(audio)
+                return recognizer.recognize_sphinx(audio, language=susi_config["language"])
 
         elif self.components.config['default_stt'] == 'bing':
             api_key = self.components.config['bing_speech_api_key']
-            return recognizer.recognize_bing(audio_data=audio, key=api_key)
+            return recognizer.recognize_bing(audio_data=audio, key=api_key, language=susi_config["language"])
 
     def on_enter(self, payload=None):
         """ Executed on the entry to the Recognizing State. Upon entry, audio is captured from the Microphone and
