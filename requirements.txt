@@ -16,7 +16,7 @@ speechRecognition==3.8.1
 spidev
 watson-developer-cloud
 websocket-server
-youtube-dl>2018
+youtube-dl>=2019.6.21
 
 # Repo for wheel packages, pre-compiled for ARM
 --extra-index-url https://repo.fury.io/fossasia/
