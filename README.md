@@ -46,7 +46,7 @@ This project provides the following functionality:
 ## Installation
 
 `susi_linux` is normally installed via the [SUSI Installer](https://github.com/fossasia/susi_installer).
-In this case there are binaries for configuration, starting, authentication and
+In this case there are binaries for configuration and starting and
 others available in `$HOME/SUSI.AI/bin` (under default installation settings).
 
 In case of manual installations, the wrappers in [`wrapper` directory](wrapper/) need to
