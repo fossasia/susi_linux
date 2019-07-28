@@ -5,7 +5,7 @@ import requests
 from vlcplayer import vlcplayer
 
 logger = logging.getLogger(__name__)
-default_mode = 'server'
+default_mode = 'direct'
 baseurl = 'http://localhost:7070/'
 
 def send_request(req):
@@ -82,4 +82,4 @@ class Player():
         self._execute('restore_hardvolume', mode)
 
 
-player = Player()
+player = Player(mode = 'direct')
