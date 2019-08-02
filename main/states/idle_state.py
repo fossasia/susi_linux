@@ -27,6 +27,9 @@ class IdleState(State):
         if self.components.wake_button is not None:
             self.components.wake_button.subject.subscribe(
                 on_next=lambda x: self.__detected())
+        if self.components.action_schduler is not None:
+            self.components.action_schduler.subject.subscribe(
+                on_next=lambda x: self.__detected())
         if self.components.renderer is not None:
             self.components.renderer.subject.subscribe(
                 on_next=lambda x: self.__detected())

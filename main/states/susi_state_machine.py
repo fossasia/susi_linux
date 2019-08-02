@@ -16,6 +16,7 @@ from .error_state import ErrorState
 from .idle_state import IdleState
 from .recognizing_state import RecognizingState
 from requests_futures.sessions import FuturesSession
+from ..scheduler import ActionScheduler
 
 
 
@@ -49,6 +50,7 @@ class Components:
         self.susi = susi
         self.renderer = renderer
         self.server_url = "https://127.0.0.1:4000"
+        self.action_schduler = ActionScheduler()
 
         try:
             res = requests.get('http://ip-api.com/json').json()
