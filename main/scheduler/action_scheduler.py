@@ -1,19 +1,23 @@
-import RPi.GPIO as GPIO
+from threading import Thread
+from rx.subject import Subject
 import time
+import sched
 
-from .scheduler import Schedule
+class ActionScheduler(Thread):
 
-class ActionScheduler(Schedule):
+    def __init__(self):
+        super().__init__()
+        self.subject = Subject()
+        print('START:', time.time())
+        self.scheduler = sched.scheduler(time.time, time.sleep)
+        e1 = self.scheduler.enter(10, 1, self.on_detected)
 
- def __init__(self):
-    super().__init__()
-    for i in range(20):
-        time.sleep(1)
-        print("sleeping....")
-    self.button_detected
+#super().on_detected()
 
- def button_detected(channel, foo):
-    super().on_detected()
+    def on_detected(self):
+        self.subject.on_next("Hotword")
 
- def run(self):
-    pass
+    def run(self):
+        print("runner is called")
+        self.scheduler.run()
+        return

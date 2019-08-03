@@ -51,6 +51,7 @@ class Components:
         self.renderer = renderer
         self.server_url = "https://127.0.0.1:4000"
         self.action_schduler = ActionScheduler()
+        self.action_schduler.start()
 
         try:
             res = requests.get('http://ip-api.com/json').json()
