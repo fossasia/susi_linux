@@ -44,6 +44,11 @@ class BusyState(State):
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
 
+            #this is for testing only
+            print("answer", reply['answer'])
+            if reply['answer'] == 'Hello!' or reply['answer'] == "Hi! I'm SUSI":
+                self.components.action_schduler.add_event(10)
+
             #
             # first responses WITHOUT answer key!
 
