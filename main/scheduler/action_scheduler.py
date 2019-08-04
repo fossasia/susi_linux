@@ -9,15 +9,20 @@ class ActionScheduler(Thread):
         super().__init__()
         self.subject = Subject()
         print('START:', time.time())
+        self.events={}
+        self.counter=-1
         self.scheduler = sched.scheduler(time.time, time.sleep)
-        e1 = self.scheduler.enter(10, 1, self.on_detected)
-
-#super().on_detected()
 
     def on_detected(self):
         self.subject.on_next("Hotword")
 
+    def add_event(self,time):
+        self.events[self.counter+1] = self.scheduler.enter(time, 0, self.on_detected)
+        self.counter+=1
+        print(self.events)
+
     def run(self):
-        print("runner is called")
-        self.scheduler.run()
+        while True:
+            self.scheduler.run(blocking=True)
+            time.sleep(1)
         return
