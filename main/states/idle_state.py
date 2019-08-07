@@ -29,14 +29,15 @@ class IdleState(State):
                 on_next=lambda x: self.__detected())
         if self.components.action_schduler is not None:
             self.components.action_schduler.subject.subscribe(
-                on_next=lambda x: self.transition_busy())
+                on_next=lambda x: self.transition_busy(x))
         if self.components.renderer is not None:
             self.components.renderer.subject.subscribe(
                 on_next=lambda x: self.__detected())
 
-    def transition_busy(self):
+    def transition_busy(self,reply):
+        #TODO strip planned action bit
         self.transition(self.allowedStateTransitions.get(
-            'busy'), payload="what is 2+2") #Test payload, to be replaced with action
+            'busy'), payload=reply)
 
     def on_enter(self, payload=None):
         """Method to be executed on entry to Idle State. Detection is set to active.

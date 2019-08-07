@@ -37,8 +37,13 @@ class BusyState(State):
         try:
             no_answer_needed = False
 
-            logger.debug("Sending payload to susi server: %s", payload)
-            reply = self.components.susi.ask(payload)
+            if isinstance(payload, str):
+                logger.debug("Sending payload to susi server: %s", payload)
+                reply = self.components.susi.ask(payload)
+            else :
+                logger.debug("Executing planned action response", payload)
+                reply = payload
+
             if self.useGPIO:
                 GPIO.output(27, True)
             if self.components.renderer is not None:
@@ -47,7 +52,7 @@ class BusyState(State):
             #this is for testing only
             print("answer", reply['answer'])
             if reply['answer'] == 'Hello!' or reply['answer'] == "Hi! I'm SUSI":
-                self.components.action_schduler.add_event(10)
+                self.components.action_schduler.add_event(10,reply)
 
             #
             # first responses WITHOUT answer key!

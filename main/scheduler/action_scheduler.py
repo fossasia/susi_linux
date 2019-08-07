@@ -2,24 +2,24 @@ from threading import Thread
 from rx.subject import Subject
 import time
 import sched
+import logging
+from pprint import pprint
 
 class ActionScheduler(Thread):
 
     def __init__(self):
         super().__init__()
         self.subject = Subject()
-        print('START:', time.time())
         self.events={}
         self.counter=-1
         self.scheduler = sched.scheduler(time.time, time.sleep)
 
-    def on_detected(self):
-        self.subject.on_next("Hotword")
+    def on_detected(self, reply):
+        self.subject.on_next(reply)
 
-    def add_event(self,time):
-        self.events[self.counter+1] = self.scheduler.enter(time, 0, self.on_detected)
+    def add_event(self,time,reply):
+        self.events[self.counter+1] = self.scheduler.enter(time, 0, self.on_detected, argument=(reply,))
         self.counter+=1
-        print(self.events)
 
     def run(self):
         while True:
