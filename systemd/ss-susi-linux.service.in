@@ -6,6 +6,7 @@ After=network-online.target ss-susi-server.service
 [Service]
 Type=idle
 ExecStart=@BINDIR@/start-susi-linux
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
