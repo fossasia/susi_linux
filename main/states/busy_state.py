@@ -49,10 +49,13 @@ class BusyState(State):
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
 
-            #this is for testing only
-            print("answer", reply['answer'])
-            if reply['answer'] == 'Hello!' or reply['answer'] == "Hi! I'm SUSI":
-                self.components.action_schduler.add_event(10,reply)
+            if 'plan_delay' in reply.keys() and reply['plan_delay'] != None:
+                reply_delay = reply
+                ans = reply_delay.pop('answer', None)
+                plan_del = reply_delay.pop('plan_delay', None)
+                self.components.action_schduler.add_event(int(plan_del)/1000,reply_delay)
+                reply={}
+                reply['answer']=ans
 
             #
             # first responses WITHOUT answer key!
@@ -103,7 +106,7 @@ class BusyState(State):
                 self.__speak(reply['answer'])
                 lights.off()
             else:
-                if not no_answer_needed:
+                if not no_answer_needed and not 'identifier' in reply.keys():
                     lights.off()
                     lights.speak()
                     self.__speak("I don't have an answer to this")
