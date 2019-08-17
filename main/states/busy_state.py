@@ -48,14 +48,10 @@ class BusyState(State):
                 GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
+            if 'planned_actions' in reply.keys():
+                for plan in reply['planned_actions']:
+                    self.components.action_schduler.add_event(int(plan['plan_delay'])/1000,plan)
 
-            if 'plan_delay' in reply.keys() and reply['plan_delay'] != None:
-                reply_delay = reply
-                ans = reply_delay.pop('answer', None)
-                plan_del = reply_delay.pop('plan_delay', None)
-                self.components.action_schduler.add_event(int(plan_del)/1000,reply_delay)
-                reply={}
-                reply['answer']=ans
 
             #
             # first responses WITHOUT answer key!
