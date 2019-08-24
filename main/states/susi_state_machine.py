@@ -1,23 +1,23 @@
 """This module declares the SUSI State Machine Class and Component Class.
 The SUSI State Machine works on the concept of Finite State Machine.
 """
+import time
 import logging
 from threading import Thread
-import time
+from urllib.parse import urljoin
 
 import requests
 import json_config
-import susi_python as susi
+
 from speech_recognition import Recognizer, Microphone
 from requests.exceptions import ConnectionError
-from urllib.parse import urlencode
+
+import susi_python as susi
 from .busy_state import BusyState
 from .error_state import ErrorState
 from .idle_state import IdleState
 from .recognizing_state import RecognizingState
-from requests_futures.sessions import FuturesSession
 from ..scheduler import ActionScheduler
-
 
 
 logger = logging.getLogger(__name__)
@@ -94,13 +94,13 @@ class Components:
     def server_checker(self):
         response_one = None
         test_params = {
-        'q': 'Hello',
-        'timezoneOffset': int(time.timezone / 60)
+            'q': 'Hello',
+            'timezoneOffset': int(time.timezone / 60)
         }
         while response_one is None:
             try:
-                response_one = requests.get('{}/susi/chat.json?{}'
-                .format(self.server_url,urlencode(test_params)) ).result()
+                url = urljoin(self.server_url, '/susi/chat.json')
+                response_one = requests.get(url, test_params).result()
                 api_endpoint = self.server_url
                 susi.use_api_endpoint(api_endpoint)
             except AttributeError:
