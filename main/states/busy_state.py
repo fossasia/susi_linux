@@ -37,12 +37,21 @@ class BusyState(State):
         try:
             no_answer_needed = False
 
-            logger.debug("Sending payload to susi server: %s", payload)
-            reply = self.components.susi.ask(payload)
+            if isinstance(payload, str):
+                logger.debug("Sending payload to susi server: %s", payload)
+                reply = self.components.susi.ask(payload)
+            else :
+                logger.debug("Executing planned action response", payload)
+                reply = payload
+
             if self.useGPIO:
                 GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
+            if 'planned_actions' in reply.keys():
+                for plan in reply['planned_actions']:
+                    self.components.action_schduler.add_event(int(plan['plan_delay'])/1000,plan)
+
 
             #
             # first responses WITHOUT answer key!
@@ -93,7 +102,7 @@ class BusyState(State):
                 self.__speak(reply['answer'])
                 lights.off()
             else:
-                if not no_answer_needed:
+                if not no_answer_needed and not 'identifier' in reply.keys():
                     lights.off()
                     lights.speak()
                     self.__speak("I don't have an answer to this")

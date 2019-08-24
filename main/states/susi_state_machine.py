@@ -16,6 +16,7 @@ from .error_state import ErrorState
 from .idle_state import IdleState
 from .recognizing_state import RecognizingState
 from requests_futures.sessions import FuturesSession
+from ..scheduler import ActionScheduler
 
 
 
@@ -49,6 +50,8 @@ class Components:
         self.susi = susi
         self.renderer = renderer
         self.server_url = "https://127.0.0.1:4000"
+        self.action_schduler = ActionScheduler()
+        self.action_schduler.start()
 
         try:
             res = requests.get('http://ip-api.com/json').json()
@@ -125,7 +128,7 @@ class SusiStateMachine(Thread):
         self.current_state = self.__idle_state
 
         self.__idle_state.allowedStateTransitions = \
-            {'recognizing': self.__recognizing_state, 'error': self.__error_state}
+            {'recognizing': self.__recognizing_state, 'error': self.__error_state, 'busy': self.__busy_state}
         self.__recognizing_state.allowedStateTransitions = \
             {'busy': self.__busy_state, 'error': self.__error_state}
         self.__busy_state.allowedStateTransitions = \
