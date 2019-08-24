@@ -1,12 +1,7 @@
 """Class to represent the Busy State
 """
 import os
-import signal
 import logging
-
-import alsaaudio
-import requests
-import pafy
 
 from ..speech import TTS
 from .base_state import State
@@ -16,7 +11,7 @@ from ..config import susi_config
 
 try:
     import RPi.GPIO as GPIO
-except:
+except ImportError:
     pass
 
 logger = logging.getLogger(__name__)
@@ -40,7 +35,7 @@ class BusyState(State):
             if isinstance(payload, str):
                 logger.debug("Sending payload to susi server: %s", payload)
                 reply = self.components.susi.ask(payload)
-            else :
+            else:
                 logger.debug("Executing planned action response", payload)
                 reply = payload
 
@@ -50,10 +45,9 @@ class BusyState(State):
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
             if 'planned_actions' in reply.keys():
                 for plan in reply['planned_actions']:
-                    self.components.action_schduler.add_event(int(plan['plan_delay'])/1000,plan)
+                    self.components.action_schduler.add_event(int(plan['plan_delay']) / 1000,
+                                                              plan)
 
-
-            #
             # first responses WITHOUT answer key!
 
             # {'answer': 'Audio volume is now 10 percent.', 'volume': '10'}
@@ -93,8 +87,6 @@ class BusyState(State):
                 no_answer_needed = True
                 player.stop()
 
-
-
             if 'answer' in reply.keys():
                 logger.info('Susi: %s', reply['answer'])
                 lights.off()
@@ -102,7 +94,7 @@ class BusyState(State):
                 self.__speak(reply['answer'])
                 lights.off()
             else:
-                if not no_answer_needed and not 'identifier' in reply.keys():
+                if not no_answer_needed and 'identifier' not in reply.keys():
                     lights.off()
                     lights.speak()
                     self.__speak("I don't have an answer to this")
@@ -114,7 +106,6 @@ class BusyState(State):
                     logger.info("Switching language to: %s", answer_lang)
                     # switch language
                     susi_config["language"] = answer_lang
-
 
             # answer to "play ..."
             # {'identifier': 'ytd-04854XqcfCY', 'answer': 'Playing Queen -  We Are The Champions (Official Video)'}
