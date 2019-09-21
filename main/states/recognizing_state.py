@@ -41,7 +41,14 @@ class RecognizingState(State):
                 self.components.config['default_stt'] = 'google'
                 return recognizer.recognize_google(audio, language=susi_config["language"])
             else:
-                return recognizer.recognize_sphinx(audio, language=susi_config["language"])
+                if susi_config["language"][0:2] == 'it' and 'it-IT' in self.components.pocketsphinx_supported_langs:
+                    sphinxlang = 'it-IT'
+                elif susi_config["language"][0:2] == 'zh' and 'zh-CN' in self.components.pocketsphinx_supported_langs:
+                    sphinxlang = 'zh-CN'
+                else:
+                    # fall back to English
+                    sphinxlang = 'en-US'
+                return recognizer.recognize_sphinx(audio, sphinxlang)
 
         elif self.components.config['default_stt'] == 'bing':
             api_key = self.components.config['bing_speech_api_key']

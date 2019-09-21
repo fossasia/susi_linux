@@ -8,7 +8,8 @@ from urllib.parse import urljoin
 
 import requests
 import json_config
-
+import os
+import speech_recognition
 from speech_recognition import Recognizer, Microphone
 from requests.exceptions import ConnectionError
 
@@ -90,6 +91,9 @@ class Components:
         else:
             logger.warning("Susi has the wake button disabled")
             self.wake_button = None
+
+        # determine PocketSphinx supported languages
+        self.pocketsphinx_supported_langs = os.listdir(os.path.dirname(speech_recognition.__file__) + '/pocketsphinx-data')
 
     def server_checker(self):
         response_one = None
