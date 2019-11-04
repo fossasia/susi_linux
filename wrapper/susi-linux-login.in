@@ -1,6 +1,0 @@
-#!/bin/sh
-
-. @INSTALL_DIR@/common-script-start
-
-exec python3 @INSTALL_DIR@/login.py "$@"
-
