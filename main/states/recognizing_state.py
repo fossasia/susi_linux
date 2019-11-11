@@ -1,6 +1,7 @@
 """ Class to Represent Recognizing State
 """
 import logging
+import threading
 
 import speech_recognition as sr
 
@@ -24,7 +25,7 @@ class RecognizingState(State):
     """
 
     def __recognize_audio(self, recognizer, audio):
-        logger.info("Trying to recogize audio in language: %s", susi_config["language"])
+        logger.info("Trying to recognize audio in language: %s", susi_config["language"])
         if self.components.config['default_stt'] == 'google':
             return recognizer.recognize_google(audio, language=susi_config["language"])
 
@@ -51,9 +52,15 @@ class RecognizingState(State):
         """ Executed on the entry to the Recognizing State. Upon entry, audio is captured from the Microphone and
         recognition with preferred speech recognition engine is done. If successful, the machine transitions to Busy
         State. On failure, it transitions to Error state.
-        :param payload: No payload is expected by this state
+        :param payload: No payload is expected by this state.
         :return: None
         """
+        """ Starting the Timer else SUSI would remain infinitely in the recognizing state.
+        """
+
+        self.timer = threading.Timer(10.0, self.transition(self.allowedStateTransitions.get('error'),
+                                payload='RecognitionError'))
+
         logger.info('Recognizing')
 
         self.notify_renderer('listening')
@@ -101,6 +108,7 @@ class RecognizingState(State):
         """
         # we saved the volume when doing a beep
         player.restore_softvolume()
+        self.timer.cancel()
         if self.useGPIO:
             try:
                 GPIO.output(27, False)
