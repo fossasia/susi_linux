@@ -3,11 +3,11 @@
 
 import logging
 import os
-import subprocess   # nosec #pylint-disable type: ignore
+import signal
 
 from .base_state import State
 from .lights import lights
-
+from ..player import player
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +27,17 @@ class IdleState(State):
         if self.components.wake_button is not None:
             self.components.wake_button.subject.subscribe(
                 on_next=lambda x: self.__detected())
+        if self.components.action_schduler is not None:
+            self.components.action_schduler.subject.subscribe(
+                on_next=lambda x: self.transition_busy(x))
         if self.components.renderer is not None:
             self.components.renderer.subject.subscribe(
                 on_next=lambda x: self.__detected())
+
+    def transition_busy(self,reply):
+        #TODO strip planned action bit
+        self.transition(self.allowedStateTransitions.get(
+            'busy'), payload=reply)
 
     def on_enter(self, payload=None):
         """Method to be executed on entry to Idle State. Detection is set to active.
@@ -43,9 +51,9 @@ class IdleState(State):
         self.notify_renderer('idle')
 
     def __detected(self):
-        if self.isActive:
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec # pylint-disable type: ignore
+        if (self.isActive):
+            player.beep(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
+                                                     self.components.config['detection_bell_sound'])))
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
 

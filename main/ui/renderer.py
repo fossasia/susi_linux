@@ -1,5 +1,5 @@
 from abc import ABC, abstractclassmethod
-from rx.subjects import Subject
+from rx.subject import Subject
 from .. import SusiStateMachine
 
 

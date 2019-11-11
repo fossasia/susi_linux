@@ -1,21 +1,17 @@
 """Class to represent the Busy State
 """
 import os
-import signal
 import logging
-import subprocess   # nosec #pylint-disable type: ignore
 
-import alsaaudio
-import requests
-
-from ..hotword_engine.stop_detection import StopDetector
 from ..speech import TTS
 from .base_state import State
 from .lights import lights
+from ..player import player
+from ..config import susi_config
 
 try:
     import RPi.GPIO as GPIO
-except:
+except ImportError:
     pass
 
 logger = logging.getLogger(__name__)
@@ -25,50 +21,6 @@ class BusyState(State):
     """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
     """
-    def detection(self):
-        """This callback is fired when a Hotword Detector detects a hotword.
-        All the songs/videos are paused for a brief moment and then played again.
-        :return: None
-        """
-        # subprocess.call(['killall', 'play'])
-        # subprocess.call(['killall', 'mpv']
-        if hasattr(self, 'video_process'):
-            self.video_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.video_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
-
-        if hasattr(self, 'audio_process'):
-            self.audio_process.send_signal(signal.SIGSTOP)  # nosec #pylint-disable type: ignore
-            lights.off()
-            lights.wakeup()
-            subprocess.Popen(['play', os.path.join(self.components.config['data_base_dir'],
-                                                   self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
-            lights.wakeup()
-            self.transition(self.allowedStateTransitions.get('recognizing'))
-            self.audio_process.send_signal(signal.SIGCONT)  # nosec #pylint-disable type: ignore
-
-    def song_modulation(self, process, action):
-        """ A method to modulate(pause/play/restart) the songs and videos being played through the Speaker.
-        """
-        actions = { "pause": signal.SIGSTOP, "play": signal.SIGCONT, "stop": signal.SIGKILL }
-
-        if (process == 'video_process'):
-            self.video_process.send_signal(actions[action])
-            lights.off()
-            lights.wakeup()
-
-        elif (process == 'audio_process'):
-            self.audio_process.send_signal(actions[action])
-            lights.off()
-            lights.wakeup()
-
-        else:
-            logger.debug("No ongoing media process")
 
     def on_enter(self, payload=None):
         """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
@@ -78,11 +30,62 @@ class BusyState(State):
         """
         logger.debug('Busy state')
         try:
-            reply = self.components.susi.ask(payload)
+            no_answer_needed = False
+
+            if isinstance(payload, str):
+                logger.debug("Sending payload to susi server: %s", payload)
+                reply = self.components.susi.ask(payload)
+            else:
+                logger.debug("Executing planned action response", payload)
+                reply = payload
+
             if self.useGPIO:
                 GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
+            if 'planned_actions' in reply.keys():
+                for plan in reply['planned_actions']:
+                    self.components.action_schduler.add_event(int(plan['plan_delay']) / 1000,
+                                                              plan)
+
+            # first responses WITHOUT answer key!
+
+            # {'answer': 'Audio volume is now 10 percent.', 'volume': '10'}
+            if 'volume' in reply.keys():
+                no_answer_needed = True
+                player.volume(reply['volume'])
+                player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
+                                                        self.components.config['detection_bell_sound'])))
+
+            if 'media_action' in reply.keys():
+                action = reply['media_action']
+                if action == 'pause':
+                    no_answer_needed = True
+                    player.pause()
+                    lights.off()
+                    lights.wakeup()
+                elif action == 'resume':
+                    no_answer_needed = True
+                    player.resume()
+                elif action == 'restart':
+                    no_answer_needed = True
+                    player.restart()
+                elif action == 'next':
+                    no_answer_needed = True
+                    player.next()
+                elif action == 'previous':
+                    no_answer_needed = True
+                    player.previous()
+                elif action == 'shuffle':
+                    no_answer_needed = True
+                    player.shuffle()
+                else:
+                    logger.error('Unknown media action: %s', action)
+
+            # {'stop': <susi_python.models.StopAction object at 0x7f4641598d30>}
+            if 'stop' in reply.keys():
+                no_answer_needed = True
+                player.stop()
 
             if 'answer' in reply.keys():
                 logger.info('Susi: %s', reply['answer'])
@@ -91,39 +94,28 @@ class BusyState(State):
                 self.__speak(reply['answer'])
                 lights.off()
             else:
-                lights.off()
-                lights.speak()
-                self.__speak("I don't have an answer to this")
-                lights.off()
+                if not no_answer_needed and 'identifier' not in reply.keys():
+                    lights.off()
+                    lights.speak()
+                    self.__speak("I don't have an answer to this")
+                    lights.off()
 
+            if 'language' in reply.keys():
+                answer_lang = reply['language']
+                if answer_lang != susi_config["language"]:
+                    logger.info("Switching language to: %s", answer_lang)
+                    # switch language
+                    susi_config["language"] = answer_lang
+
+            # answer to "play ..."
+            # {'identifier': 'ytd-04854XqcfCY', 'answer': 'Playing Queen -  We Are The Champions (Official Video)'}
             if 'identifier' in reply.keys():
-                classifier = reply['identifier']
-                stopAction = StopDetector(self.detection)
-                if classifier[:3] == 'ytd':
-                    video_url = reply['identifier']
-                    try:
-                        x = requests.get('http://localhost:7070/song?vid=' + video_url[4:])
-                        data = x.json()
-                        url = data['url']
-                        video_process = subprocess.Popen(['cvlc', 'https' + url[5:], '--no-video'])
-                        self.video_process = video_process
-                    except Exception as e:
-                        logger.error(e);
-                    stopAction.run()
-                    stopAction.detector.terminate()
-
+                url = reply['identifier']
+                if url[:3] == 'ytd':
+                    player.playytb(url[4:])
                 else:
-                    audio_url = reply['identifier']
-                    audio_process = subprocess.Popen(['play', audio_url[6:], '--no-show-progress'])  # nosec #pylint-disable type: ignore
-                    self.audio_process = audio_process
-                    stopAction.run()
-                    stopAction.detector.terminate()
-
-            if 'volume' in reply.keys():
-                subprocess.call(['amixer', '-c', '1', 'sset', "'Headphone'", ',', '0', str(reply['volume'])])
-                subprocess.call(['amixer', '-c', '1', 'sset', "'Speaker'", ',', '0', str(reply['volume'])])
-                subprocess.call(['play', os.path.join(self.components.config['data_base_dir'], 
-                                                      self.components.config['detection_bell_sound'])])  # nosec #pylint-disable type: ignore
+                    player.play(url)
+                self.transition(self.allowedStateTransitions.get('idle'))
 
             if 'table' in reply.keys():
                 table = reply['table']
@@ -137,34 +129,6 @@ class BusyState(State):
                         self.__speak(value)
                     print()
 
-            if 'pause' in reply.keys():
-                if hasattr(self, 'video_process'):
-                    self.song_modulation('video_process', 'pause')
-                elif hasattr(self, 'audio_process'):
-                    self.song_modulation('audio_process', 'pause')
-
-            if 'resume' in reply.keys():
-                if hasattr(self, 'video_process'):
-                    self.song_modulation('video_process', 'play')
-                elif hasattr(self, 'audio_process'):
-                    self.song_modulation('audio_process', 'play')
-
-            if 'restart' in reply.keys():
-                if hasattr(self, 'video_process'):
-                    self.song_modulation('video_process', 'stop')
-                    self.song_modulation('video_process', 'play')
-                elif hasattr(self, 'audio_process'):
-                    self.song_modulation('audio_process', 'stop')
-                    self.song_modulation('audio_process', 'play')
-
-            if 'stop' in reply.keys():
-                if hasattr(self, 'video_process'):
-                    self.song_modulation('video_process', 'stop')
-                elif hasattr(self, 'audio_process'):
-                    self.song_modulation('audio_process', 'stop')
-
-                self.transition(self.allowedStateTransitions.get('idle'))
-
             if 'rss' in reply.keys():
                 rss = reply['rss']
                 entities = rss['entities']
@@ -172,6 +136,7 @@ class BusyState(State):
                 for entity in entities[0:count]:
                     logger.debug(entity.title)
                     self.__speak(entity.title)
+
             self.transition(self.allowedStateTransitions.get('idle'))
 
         except ConnectionError:

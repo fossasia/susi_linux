@@ -1,7 +1,7 @@
 from abc import ABC, abstractclassmethod
 from threading import Thread
 
-from rx.subjects import Subject
+from rx.subject import Subject
 
 
 class WakeButton(ABC, Thread):
