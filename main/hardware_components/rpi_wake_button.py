@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
-
 from .wake_button import WakeButton
+
 
 class RaspberryPiWakeButton(WakeButton):
 
