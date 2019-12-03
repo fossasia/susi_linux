@@ -6,11 +6,9 @@ import logging
 import os
 import subprocess   # nosec #pylint-disable type: ignore
 import tempfile
-
 import json_config
 from google_speech import Speech
 from watson_developer_cloud import TextToSpeechV1
-
 from ..player import player
 from ..config import susi_config
 
@@ -34,8 +32,10 @@ def speak_flite_tts(text):
         with open(fd, 'w') as f:
             f.write(text)
         # Call flite tts to reply the response by Susi
-        flite_speech_file = os.path.join(config['data_base_dir'], config['flite_speech_file_path'])
-        logger.debug('flite -voice file://%s -f %s', flite_speech_file, filename)
+        flite_speech_file = os.path.join(
+            config['data_base_dir'], config['flite_speech_file_path'])
+        logger.debug(
+            'flite -voice file://%s -f %s', flite_speech_file, filename)
         fdout, wav_output = tempfile.mkstemp(suffix='.wav', dir=tmpdirname)
         subprocess.call(   # nosec #pylint-disable type: ignore
             ['flite', '-v', '-voice', 'file://' + flite_speech_file, '-f', filename, '-o', wav_output])   # nosec #pylint-disable type: ignore
@@ -68,7 +68,6 @@ def speak_watson_tts(text):
         # switch to English as default
         voice = "en-US_AllisonVoice"
 
-
     with tempfile.TemporaryDirectory() as tmpdirname:
         fd, wav_output = tempfile.mkstemp(suffix='.wav', dir=tmpdirname)
         with open(fd, 'wb') as audio_file:
@@ -89,8 +88,8 @@ def speak_google_tts(text):
         Speech(text=text, lang=susi_config["language"]).save(mpiii)
         player.say(mpiii)
 
-    #sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
-    #player.save_softvolume()
-    #player.volume(20)
-    #Speech(text=text, lang='en').play(sox_effects)
-    #player.restore_volume()
+    # sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
+    # player.save_softvolume()
+    # player.volume(20)
+    # Speech(text=text, lang='en').play(sox_effects)
+    # player.restore_volume()

@@ -1,5 +1,6 @@
-""" Implementation of PocketSphinx Detector with PocketSphinx Speech Recognition Engine.
-It works on all the devices.
+"""
+Implementation of PocketSphinx Detector with PocketSphinx Speech Recognition
+Engine. It works on all the devices.
 """
 import logging
 from pocketsphinx import LiveSpeech
@@ -11,8 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class PocketSphinxDetector(HotwordDetector):
-    """ This class implements Hotword Detection with the help of LiveSpeech Keyword spotting
-    capabilities of PocketSphinx Speech Recognition Engine.
+    """
+    This class implements Hotword Detection with the help of LiveSpeech Keyword
+    spotting capabilities of PocketSphinx Speech Recognition Engine.
     """
 
     def __init__(self) -> None:
@@ -21,9 +23,10 @@ class PocketSphinxDetector(HotwordDetector):
             lm=False, keyphrase='susi', kws_threshold=1e-20)
 
     def run(self):
-        """ Implementation of run abstract method in HotwordDetector. This method is called when thread
-        is started for the first time. We start the PocketSphinx LiveSpeech Keyword Spotting for
-        detecting keyword 'susi'
+        """
+        Implementation of run abstract method in HotwordDetector. This method is
+        called when thread is started for the first time. We start the PocketSphinx
+        LiveSpeech Keyword Spotting for detecting keyword 'susi'
         """
         for phrase in self.liveSpeech:
             logger.info('Phrase: %s', phrase)

@@ -1,11 +1,8 @@
 import os
 import logging
-
 import json_config
 import gi
-
 gi.require_version('Gtk', '3.0')  # nopep8
-
 from pathlib import Path
 from gi.repository import Gtk
 from .login_window import LoginWindow

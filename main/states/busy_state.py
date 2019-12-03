@@ -18,13 +18,18 @@ logger = logging.getLogger(__name__)
 
 
 class BusyState(State):
-    """Busy state inherits from base class State. In this state, SUSI API is called to perform query and the response
+    """
+    Busy state inherits from base class State. In this state, SUSI API
+    is called to perform query and the response
     is then spoken with the selected Text to Speech Service.
     """
 
     def on_enter(self, payload=None):
-        """This method is executed on entry to Busy State. SUSI API is called via SUSI Python library to fetch the
-        result. We then call TTS to speak the reply. If successful, we transition to Idle State else to the Error State.
+        """
+        This method is executed on entry to Busy State. SUSI API is called
+        via SUSI Python library to fetch the result. We then call TTS to
+        speak the reply. If successful, we transition to Idle State else
+        to the Error State.
         :param payload: query to be asked to SUSI
         :return: None
         """
@@ -45,8 +50,8 @@ class BusyState(State):
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
             if 'planned_actions' in reply.keys():
                 for plan in reply['planned_actions']:
-                    self.components.action_schduler.add_event(int(plan['plan_delay']) / 1000,
-                                                              plan)
+                    self.components.action_schduler.add_event(
+                        int(plan['plan_delay']) / 1000, plan)
 
             # first responses WITHOUT answer key!
 
@@ -54,8 +59,11 @@ class BusyState(State):
             if 'volume' in reply.keys():
                 no_answer_needed = True
                 player.volume(reply['volume'])
-                player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
-                                                        self.components.config['detection_bell_sound'])))
+                player.say(
+                    os.path.abspath(
+                        os.path.join(
+                            self.components.config['data_base_dir'],
+                            self.components.config['detection_bell_sound'])))
 
             if 'media_action' in reply.keys():
                 action = reply['media_action']
@@ -107,8 +115,12 @@ class BusyState(State):
                     # switch language
                     susi_config["language"] = answer_lang
 
-            # answer to "play ..."
-            # {'identifier': 'ytd-04854XqcfCY', 'answer': 'Playing Queen -  We Are The Champions (Official Video)'}
+            '''
+             answer to "play ..."
+            {'identifier': 'ytd-04854XqcfCY',
+            'answer': 'Playing Queen -  We Are The Champions (Official Video)'}
+            '''
+
             if 'identifier' in reply.keys():
                 url = reply['identifier']
                 if url[:3] == 'ytd':
@@ -147,7 +159,8 @@ class BusyState(State):
             self.transition(self.allowedStateTransitions.get('error'))
 
     def on_exit(self):
-        """Method executed on exit from the Busy State.
+        """
+        Method executed on exit from the Busy State.
         """
         if self.useGPIO:
             try:
@@ -157,12 +170,14 @@ class BusyState(State):
                 logger.error(e)
 
     def __speak(self, text):
-        """Method to set the default TTS for the Speaker
+        """
+        Method to set the default TTS for the Speaker
         """
         if self.components.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
         if self.components.config['default_tts'] == 'flite':
-            logger.info("Using flite for TTS")  # indication for using an offline music player
+            # indication for using an offline music player
+            logger.info("Using flite for TTS")
             TTS.speak_flite_tts(text)
         elif self.components.config['default_tts'] == 'watson':
             TTS.speak_watson_tts(text)

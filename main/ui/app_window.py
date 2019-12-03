@@ -1,14 +1,10 @@
 import os
 import signal
 import logging
-
 import gi
 import json_config
-
 from . import ConfigurationWindow
-
 gi.require_version('Gtk', '3.0')  # nopep8
-
 from async_promises import Promise
 from .animators import ListeningAnimator, ThinkingAnimator
 from .renderer import Renderer
@@ -23,7 +19,8 @@ class SusiAppWindow(Renderer):
     def __init__(self):
         super().__init__()
         builder = Gtk.Builder()
-        builder.add_from_file(os.path.join(TOP_DIR, "glade_files/susi_app.glade"))
+        builder.add_from_file(
+            os.path.join(TOP_DIR, "glade_files/susi_app.glade"))
 
         self.window = builder.get_object("app_window")
         self.user_text_label = builder.get_object("user_text_label")
@@ -40,12 +37,14 @@ class SusiAppWindow(Renderer):
         listeningAnimator = ListeningAnimator(self.window)
         self.listening_box.add(listeningAnimator)
         self.listening_box.reorder_child(listeningAnimator, 1)
-        self.listening_box.set_child_packing(listeningAnimator, False, False, 0, Gtk.PackType.END)
+        self.listening_box.set_child_packing(
+            listeningAnimator, False, False, 0, Gtk.PackType.END)
 
         thinkingAnimator = ThinkingAnimator(self.window)
         self.thinking_box.add(thinkingAnimator)
         self.thinking_box.reorder_child(thinkingAnimator, 1)
-        self.thinking_box.set_child_packing(thinkingAnimator, False, False, 0, Gtk.PackType.END)
+        self.thinking_box.set_child_packing(
+            thinkingAnimator, False, False, 0, Gtk.PackType.END)
 
         builder.connect_signals(SusiAppWindow.Handler(self))
         self.window.set_default_size(300, 600)
@@ -86,7 +85,8 @@ class SusiAppWindow(Renderer):
             error_type = payload
             if error_type is not None:
                 if error_type == 'connection':
-                    self.error_label.set_text("Problem in internet connectivity !!")
+                    self.error_label.set_text(
+                        "Problem in internet connectivity !!")
                 elif error_type == 'recognition':
                     self.error_label.set_text("Couldn't recognize the speech.")
             else:

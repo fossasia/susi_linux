@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 
 
 class Components:
-    """Common components accessible by each state of the the  SUSI state Machine.
+    """
+    Common components accessible by each state of the the  SUSI state Machine.
     """
 
     def __init__(self, renderer=None):
@@ -69,7 +70,8 @@ class Components:
                 susi.sign_in(email=self.config['login_credentials']['email'],
                              password=self.config['login_credentials']['password'])
             except Exception as e:
-                logger.error('Some error occurred in login. Check you login details in config.json.\n%s', e)
+                logger.error(
+                    'Some error occurred in login. Check you login details in config.json.\n%s', e)
 
         if self.config['hotword_engine'] == 'Snowboy':
             from ..hotword_engine.snowboy_detector import SnowboyDetector
@@ -112,10 +114,14 @@ class Components:
 
 
 class SusiStateMachine(Thread):
-    """SUSI State Machine works on the concept of Finite State Machine. Each step of working of this app is divided into
-    a state of the State Machine. Each state can transition into one of the allowed states and pass some information
-    to other states as PAYLOAD. Upon Error, transition should happen to Error State and after speaking the correct error
-    message, the machine transitions to the Idle State.
+    """
+    SUSI State Machine works on the concept of Finite State Machine.
+    Each step of working of this app is divided into a state of the
+    State Machine. Each state can transition into one of the allowed
+    states and pass some information to other states as PAYLOAD.
+    Upon Error, transition should happen to Error State and after
+    speaking the correct error message, the machine transitions to
+    the Idle State.
     """
 
     def __init__(self, renderer=None):

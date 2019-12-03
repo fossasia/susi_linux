@@ -12,12 +12,15 @@ logger = logging.getLogger(__name__)
 
 
 class ErrorState(State):
-    """Error State inherits from the State class. If any error is encountered in any state, it should transition to
+    """
+    Error State inherits from the State class. If any error is
+    encountered in any state, it should transition to
     error mentioning the error in the payload.
     """
 
     def on_enter(self, payload=None):
-        """Method executed on entry to Error State. Relevant error message is spoken.
+        """
+        Method executed on entry to Error State. Relevant error message is spoken.
         :param payload: String mentioning the error encountered.
         :return: None
         """
@@ -39,14 +42,18 @@ class ErrorState(State):
             print("Error: {} \n".format(payload))
             self.notify_renderer('error')
             lights.speak()
-            player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
-                                                    self.components.config['problem_sound'])))
+            player.say(
+                os.path.abspath(
+                    os.path.join(
+                        self.components.config['data_base_dir'],
+                        self.components.config['problem_sound'])))
             lights.off()
 
         self.transition(self.allowedStateTransitions.get('idle'))
 
     def on_exit(self):
-        """Method executed on exit from the Error State.
+        """
+        Method executed on exit from the Error State.
         :return: None
         """
         pass

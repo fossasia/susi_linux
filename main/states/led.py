@@ -14,8 +14,10 @@ RGB_MAP = {'rgb': [3, 2, 1], 'rbg': [3, 1, 2], 'grb': [
 class LED_COLOR:
 
     # Constants
-    MAX_BRIGHTNESS = 0b11111  # Safeguard: Set to a value appropriate for your setup
-    LED_START = 0b11100000  # Three "1" bits, followed by 5 brightness bits
+    # Safeguard: Set to a value appropriate for your setup
+    MAX_BRIGHTNESS = 0b11111
+    # Three "1" bits, followed by 5 brightness bits
+    LED_START = 0b11100000
 
     def __init__(self, num_led, global_brightness=MAX_BRIGHTNESS,
                  order='rgb', bus=0, device=1, max_speed_hz=8000000):
@@ -99,7 +101,8 @@ class LED_COLOR:
     def set_pixel_rgb(self, led_num, rgb_color, bright_percent=100):
         if (not self.seeed_attached):
             return
-        """Sets the color of one pixel in the LED stripe.
+        """
+        Sets the color of one pixel in the LED stripe.
 
         The changed pixel is not shown yet on the Stripe, it is only
         written to the pixel buffer.
@@ -112,7 +115,8 @@ class LED_COLOR:
     def rotate(self, positions=1):
         if (not self.seeed_attached):
             return
-        """ Rotate the LEDs by the specified number of positions.
+        """
+        Rotate the LEDs by the specified number of positions.
 
         Treating the internal LED array as a circular buffer, rotate it by
         the specified number of positions. The number could be negative,
@@ -124,7 +128,8 @@ class LED_COLOR:
     def show(self):
         if (not self.seeed_attached):
             return
-        """Sends the content of the pixel buffer to the strip.
+        """
+        Sends the content of the pixel buffer to the strip.
 
         Todo: More than 1024 LEDs requires more than one xfer operation.
         """
