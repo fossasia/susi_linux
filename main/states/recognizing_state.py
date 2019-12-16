@@ -108,7 +108,8 @@ class RecognizingState(State):
         """
         # we saved the volume when doing a beep
         player.restore_softvolume()
-        self.timer.cancel()
+        if hasattr(self, 'timer'):
+            self.timer.cancel()
         if self.useGPIO:
             try:
                 GPIO.output(27, False)
