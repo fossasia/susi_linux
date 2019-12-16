@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=SUSI.AI Personal Assistant
+GenericName=SUSI Personal Assistant
+Comment=Privacy aware personal assistant
+Exec=@BINDIR@/start-susi-linux
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=SUSI.AI;Personal Assistant;Office;
