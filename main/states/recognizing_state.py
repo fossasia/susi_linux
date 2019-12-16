@@ -49,6 +49,9 @@ class RecognizingState(State):
             api_key = self.components.config['bing_speech_api_key']
             return recognizer.recognize_bing(audio_data=audio, key=api_key, language=susi_config["language"])
 
+        elif self.components.config['default_stt'] == 'deepspeech-local':
+            return recognizer.recognize_deepspeech(audio, language=susi_config["language"])
+
     def on_enter(self, payload=None):
         """ Executed on the entry to the Recognizing State. Upon entry, audio is captured from the Microphone and
         recognition with preferred speech recognition engine is done. If successful, the machine transitions to Busy

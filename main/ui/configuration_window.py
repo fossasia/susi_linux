@@ -123,6 +123,8 @@ class ConfigurationWindow:
             self.stt_combobox.set_active(1)
         elif default_stt == 'bing':
             self.stt_combobox.set_active(2)
+        elif default_stt == 'deepspeech-local':
+            self.stt_combobox.set_active(3)
         else:
             self.tts_combobox.set_active(0)
             config['default_tts'] = 'google'
