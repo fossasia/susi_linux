@@ -26,7 +26,7 @@ class RecognizingState(State):
     """
 
     def __recognize_audio(self, recognizer, audio):
-        logger.info("Trying to recognize audio in language: %s", susi_config["language"])
+        logger.info("Trying to recognize audio with %s in language: %s", self.components.config['default_stt'], susi_config["language"])
         if self.components.config['default_stt'] == 'google':
             return recognizer.recognize_google(audio, language=susi_config["language"])
 
@@ -39,18 +39,20 @@ class RecognizingState(State):
                 language=susi_config["language"],
                 audio_data=audio)
         elif self.components.config['default_stt'] == 'pocket_sphinx':
+            lang = susi_config["language"].replace("_", "-")
             if internet_on():
                 self.components.config['default_stt'] = 'google'
-                return recognizer.recognize_google(audio, language=susi_config["language"])
+                return recognizer.recognize_google(audio, language=lang)
             else:
-                return recognizer.recognize_sphinx(audio, language=susi_config["language"])
+                return recognizer.recognize_sphinx(audio, language=lang)
 
         elif self.components.config['default_stt'] == 'bing':
             api_key = self.components.config['bing_speech_api_key']
             return recognizer.recognize_bing(audio_data=audio, key=api_key, language=susi_config["language"])
 
         elif self.components.config['default_stt'] == 'deepspeech-local':
-            return recognizer.recognize_deepspeech(audio, language=susi_config["language"])
+            lang = susi_config["language"].replace("_", "-")
+            return recognizer.recognize_deepspeech(audio, language=lang)
 
     def on_enter(self, payload=None):
         """ Executed on the entry to the Recognizing State. Upon entry, audio is captured from the Microphone and
