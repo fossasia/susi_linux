@@ -6,6 +6,7 @@ import json_config
 from .base_state import State
 from .lights import lights
 from ..player import player
+from threading import get_ident
 
 config = json_config.connect('config.json')
 logger = logging.getLogger(__name__)
@@ -21,7 +22,9 @@ class ErrorState(State):
         :param payload: String mentioning the error encountered.
         :return: None
         """
+        logger.debug("ERROR(" + str(get_ident()) + "): entering")
         if payload == 'RecognitionError':
+            logger.debug("ErrorState Recognition Error")
             self.notify_renderer('error', 'recognition')
             lights.speak()
             player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
@@ -44,9 +47,12 @@ class ErrorState(State):
             lights.off()
 
         self.transition(self.allowedStateTransitions.get('idle'))
+        logger.debug("ERROR(" + str(get_ident()) + "): entering done")
 
     def on_exit(self):
         """Method executed on exit from the Error State.
         :return: None
         """
+        logger.debug("ERROR(" + str(get_ident()) + "): leaving")
         pass
+        logger.debug("ERROR(" + str(get_ident()) + "): leaving done")

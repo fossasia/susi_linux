@@ -4,6 +4,7 @@
 import logging
 import os
 import signal
+from threading import get_ident
 
 from .base_state import State
 from .lights import lights
@@ -16,7 +17,6 @@ class IdleState(State):
     """Idle State inherits from the base state. In this state, app is actively listening for Hotword Input or Push
     Button Input. It transitions to Recognizing State upon successful detection.
     """
-
     def __init__(self, components):
         super().__init__(components)
         self.isActive = False
@@ -44,11 +44,12 @@ class IdleState(State):
         :param payload: Nothing is expected
         :return: None
         """
+        logger.debug("IDLE(" + str(get_ident()) + "): entering")
         lights.off()
-        logger.debug('Idle state')
         self.isActive = True
         lights.wakeup()
         self.notify_renderer('idle')
+        logger.debug("IDLE(" + str(get_ident()) + "): entering done")
 
     def __detected(self):
         if (self.isActive):
@@ -61,5 +62,7 @@ class IdleState(State):
         """Method to be executed on exit from Idle State. Detection of Hotword and Wake Button is paused.
         :return: None
         """
+        logger.debug("IDLE(" + str(get_ident()) + "): leaving")
         self.isActive = False
         lights.off()
+        logger.debug("IDLE(" + str(get_ident()) + "): leaving done")

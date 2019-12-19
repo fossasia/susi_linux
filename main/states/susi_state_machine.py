@@ -99,6 +99,7 @@ class Components:
         }
         while response_one is None:
             try:
+                logger.debug("checking for local server")
                 url = urljoin(self.server_url, '/susi/chat.json')
                 response_one = requests.get(url, test_params).result()
                 api_endpoint = self.server_url

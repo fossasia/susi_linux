@@ -2,6 +2,7 @@
 """
 import logging
 import threading
+from threading import get_ident
 
 import speech_recognition as sr
 
@@ -58,6 +59,7 @@ class RecognizingState(State):
         """ Starting the Timer else SUSI would remain infinitely in the recognizing state.
         """
 
+        logger.debug("RECOGNIZING(" + str(get_ident()) + "): entering")
         self.timer = threading.Timer(10.0, self.transition(self.allowedStateTransitions.get('error'),
                                 payload='RecognitionError'))
 
@@ -101,11 +103,13 @@ class RecognizingState(State):
             pass
         except ImportError:
             logger.warning("This device doesn't have GPIO port")
+        logger.debug("RECOGNIZING(" + str(get_ident()) + "): entering done")
 
     def on_exit(self):
         """ Method to executed upon exit from Recognizing State.
         :return:
         """
+        logger.debug("RECOGNIZING(" + str(get_ident()) + "): leaving")
         # we saved the volume when doing a beep
         player.restore_softvolume()
         if hasattr(self, 'timer'):
@@ -117,3 +121,4 @@ class RecognizingState(State):
             except RuntimeError:
                 pass
         pass
+        logger.debug("RECOGNIZING(" + str(get_ident()) + "): leaving done")
