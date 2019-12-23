@@ -49,8 +49,11 @@ class State(ABC):
             logger.warning("Invalid transition to State: %s", state)
             return
 
+        logger.debug("transitioning! step 1 - exit")
         self.on_exit()
+        logger.debug("transitioning! step 2 - entering, paylod = " + str(payload))
         state.on_enter(payload)
+        logger.debug("transitioning! step 3 - finished")
 
     def second_transition(self, state, payload=None):
         if not self.__can_transition(state):
