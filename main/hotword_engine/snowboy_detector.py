@@ -17,11 +17,11 @@ class SnowboyDetector(HotwordDetector):
     def __init__(self) -> None:
         super().__init__()
         self.detector = snowboydecoder.HotwordDetector(
-            RESOURCE_FILE, sensitivity=0.6)
+            RESOURCE_FILE, sensitivity=0.5)
 
     def run(self):
         """ Implementation of run abstract method in HotwordDetector. This method is called when thread
         is started for the first time. We start the Snowboy detection and declare detected callback as
         detection_callback method declared in parent class.
         """
-        self.detector.start(detected_callback=self.on_detected)
+        self.detector.start(detected_callback=self.on_detected, sleep_time=0.03)
