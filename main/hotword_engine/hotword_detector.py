@@ -37,3 +37,10 @@ class HotwordDetector(ABC, Thread):
         :return: None
         """
         self.subject.on_next("Hotword")
+
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+

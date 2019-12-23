@@ -20,7 +20,6 @@ class IdleState(State):
     def __init__(self, components):
         super().__init__(components)
         self.isActive = False
-        self.components.hotword_detector.start()
         if self.components.hotword_detector is not None:
             self.components.hotword_detector.subject.subscribe(
                 on_next=lambda x: self.__detected())
@@ -33,6 +32,12 @@ class IdleState(State):
         if self.components.renderer is not None:
             self.components.renderer.subject.subscribe(
                 on_next=lambda x: self.__detected())
+
+    def start_detector(self):
+        self.components.hotword_detector.start()
+
+    def stop_detector(self):
+        self.components.hotword_detector.stop()
 
     def transition_busy(self,reply):
         #TODO strip planned action bit
@@ -49,6 +54,8 @@ class IdleState(State):
         self.isActive = True
         lights.wakeup()
         self.notify_renderer('idle')
+        logger.debug("Starting detector")
+        self.start_detector()
         logger.debug("IDLE(" + str(get_ident()) + "): entering done")
 
     def __detected(self):
@@ -63,6 +70,8 @@ class IdleState(State):
         :return: None
         """
         logger.debug("IDLE(" + str(get_ident()) + "): leaving")
+        logger.debug("Stopping detector")
+        self.stop_detector()
         self.isActive = False
         lights.off()
         logger.debug("IDLE(" + str(get_ident()) + "): leaving done")
