@@ -65,8 +65,9 @@ class RecognizingState(State):
         """
 
         logger.debug("RECOGNIZING(" + str(get_ident()) + "): entering")
-        self.timer = threading.Timer(10.0, self.transition(self.allowedStateTransitions.get('error'),
+        self.timer = threading.Timer(10.0, lambda : self.transition(self.allowedStateTransitions.get('error'),
                                 payload='RecognitionError'))
+        self.timer.start()
 
         logger.info('Recognizing')
 
