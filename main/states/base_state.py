@@ -51,7 +51,7 @@ class State(ABC):
 
         logger.debug("transitioning! step 1 - exit")
         self.on_exit()
-        logger.debug("transitioning! step 2 - entering, paylod = " + str(payload))
+        logger.debug("transitioning! step 2 - entering, payload = " + str(payload))
         state.on_enter(payload)
         logger.debug("transitioning! step 3 - finished")
 
