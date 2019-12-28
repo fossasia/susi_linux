@@ -2,6 +2,7 @@
 """
 import logging
 import threading
+from threading import get_ident
 import speech_recognition as sr
 from .base_state import State
 from .internet_test import internet_on
@@ -25,10 +26,9 @@ class RecognizingState(State):
     """
 
     def __recognize_audio(self, recognizer, audio):
-        logger.info(
-            "Trying to recognize audio in language: %s",
-            susi_config["language"])
-
+        logger.info("Trying to recognize audio with %s in language: %s", 
+                    self.components.config['default_stt'], 
+                    susi_config["language"])
         if self.components.config['default_stt'] == 'google':
             return recognizer.recognize_google(
                 audio, language=susi_config["language"])
@@ -43,19 +43,22 @@ class RecognizingState(State):
                 audio_data=audio)
 
         elif self.components.config['default_stt'] == 'pocket_sphinx':
+            lang = susi_config["language"].replace("_", "-")
             if internet_on():
                 self.components.config['default_stt'] = 'google'
-                return recognizer.recognize_google(
-                    audio, language=susi_config["language"])
+                return recognizer.recognize_google(audio, language=lang)
             else:
-                return recognizer.recognize_sphinx(
-                    audio, language=susi_config["language"])
+                return recognizer.recognize_sphinx(audio, language=lang)
 
         elif self.components.config['default_stt'] == 'bing':
             api_key = self.components.config['bing_speech_api_key']
             return recognizer.recognize_bing(
                 audio_data=audio, key=api_key,
                 language=susi_config["language"])
+
+        elif self.components.config['default_stt'] == 'deepspeech-local':
+            lang = susi_config["language"].replace("_", "-")
+            return recognizer.recognize_deepspeech(audio, language=lang)
 
     def on_enter(self, payload=None):
         """
@@ -72,11 +75,12 @@ class RecognizingState(State):
         recognizing state.
         """
 
-        self.timer = threading.Timer(
-            10.0,
-            self.transition(
-                self.allowedStateTransitions.get('error'),
-                payload='RecognitionError'))
+        logger.debug("RECOGNIZING(" + str(get_ident()) + "): entering")
+        self.timer = threading.Timer(10.0, 
+                                     lambda : self.transition(self.allowedStateTransitions.get('error'),
+                                                                    payload='DetectionTimeout'))
+        self.timer.start()
+
 
         logger.info('Recognizing')
         self.notify_renderer('listening')
@@ -118,15 +122,18 @@ class RecognizingState(State):
             pass
         except ImportError:
             logger.warning("This device doesn't have GPIO port")
+        logger.debug("RECOGNIZING(" + str(get_ident()) + "): entering done")
 
     def on_exit(self):
         """
         Method to executed upon exit from Recognizing State.
         :return:
         """
+        logger.debug("RECOGNIZING(" + str(get_ident()) + "): leaving")
         # we saved the volume when doing a beep
         player.restore_softvolume()
-        self.timer.cancel()
+        if hasattr(self, 'timer'):
+            self.timer.cancel()
         if self.useGPIO:
             try:
                 GPIO.output(27, False)
@@ -134,3 +141,4 @@ class RecognizingState(State):
             except RuntimeError:
                 pass
         pass
+        logger.debug("RECOGNIZING(" + str(get_ident()) + "): leaving done")

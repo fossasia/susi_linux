@@ -4,8 +4,11 @@ It provides excellent recognition of Hotword but all devices are not
 supported presently. Use PocketSphinx if you face errors with this Detector.
 """
 import os
+import logging
 from .hotword_detector import HotwordDetector
 from snowboy import snowboydecoder
+
+logger = logging.getLogger(__name__)
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCE_FILE = os.path.join(TOP_DIR, "susi.pmdl")
@@ -19,7 +22,7 @@ class SnowboyDetector(HotwordDetector):
     def __init__(self) -> None:
         super().__init__()
         self.detector = snowboydecoder.HotwordDetector(
-            RESOURCE_FILE, sensitivity=0.6)
+            RESOURCE_FILE, sensitivity=0.5)
 
     def run(self):
         """
@@ -28,4 +31,13 @@ class SnowboyDetector(HotwordDetector):
         Snowboy detection and declare detected callback as
         detection_callback method declared in parent class.
         """
-        self.detector.start(detected_callback=self.on_detected)
+        pass
+        #self.detector.start(detected_callback=self.on_detected, sleep_time=0.03)
+
+    def start(self):
+        logger.debug("SnowboyDetector: starting detection")
+        self.detector.start(detected_callback=self.on_detected, sleep_time=0.03)
+
+    def stop(self):
+        logger.debug("SnowboyDetector: terminating detection")
+        self.detector.terminate()

@@ -2,6 +2,7 @@
 """
 import os
 import logging
+from threading import get_ident
 
 from ..speech import TTS
 from .base_state import State
@@ -33,7 +34,7 @@ class BusyState(State):
         :param payload: query to be asked to SUSI
         :return: None
         """
-        logger.debug('Busy state')
+        logger.debug("BUSY(" + str(get_ident()) + "): entering")
         try:
             no_answer_needed = False
 
@@ -158,16 +159,20 @@ class BusyState(State):
             logger.error('Got error: %s', e)
             self.transition(self.allowedStateTransitions.get('error'))
 
+        logger.debug("BUSY(" + str(get_ident()) + "): entering done")
+
     def on_exit(self):
         """
         Method executed on exit from the Busy State.
         """
+        logger.debug("BUSY(" + str(get_ident()) + "): leaving")
         if self.useGPIO:
             try:
                 GPIO.output(27, False)
                 GPIO.output(22, False)
             except RuntimeError as e:
                 logger.error(e)
+        logger.debug("BUSY(" + str(get_ident()) + "): leaving done")
 
     def __speak(self, text):
         """
