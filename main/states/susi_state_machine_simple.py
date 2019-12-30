@@ -8,6 +8,7 @@ import requests
 import json_config
 from speech_recognition import Recognizer, Microphone
 from requests.exceptions import ConnectionError
+import queue
 
 import susi_python as susi
 from .lights import lights
@@ -120,7 +121,7 @@ class SusiStateMachine():
 
     def __init__(self, renderer=None):
         self.components = Components(renderer)
-        self.processing = False
+        self.event_queue = queue.Queue()
 
         if self.components.hotword_detector is not None:
             self.components.hotword_detector.subject.subscribe(
@@ -131,16 +132,22 @@ class SusiStateMachine():
         if self.components.renderer is not None:
             self.components.renderer.subject.subscribe(
                 on_next=lambda x: self.hotword_detected_callback())
-        # TODO TODO
         if self.components.action_schduler is not None:
             self.components.action_schduler.subject.subscribe(
-                on_next=lambda x: self.to_busy(x))
+                on_next=lambda x: self.queue_event(x))
+
+    def queue_event(self,event):
+        self.event_queue.put(event)
 
 
     def start(self):
         while True:
             logger.debug("starting detector")
-            self.start_detector()
+            if self.event_queue.empty():
+                self.start_detector()
+            else:
+                ev = self.event_queue.get()
+                self.deal_with_answer(ev)
             logger.debug("after starting detector")
             # back from processing
             player.restore_softvolume()
@@ -183,7 +190,6 @@ class SusiStateMachine():
             except sr.WaitTimeoutError:
                 logger.debug("timeout reached waiting for voice command")
                 self.deal_with_error('ListenTimeout')
-                self.processing = False
                 return
         if GPIO:
             GPIO.output(22, False)
@@ -204,7 +210,6 @@ class SusiStateMachine():
             logger.error("UnknownValueError from SpeechRecognition: %s", e)
             self.deal_with_error('RecognitionError')
 
-        self.processing = False
         return
 
     def __speak(self, text):
@@ -295,8 +300,15 @@ class SusiStateMachine():
                 GPIO.output(27, True)
             if self.components.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
+
             if 'planned_actions' in reply.keys():
+                logger.debug("planning action: ")
                 for plan in reply['planned_actions']:
+                    logger.debug("plan = " + str(plan))
+                    # TODO TODO
+                    # plan_delay is wrong, it is 0, we need to use
+                    # plan = {'language': 'en', 'answer': 'ALARM', 'plan_delay': 0, 'plan_date': '2019-12-30T13:36:05.458Z'}
+                    # plan_date !!!!!
                     self.components.action_schduler.add_event(int(plan['plan_delay']) / 1000,
                                                               plan)
 
