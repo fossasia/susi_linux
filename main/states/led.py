@@ -14,10 +14,8 @@ RGB_MAP = {'rgb': [3, 2, 1], 'rbg': [3, 1, 2], 'grb': [
 class LED_COLOR:
 
     # Constants
-    # Safeguard: Set to a value appropriate for your setup
-    MAX_BRIGHTNESS = 0b11111
-    # Three "1" bits, followed by 5 brightness bits
-    LED_START = 0b11100000
+    MAX_BRIGHTNESS = 0b11111  # Safeguard: Set to a value appropriate for your setup
+    LED_START = 0b11100000   # Three "1" bits, followed by 5 brightness bits
 
     def __init__(self, num_led, global_brightness=MAX_BRIGHTNESS,
                  order='rgb', bus=0, device=1, max_speed_hz=8000000):
