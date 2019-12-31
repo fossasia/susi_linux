@@ -39,20 +39,12 @@ class ListeningAnimator(Animator):
             ctx.set_line_width(6)
             ctx.set_line_cap(cairo.LINE_CAP_ROUND)
             if i % 2 == 0:
-                ctx.move_to(
-                    width / 2 + i * 10,
-                    height / 2 + 3 - 8 * math.sin(self.tc + i))
-                ctx.line_to(
-                    width / 2 + i * 10,
-                    height / 2 - 3 + 8 * math.sin(self.tc + i))
+                ctx.move_to(width / 2 + i * 10, height / 2 + 3 - 8 * math.sin(self.tc + i))
+                ctx.line_to(width / 2 + i * 10, height / 2 - 3 + 8 * math.sin(self.tc + i))
             else:
                 ctx.set_source_rgb(0.2, 0.7, 1)
-                ctx.move_to(
-                    width / 2 + i * 10,
-                    height / 2 + 3 - 8 * math.cos(self.tc - i))
-                ctx.line_to(
-                    width / 2 + i * 10,
-                    height / 2 - 3 + 8 * math.cos(self.tc - i))
+                ctx.move_to(width / 2 + i * 10, height / 2 + 3 - 8 * math.cos(self.tc - i))
+                ctx.line_to(width / 2 + i * 10, height / 2 - 3 + 8 * math.cos(self.tc - i))
             ctx.stroke()
 
 
