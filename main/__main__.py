@@ -21,8 +21,11 @@ def get_colorlog_handler(short=False):
     else:
         log_format = '%(log_color)s%(asctime)s %(levelname)s:%(name)s:%(reset)s %(message)s'
     handler = colorlog.StreamHandler()
-    handler.setFormatter(colorlog.TTYColoredFormatter(log_format, stream=sys.stderr,
-                                                      datefmt='%Y-%m-%d %H:%M:%S'))
+    handler.setFormatter(
+        colorlog.TTYColoredFormatter(
+            log_format,
+            stream=sys.stderr,
+            datefmt='%Y-%m-%d %H:%M:%S'))
     return handler
 
 
@@ -33,15 +36,22 @@ def startup_sound():
 
 
 if __name__ == '__main__':
+
     parser.add_argument('-v', '--verbose', action='count', default=0,
                         help='Show log. Repeat to get more detailed one.')
-    # Sometimes, when we enable -v in systemd service command, and read the log via
-    # journalctl, we will see duplication of timestamp and process. These info are
-    # provided by both journalctl and our app. Enable --short-log to stop our app
-    # from including those info in log.
+
+    '''
+    Sometimes, when we enable -v in systemd service command, and read the log via
+    journalctl, we will see duplication of timestamp and process. These info are
+    provided by both journalctl and our app. Enable --short-log to stop our app
+    from including those info in log.
+    '''
+
     parser.add_argument('--short-log', action='store_true',
                         help='Produce log w/o timestamp and process name.')
+
     args = parser.parse_args()
+
     # Configure logger
     if args.verbose:
         levels = (logging.WARNING, logging.INFO, logging.DEBUG)

@@ -2,7 +2,6 @@
 import time
 import sched
 from threading import Thread
-
 from rx.subject import Subject
 
 

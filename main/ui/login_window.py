@@ -1,11 +1,9 @@
 import os
 import re
-
 import gi
 import requests
 import json_config
 gi.require_version('Gtk', '3.0')  # nopep8
-
 from gi.repository import Gtk
 from gi.repository.Gdk import Color
 
@@ -14,7 +12,8 @@ config = json_config.connect('config.json')
 
 
 def is_valid(email, password):
-    """ Method to Validate SUSI Login Details
+    """
+    Method to Validate SUSI Login Details
     :param email: SUSI Sign-in email
     :param password: SUSI Sign-in password
     :return: boolean to indicate if details are valid

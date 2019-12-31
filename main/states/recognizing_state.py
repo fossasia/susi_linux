@@ -3,9 +3,7 @@
 import logging
 import threading
 from threading import get_ident
-
 import speech_recognition as sr
-
 from .base_state import State
 from .internet_test import internet_on
 from .lights import lights
@@ -21,14 +19,19 @@ logger = logging.getLogger(__name__)
 
 
 class RecognizingState(State):
-    """ Recognizing State inherits from Base State class. In this state, audio is recorded from the microphone and
-    recognized with the Speech Recognition Engine set as default in the configuration.
+    """
+    Recognizing State inherits from Base State class. In this state,
+    audio is recorded from the microphone and  recognized with the
+    Speech Recognition Engine set as default in the configuration.
     """
 
     def __recognize_audio(self, recognizer, audio):
-        logger.info("Trying to recognize audio with %s in language: %s", self.components.config['default_stt'], susi_config["language"])
+        logger.info("Trying to recognize audio with %s in language: %s", 
+                    self.components.config['default_stt'], 
+                    susi_config["language"])
         if self.components.config['default_stt'] == 'google':
-            return recognizer.recognize_google(audio, language=susi_config["language"])
+            return recognizer.recognize_google(
+                audio, language=susi_config["language"])
 
         elif self.components.config['default_stt'] == 'watson':
             username = self.components.config['watson_stt_config']['username']
@@ -38,6 +41,7 @@ class RecognizingState(State):
                 password=password,
                 language=susi_config["language"],
                 audio_data=audio)
+
         elif self.components.config['default_stt'] == 'pocket_sphinx':
             lang = susi_config["language"].replace("_", "-")
             if internet_on():
@@ -48,31 +52,40 @@ class RecognizingState(State):
 
         elif self.components.config['default_stt'] == 'bing':
             api_key = self.components.config['bing_speech_api_key']
-            return recognizer.recognize_bing(audio_data=audio, key=api_key, language=susi_config["language"])
+            return recognizer.recognize_bing(
+                audio_data=audio, key=api_key,
+                language=susi_config["language"])
 
         elif self.components.config['default_stt'] == 'deepspeech-local':
             lang = susi_config["language"].replace("_", "-")
             return recognizer.recognize_deepspeech(audio, language=lang)
 
     def on_enter(self, payload=None):
-        """ Executed on the entry to the Recognizing State. Upon entry, audio is captured from the Microphone and
-        recognition with preferred speech recognition engine is done. If successful, the machine transitions to Busy
-        State. On failure, it transitions to Error state.
+        """
+        Executed on the entry to the Recognizing State. Upon entry,
+        audio is captured from the Microphone and recognition with
+        preferred speech recognition engine is done. If successful,
+        the machine transitions to Busy State. On failure, it transitions
+        to Error state.
         :param payload: No payload is expected by this state.
         :return: None
         """
-        """ Starting the Timer else SUSI would remain infinitely in the recognizing state.
+        """
+        Starting the Timer else SUSI would remain infinitely in the
+        recognizing state.
         """
 
         logger.debug("RECOGNIZING(" + str(get_ident()) + "): entering")
-        self.timer = threading.Timer(10.0, lambda : self.transition(self.allowedStateTransitions.get('error'),
+        self.timer = threading.Timer(10.0, 
+                                     lambda : self.transition(self.allowedStateTransitions.get('error'),
                                                                     payload='DetectionTimeout'))
         self.timer.start()
 
-        logger.info('Recognizing')
 
+        logger.info('Recognizing')
         self.notify_renderer('listening')
         recognizer = self.components.recognizer
+
         try:
             logger.info("Let's say something!")
             if self.useGPIO:
@@ -112,7 +125,8 @@ class RecognizingState(State):
         logger.debug("RECOGNIZING(" + str(get_ident()) + "): entering done")
 
     def on_exit(self):
-        """ Method to executed upon exit from Recognizing State.
+        """
+        Method to executed upon exit from Recognizing State.
         :return:
         """
         logger.debug("RECOGNIZING(" + str(get_ident()) + "): leaving")

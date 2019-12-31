@@ -122,4 +122,5 @@ class Lights:
 
         self.dev.show()
 
+
 lights = Lights()

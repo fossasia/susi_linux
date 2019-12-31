@@ -1,4 +1,5 @@
-"""Class to represent Idle State
+"""
+Class to represent Idle State
 """
 
 import logging
@@ -14,8 +15,10 @@ logger = logging.getLogger(__name__)
 
 
 class IdleState(State):
-    """Idle State inherits from the base state. In this state, app is actively listening for Hotword Input or Push
-    Button Input. It transitions to Recognizing State upon successful detection.
+    """
+    Idle State inherits from the base state. In this state, app
+    is actively listening for Hotword Input or Push Button Input.
+    It transitions to Recognizing State upon successful detection.
     """
     def __init__(self, components):
         super().__init__(components)
@@ -33,6 +36,7 @@ class IdleState(State):
             self.components.renderer.subject.subscribe(
                 on_next=lambda x: self.__detected())
 
+
     def start_detector(self):
         self.components.hotword_detector.start()
 
@@ -45,7 +49,9 @@ class IdleState(State):
             'busy'), payload=reply)
 
     def on_enter(self, payload=None):
-        """Method to be executed on entry to Idle State. Detection is set to active.
+        """
+        Method to be executed on entry to Idle State. Detection is set to
+        active.
         :param payload: Nothing is expected
         :return: None
         """
@@ -60,13 +66,18 @@ class IdleState(State):
 
     def __detected(self):
         if (self.isActive):
-            player.beep(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
-                                                     self.components.config['detection_bell_sound'])))
+            player.beep(
+                os.path.abspath(
+                    os.path.join(
+                        self.components.config['data_base_dir'],
+                        self.components.config['detection_bell_sound'])))
             self.transition(state=self.allowedStateTransitions.get(
                 'recognizing'), payload=None)
 
     def on_exit(self):
-        """Method to be executed on exit from Idle State. Detection of Hotword and Wake Button is paused.
+        """
+        Method to be executed on exit from Idle State. Detection of
+        Hotword and Wake Button is paused.
         :return: None
         """
         logger.debug("IDLE(" + str(get_ident()) + "): leaving")

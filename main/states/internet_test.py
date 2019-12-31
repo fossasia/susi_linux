@@ -1,4 +1,5 @@
-""" Function to test the internet connection
+"""
+Function to test the internet connection
 """
 import logging
 import urllib.request
@@ -11,7 +12,8 @@ logger = logging.getLogger(__name__)
 def internet_on():
     url = 'http://216.58.192.142'
     try:
-        urllib.request.urlopen(url, timeout=1)  # nosec #pylint-disable type: ignore
+        # nosec #pylint-disable type: ignore
+        urllib.request.urlopen(url, timeout=1)
         return True  # pylint-enable
     except URLError as err:
         logger.error("Test %s failed. Error: %s", url, err)

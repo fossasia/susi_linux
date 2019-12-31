@@ -1,7 +1,6 @@
 import math
 import cairo
 import gi
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib  # nopep8
 
@@ -64,5 +63,10 @@ class ThinkingAnimator(Animator):
 
         for i in range(-2, 2):
             ctx.set_source_rgb(0.2, 0.7, 1)
-            ctx.arc(self.x + i * 20, self.y, 8 * math.cos(self.rot - i / 2), 0, 2 * math.pi)
+            ctx.arc(
+                self.x + i * 20,
+                self.y,
+                8 * math.cos(self.rot - i / 2),
+                0,
+                2 * math.pi)
             ctx.fill()
