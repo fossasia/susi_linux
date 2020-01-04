@@ -11,7 +11,7 @@ import speech_recognition as sr
 import requests
 import json_config
 from speech_recognition import Recognizer, Microphone
-from requests.exceptions import ConnectionError
+# from requests.exceptions import ConnectionError
 
 import susi_python as susi
 from .lights import lights
@@ -31,6 +31,7 @@ except ImportError:
 
 # needed for backward compatibility with import statements
 class Components():
+    """Dummy class necessary for backward compatibility with old code"""
     pass
 
 class SusiStateMachine():
@@ -114,9 +115,11 @@ class SusiStateMachine():
                 on_next=lambda x: self.queue_event(x))
 
     def queue_event(self, event):
+        """ queue a delayed event"""
         self.event_queue.put(event)
 
     def server_checker(self):
+        """ thread function for checking the used server being alive"""
         response_one = None
         test_params = {
             'q': 'Hello',
@@ -138,6 +141,7 @@ class SusiStateMachine():
 
 
     def start(self):
+        """ start processing of audio events """
         while True:
             logger.debug("starting detector")
             if self.event_queue.empty():
@@ -157,17 +161,24 @@ class SusiStateMachine():
 
 
     def notify_renderer(self, message, payload=None):
+        """ notify program renderer """
         if self.renderer is not None:
             self.renderer.receive_message(message, payload)
 
     def start_detector(self):
+        """ start the hotword detector """
         self.hotword_detector.start()
 
     def stop_detector(self):
+        """ stop the hotword detector for further processing """
         self.hotword_detector.stop()
 
 
     def hotword_detected_callback(self):
+        """
+        Callback when the hotword is detected. Does the full processing
+        logic formerly contained in different states
+        """
         # beep
         player.beep(os.path.abspath(os.path.join(self.config['data_base_dir'],
                                                  self.config['detection_bell_sound'])))
@@ -210,8 +221,7 @@ class SusiStateMachine():
         return
 
     def __speak(self, text):
-        """Method to set the default TTS for the Speaker
-        """
+        """Method to set the default TTS for the Speaker"""
         if self.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
         if self.config['default_tts'] == 'flite':
@@ -221,6 +231,7 @@ class SusiStateMachine():
             TTS.speak_watson_tts(text)
 
     def recognize_audio(self, recognizer, audio):
+        """Use the configured STT method to convert spoken audio to text"""
         logger.info("Trying to recognize audio with %s in language: %s",
                     self.config['default_stt'], susi_config["language"])
         if self.config['default_stt'] == 'google':
@@ -259,6 +270,7 @@ class SusiStateMachine():
 
 
     def deal_with_error(self, payload=None):
+        """deal with errors happening during processing of audio events"""
         if payload == 'RecognitionError':
             logger.debug("ErrorState Recognition Error")
             self.notify_renderer('error', 'recognition')
@@ -291,6 +303,7 @@ class SusiStateMachine():
 
 
     def deal_with_answer(self, payload=None):
+        """processing logic - how to deal with answers from the server"""
         try:
             no_answer_needed = False
 
@@ -298,7 +311,7 @@ class SusiStateMachine():
                 logger.debug("Sending payload to susi server: %s", payload)
                 reply = self.susi.ask(payload)
             else:
-                logger.debug("Executing planned action response", payload)
+                logger.debug("Executing planned action response: %s", payload)
                 reply = payload
 
             if GPIO:
@@ -312,10 +325,10 @@ class SusiStateMachine():
                     logger.debug("plan = " + str(plan))
                     # TODO TODO
                     # plan_delay is wrong, it is 0, we need to use
-                    # plan = {'language': 'en', 'answer': 'ALARM', 'plan_delay': 0, 'plan_date': '2019-12-30T13:36:05.458Z'}
+                    # plan = {'language': 'en', 'answer': 'ALARM', 'plan_delay': 0,
+                    #         'plan_date': '2019-12-30T13:36:05.458Z'}
                     # plan_date !!!!!
-                    self.action_schduler.add_event(int(plan['plan_delay']) / 1000,
-                                                              plan)
+                    self.action_schduler.add_event(int(plan['plan_delay']) / 1000, plan)
 
             # first responses WITHOUT answer key!
 
@@ -407,9 +420,10 @@ class SusiStateMachine():
                     self.__speak(entity.title)
 
         except ConnectionError:
-            return self.to_error('ConnectionError')
+            self.deal_with_error('ConnectionError')
+            return False
         except Exception as e:
-            logger.error('Got error: %s', e)
+            logger.error('Unknown error: %s', e)
             return False
 
         return True
