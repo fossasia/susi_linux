@@ -62,6 +62,7 @@ class SusiStateMachine():
         self.server_url = "https://127.0.0.1:4000"
         self.action_schduler = ActionScheduler()
         self.action_schduler.start()
+        self.event_queue = queue.Queue()
 
         try:
             res = requests.get('http://ip-api.com/json').json()
@@ -100,9 +101,6 @@ class SusiStateMachine():
         else:
             logger.warning("Susi has the wake button disabled")
             self.wake_button = None
-
-
-        self.event_queue = queue.Queue()
 
         if self.hotword_detector is not None:
             self.hotword_detector.subject.subscribe(
@@ -193,11 +191,10 @@ class SusiStateMachine():
         audio = None
         logger.debug("notify renderer for listening")
         self.notify_renderer('listening')
-        recognizer = self.recognizer
         with self.microphone as source:
             try:
                 logger.debug("listening to voice command")
-                audio = recognizer.listen(source, timeout=10.0, phrase_time_limit=5)
+                audio = self.recognizer.listen(source, timeout=10.0, phrase_time_limit=5)
             except sr.WaitTimeoutError:
                 logger.debug("timeout reached waiting for voice command")
                 self.deal_with_error('ListenTimeout')
@@ -209,7 +206,7 @@ class SusiStateMachine():
         lights.think()
         try:
             logger.debug("Converting audio to text")
-            value = self.recognize_audio(audio=audio, recognizer=recognizer)
+            value = self.recognize_audio(audio=audio, recognizer=self.recognizer)
             logger.debug("recognize_audio => %s", value)
             self.notify_renderer('recognized', value)
             if self.deal_with_answer(value):
@@ -248,6 +245,7 @@ class SusiStateMachine():
                 password=password,
                 language=susi_config["language"],
                 audio_data=audio)
+
         elif self.config['default_stt'] == 'pocket_sphinx':
             lang = susi_config["language"].replace("_", "-")
             if internet_on():
