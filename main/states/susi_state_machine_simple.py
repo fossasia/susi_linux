@@ -1,6 +1,7 @@
 import time
 import os
 import logging
+import queue
 from threading import Thread
 from urllib.parse import urljoin
 import speech_recognition as sr
@@ -8,7 +9,6 @@ import requests
 import json_config
 from speech_recognition import Recognizer, Microphone
 from requests.exceptions import ConnectionError
-import queue
 
 import susi_python as susi
 from .lights import lights
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import RPi.GPIO as GPIO
-except:
+except ImportError:
     logger.warning("This device doesn't have GPIO port")
     GPIO = None
 
@@ -31,16 +31,14 @@ class Components:
     """
 
     def __init__(self, renderer=None):
-        try:
-            import RPi.GPIO as GPIO
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(27, GPIO.OUT)
-            GPIO.setup(22, GPIO.OUT)
-        except ImportError:
-            logger.warning("This device doesn't have GPIO port")
-        except RuntimeError as e:
-            logger.error(e)
-            pass
+        if GPIO:
+            try:
+                GPIO.setmode(GPIO.BCM)
+                GPIO.setup(27, GPIO.OUT)
+                GPIO.setup(22, GPIO.OUT)
+            except RuntimeError as e:
+                logger.error(e)
+                pass
         thread1 = Thread(target=self.server_checker, name="Thread1")
         thread1.daemon = True
         thread1.start()
@@ -136,7 +134,7 @@ class SusiStateMachine():
             self.components.action_schduler.subject.subscribe(
                 on_next=lambda x: self.queue_event(x))
 
-    def queue_event(self,event):
+    def queue_event(self, event):
         self.event_queue.put(event)
 
 
@@ -224,7 +222,8 @@ class SusiStateMachine():
             TTS.speak_watson_tts(text)
 
     def recognize_audio(self, recognizer, audio):
-        logger.info("Trying to recognize audio with %s in language: %s", self.components.config['default_stt'], susi_config["language"])
+        logger.info("Trying to recognize audio with %s in language: %s",
+            self.components.config['default_stt'], susi_config["language"])
         if self.components.config['default_stt'] == 'google':
             return recognizer.recognize_google(audio, language=susi_config["language"])
 
@@ -246,7 +245,8 @@ class SusiStateMachine():
 
         elif self.components.config['default_stt'] == 'bing':
             api_key = self.components.config['bing_speech_api_key']
-            return recognizer.recognize_bing(audio_data=audio, key=api_key, language=susi_config["language"])
+            return recognizer.recognize_bing(audio_data=audio, key=api_key,
+                language=susi_config["language"])
 
         elif self.components.config['default_stt'] == 'deepspeech-local':
             lang = susi_config["language"].replace("_", "-")
@@ -263,8 +263,8 @@ class SusiStateMachine():
             lights.off()
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
-            config['default_tts'] = 'flite'
-            config['default_stt'] = 'pocket_sphinx'
+            susi_config['default_tts'] = 'flite'
+            susi_config['default_stt'] = 'pocket_sphinx'
             print("Internet Connection not available")
             lights.speak()
             lights.off()
@@ -408,5 +408,4 @@ class SusiStateMachine():
             return False
 
         return True
-
 
