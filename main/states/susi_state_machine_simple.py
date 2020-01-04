@@ -1,3 +1,6 @@
+"""
+Processing logic of susi_linux
+"""
 import time
 import os
 import logging
@@ -38,7 +41,6 @@ class Components:
                 GPIO.setup(22, GPIO.OUT)
             except RuntimeError as e:
                 logger.error(e)
-                pass
         thread1 = Thread(target=self.server_checker, name="Thread1")
         thread1.daemon = True
         thread1.start()
@@ -223,7 +225,7 @@ class SusiStateMachine():
 
     def recognize_audio(self, recognizer, audio):
         logger.info("Trying to recognize audio with %s in language: %s",
-            self.components.config['default_stt'], susi_config["language"])
+                    self.components.config['default_stt'], susi_config["language"])
         if self.components.config['default_stt'] == 'google':
             return recognizer.recognize_google(audio, language=susi_config["language"])
 
@@ -246,11 +248,17 @@ class SusiStateMachine():
         elif self.components.config['default_stt'] == 'bing':
             api_key = self.components.config['bing_speech_api_key']
             return recognizer.recognize_bing(audio_data=audio, key=api_key,
-                language=susi_config["language"])
+                                             language=susi_config["language"])
 
         elif self.components.config['default_stt'] == 'deepspeech-local':
             lang = susi_config["language"].replace("_", "-")
             return recognizer.recognize_deepspeech(audio, language=lang)
+
+        else:
+            logger.error("Unknown STT setting: " + self.components.config['default_stt'])
+            logger.error("Using Google!")
+            return recognizer.recognize_google(audio, language=susi_config["language"])
+
 
 
     def deal_with_error(self, payload=None):
