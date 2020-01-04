@@ -29,9 +29,12 @@ except ImportError:
     logger.warning("This device doesn't have GPIO port")
     GPIO = None
 
-class Components:
-    """Common components accessible by each state of the the  SUSI state Machine.
-    """
+# needed for backward compatibility with import statements
+class Components():
+    pass
+
+class SusiStateMachine():
+    """Actually not a state machine, but we keep the name for now"""
 
     def __init__(self, renderer=None):
         if GPIO:
@@ -94,6 +97,25 @@ class Components:
             logger.warning("Susi has the wake button disabled")
             self.wake_button = None
 
+
+        self.event_queue = queue.Queue()
+
+        if self.hotword_detector is not None:
+            self.hotword_detector.subject.subscribe(
+                on_next=lambda x: self.hotword_detected_callback())
+        if self.wake_button is not None:
+            self.wake_button.subject.subscribe(
+                on_next=lambda x: self.hotword_detected_callback())
+        if self.renderer is not None:
+            self.renderer.subject.subscribe(
+                on_next=lambda x: self.hotword_detected_callback())
+        if self.action_schduler is not None:
+            self.action_schduler.subject.subscribe(
+                on_next=lambda x: self.queue_event(x))
+
+    def queue_event(self, event):
+        self.event_queue.put(event)
+
     def server_checker(self):
         response_one = None
         test_params = {
@@ -113,31 +135,6 @@ class Components:
             except ConnectionError:
                 time.sleep(10)
                 continue
-
-
-
-class SusiStateMachine():
-    """Actually not a state machine, but we keep the name for now"""
-
-    def __init__(self, renderer=None):
-        self.components = Components(renderer)
-        self.event_queue = queue.Queue()
-
-        if self.components.hotword_detector is not None:
-            self.components.hotword_detector.subject.subscribe(
-                on_next=lambda x: self.hotword_detected_callback())
-        if self.components.wake_button is not None:
-            self.components.wake_button.subject.subscribe(
-                on_next=lambda x: self.hotword_detected_callback())
-        if self.components.renderer is not None:
-            self.components.renderer.subject.subscribe(
-                on_next=lambda x: self.hotword_detected_callback())
-        if self.components.action_schduler is not None:
-            self.components.action_schduler.subject.subscribe(
-                on_next=lambda x: self.queue_event(x))
-
-    def queue_event(self, event):
-        self.event_queue.put(event)
 
 
     def start(self):
@@ -160,20 +157,20 @@ class SusiStateMachine():
 
 
     def notify_renderer(self, message, payload=None):
-        if self.components.renderer is not None:
-            self.components.renderer.receive_message(message, payload)
+        if self.renderer is not None:
+            self.renderer.receive_message(message, payload)
 
     def start_detector(self):
-        self.components.hotword_detector.start()
+        self.hotword_detector.start()
 
     def stop_detector(self):
-        self.components.hotword_detector.stop()
+        self.hotword_detector.stop()
 
 
     def hotword_detected_callback(self):
         # beep
-        player.beep(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
-                                                 self.components.config['detection_bell_sound'])))
+        player.beep(os.path.abspath(os.path.join(self.config['data_base_dir'],
+                                                 self.config['detection_bell_sound'])))
         # stop hotword detection
         logger.debug("stopping hotword detector")
         self.stop_detector()
@@ -182,8 +179,8 @@ class SusiStateMachine():
         audio = None
         logger.debug("notify renderer for listening")
         self.notify_renderer('listening')
-        recognizer = self.components.recognizer
-        with self.components.microphone as source:
+        recognizer = self.recognizer
+        with self.microphone as source:
             try:
                 logger.debug("listening to voice command")
                 audio = recognizer.listen(source, timeout=10.0, phrase_time_limit=5)
@@ -215,47 +212,47 @@ class SusiStateMachine():
     def __speak(self, text):
         """Method to set the default TTS for the Speaker
         """
-        if self.components.config['default_tts'] == 'google':
+        if self.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
-        if self.components.config['default_tts'] == 'flite':
+        if self.config['default_tts'] == 'flite':
             logger.info("Using flite for TTS")  # indication for using an offline music player
             TTS.speak_flite_tts(text)
-        elif self.components.config['default_tts'] == 'watson':
+        elif self.config['default_tts'] == 'watson':
             TTS.speak_watson_tts(text)
 
     def recognize_audio(self, recognizer, audio):
         logger.info("Trying to recognize audio with %s in language: %s",
-                    self.components.config['default_stt'], susi_config["language"])
-        if self.components.config['default_stt'] == 'google':
+                    self.config['default_stt'], susi_config["language"])
+        if self.config['default_stt'] == 'google':
             return recognizer.recognize_google(audio, language=susi_config["language"])
 
-        elif self.components.config['default_stt'] == 'watson':
-            username = self.components.config['watson_stt_config']['username']
-            password = self.components.config['watson_stt_config']['password']
+        elif self.config['default_stt'] == 'watson':
+            username = self.config['watson_stt_config']['username']
+            password = self.config['watson_stt_config']['password']
             return recognizer.recognize_ibm(
                 username=username,
                 password=password,
                 language=susi_config["language"],
                 audio_data=audio)
-        elif self.components.config['default_stt'] == 'pocket_sphinx':
+        elif self.config['default_stt'] == 'pocket_sphinx':
             lang = susi_config["language"].replace("_", "-")
             if internet_on():
-                self.components.config['default_stt'] = 'google'
+                self.config['default_stt'] = 'google'
                 return recognizer.recognize_google(audio, language=lang)
             else:
                 return recognizer.recognize_sphinx(audio, language=lang)
 
-        elif self.components.config['default_stt'] == 'bing':
-            api_key = self.components.config['bing_speech_api_key']
+        elif self.config['default_stt'] == 'bing':
+            api_key = self.config['bing_speech_api_key']
             return recognizer.recognize_bing(audio_data=audio, key=api_key,
                                              language=susi_config["language"])
 
-        elif self.components.config['default_stt'] == 'deepspeech-local':
+        elif self.config['default_stt'] == 'deepspeech-local':
             lang = susi_config["language"].replace("_", "-")
             return recognizer.recognize_deepspeech(audio, language=lang)
 
         else:
-            logger.error("Unknown STT setting: " + self.components.config['default_stt'])
+            logger.error("Unknown STT setting: " + self.config['default_stt'])
             logger.error("Using Google!")
             return recognizer.recognize_google(audio, language=susi_config["language"])
 
@@ -266,8 +263,8 @@ class SusiStateMachine():
             logger.debug("ErrorState Recognition Error")
             self.notify_renderer('error', 'recognition')
             lights.speak()
-            player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
-                                                    self.components.config['recognition_error_sound'])))
+            player.say(os.path.abspath(os.path.join(self.config['data_base_dir'],
+                                                    self.config['recognition_error_sound'])))
             lights.off()
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
@@ -288,8 +285,8 @@ class SusiStateMachine():
             print("Error: {} \n".format(payload))
             self.notify_renderer('error')
             lights.speak()
-            player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
-                                                    self.components.config['problem_sound'])))
+            player.say(os.path.abspath(os.path.join(self.config['data_base_dir'],
+                                                    self.config['problem_sound'])))
             lights.off()
 
 
@@ -299,14 +296,14 @@ class SusiStateMachine():
 
             if isinstance(payload, str):
                 logger.debug("Sending payload to susi server: %s", payload)
-                reply = self.components.susi.ask(payload)
+                reply = self.susi.ask(payload)
             else:
                 logger.debug("Executing planned action response", payload)
                 reply = payload
 
             if GPIO:
                 GPIO.output(27, True)
-            if self.components.renderer is not None:
+            if self.renderer is not None:
                 self.notify_renderer('speaking', payload={'susi_reply': reply})
 
             if 'planned_actions' in reply.keys():
@@ -317,7 +314,7 @@ class SusiStateMachine():
                     # plan_delay is wrong, it is 0, we need to use
                     # plan = {'language': 'en', 'answer': 'ALARM', 'plan_delay': 0, 'plan_date': '2019-12-30T13:36:05.458Z'}
                     # plan_date !!!!!
-                    self.components.action_schduler.add_event(int(plan['plan_delay']) / 1000,
+                    self.action_schduler.add_event(int(plan['plan_delay']) / 1000,
                                                               plan)
 
             # first responses WITHOUT answer key!
@@ -326,8 +323,8 @@ class SusiStateMachine():
             if 'volume' in reply.keys():
                 no_answer_needed = True
                 player.volume(reply['volume'])
-                player.say(os.path.abspath(os.path.join(self.components.config['data_base_dir'],
-                                                        self.components.config['detection_bell_sound'])))
+                player.say(os.path.abspath(os.path.join(self.config['data_base_dir'],
+                                                        self.config['detection_bell_sound'])))
 
             if 'media_action' in reply.keys():
                 action = reply['media_action']
