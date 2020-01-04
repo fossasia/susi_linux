@@ -50,7 +50,10 @@ class SusiStateMachine():
         thread1.start()
 
         recognizer = Recognizer()
-        recognizer.dynamic_energy_threshold = False
+        # this was False in the old state machine, but reading the API docs
+        # https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst
+        # it seems that True is actually better!
+        recognizer.dynamic_energy_threshold = True
         recognizer.energy_threshold = 1000
         self.recognizer = recognizer
         self.microphone = Microphone()
