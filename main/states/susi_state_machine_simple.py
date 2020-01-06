@@ -144,13 +144,14 @@ class SusiStateMachine():
     def start(self):
         """ start processing of audio events """
         while True:
-            logger.debug("starting detector")
             if self.event_queue.empty():
+                logger.debug("starting detector")
                 self.start_detector()
+                logger.debug("after starting detector")
             else:
+                logger.debug("working on queued event")
                 ev = self.event_queue.get()
                 self.deal_with_answer(ev)
-            logger.debug("after starting detector")
             # back from processing
             player.restore_softvolume()
             if GPIO:
