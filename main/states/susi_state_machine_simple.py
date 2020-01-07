@@ -5,7 +5,7 @@ import time
 import os
 import logging
 import queue
-from threading import Thread
+from threading import Thread, Timer, current_thread
 from urllib.parse import urljoin
 import speech_recognition as sr
 import requests
@@ -45,6 +45,7 @@ class SusiStateMachine():
                 GPIO.setup(22, GPIO.OUT)
             except RuntimeError as e:
                 logger.error(e)
+
         thread1 = Thread(target=self.server_checker, name="Thread1")
         thread1.daemon = True
         thread1.start()
@@ -63,6 +64,7 @@ class SusiStateMachine():
         self.action_schduler = ActionScheduler()
         self.action_schduler.start()
         self.event_queue = queue.Queue()
+        self.idle = True
 
         try:
             res = requests.get('http://ip-api.com/json').json()
@@ -119,6 +121,11 @@ class SusiStateMachine():
         """ queue a delayed event"""
         self.event_queue.put(event)
 
+    def hotword_listener(self):
+        """ thread function for listening to the hotword"""
+        # this function never returns ...
+        self.hotword_detector.start()
+
     def server_checker(self):
         """ thread function for checking the used server being alive"""
         response_one = None
@@ -143,23 +150,33 @@ class SusiStateMachine():
 
     def start(self):
         """ start processing of audio events """
+        hotword_thread = Thread(target=self.hotword_listener, name="HotwordDetectorThread")
+        hotword_thread.daemon = True
+        hotword_thread.start()
+
         while True:
-            if self.event_queue.empty():
-                logger.debug("starting detector")
-                self.start_detector()
-                logger.debug("after starting detector")
-            else:
-                logger.debug("working on queued event")
-                ev = self.event_queue.get()
+            # block until events are available
+            ev = self.event_queue.get(block = True)
+            logger.debug("Got event from event queue, trying to deal with it")
+            # wait until idle
+            while True:
+                logger.debug("Waiting to become idle for planned action")
+                if not self.idle:
+                    time.sleep(1)
+                    continue
+                logger.debug("We are idle now ...")
+                self.idle = False
                 self.deal_with_answer(ev)
-            # back from processing
-            player.restore_softvolume()
-            if GPIO:
-                try:
-                    GPIO.output(27, False)
-                    GPIO.output(22, False)
-                except RuntimeError:
-                    pass
+                # back from processing
+                player.restore_softvolume()
+                if GPIO:
+                    try:
+                        GPIO.output(27, False)
+                        GPIO.output(22, False)
+                    except RuntimeError:
+                        pass
+                self.idle = True
+                break
 
 
     def notify_renderer(self, message, payload=None):
@@ -167,26 +184,23 @@ class SusiStateMachine():
         if self.renderer is not None:
             self.renderer.receive_message(message, payload)
 
-    def start_detector(self):
-        """ start the hotword detector """
-        self.hotword_detector.start()
-
-    def stop_detector(self):
-        """ stop the hotword detector for further processing """
-        self.hotword_detector.stop()
-
-
     def hotword_detected_callback(self):
         """
         Callback when the hotword is detected. Does the full processing
         logic formerly contained in different states
         """
+        logger.debug("Entering hotword callback")
+        # don't do anything if we are already busy
+        if not self.idle:
+            logger.debug("Callback called while already busy, returning immediately from callback")
+            return
+
+        logger.debug("We are idle, so work on it!")
+        self.idle = False
+
         # beep
         player.beep(os.path.abspath(os.path.join(self.config['data_base_dir'],
                                                  self.config['detection_bell_sound'])))
-        # stop hotword detection
-        logger.debug("stopping hotword detector")
-        self.stop_detector()
         if GPIO:
             GPIO.output(22, True)
         audio = None
@@ -219,7 +233,13 @@ class SusiStateMachine():
             logger.error("UnknownValueError from SpeechRecognition: %s", e)
             self.deal_with_error('RecognitionError')
 
+        logger.debug("delaying idle setting for 0.05s")
+        Timer(interval=0.05, function=self.set_idle).start()
         return
+
+    def set_idle(self):
+        logger.debug("Switching to idle mode")
+        self.idle = True
 
     def __speak(self, text):
         """Method to set the default TTS for the Speaker"""
