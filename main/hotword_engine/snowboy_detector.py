@@ -11,7 +11,7 @@ from snowboy import snowboydecoder
 logger = logging.getLogger(__name__)
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
-RESOURCE_FILE = os.path.join(TOP_DIR, "susi.pmdl")
+RESOURCE_FILE = "susi.pmdl"
 
 
 class SnowboyDetector(HotwordDetector):
@@ -19,10 +19,10 @@ class SnowboyDetector(HotwordDetector):
     This implements the Hotword Detector with Snowboy Hotword Detection Engine.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, model = RESOURCE_FILE) -> None:
         super().__init__()
         self.detector = snowboydecoder.HotwordDetector(
-            RESOURCE_FILE, sensitivity=0.5)
+                os.path.join(TOP_DIR, model), sensitivity=0.5)
 
     def run(self):
         """

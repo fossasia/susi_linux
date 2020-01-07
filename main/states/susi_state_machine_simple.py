@@ -86,7 +86,11 @@ class SusiStateMachine():
 
         if self.config['hotword_engine'] == 'Snowboy':
             from ..hotword_engine.snowboy_detector import SnowboyDetector
-            self.hotword_detector = SnowboyDetector()
+            hotword_model = "susi.pmdl"
+            if self.config['hotword_model']:
+                logger.debug("Using configured hotword model: " + self.config['hotword_model'])
+                hotword_model = self.config['hotword_model']
+            self.hotword_detector = SnowboyDetector(model=hotword_model)
         else:
             from ..hotword_engine.sphinx_detector import PocketSphinxDetector
             self.hotword_detector = PocketSphinxDetector()
