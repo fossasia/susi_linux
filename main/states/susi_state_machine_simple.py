@@ -317,6 +317,8 @@ class SusiStateMachine():
             self.notify_renderer('error', 'timeout')
             # TODO make a Tada sound here
             lights.speak()
+            player.say(os.path.abspath(os.path.join(self.config['data_base_dir'],
+                                                    self.config['timeout_error_sound'])))
             lights.off()
 
         else:
