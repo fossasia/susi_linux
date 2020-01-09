@@ -17,9 +17,7 @@ logger = logging.getLogger(__name__)
 
 class SusiAppWindow(Renderer):
     def __init__(self):
-        print("=== ENTERING SUSIAPPWINDOW init")
         super().__init__()
-        print("AFTER SUPER INIT")
         builder = Gtk.Builder()
         builder.add_from_file(
             os.path.join(TOP_DIR, "glade_files/susi_app.glade"))
@@ -51,7 +49,6 @@ class SusiAppWindow(Renderer):
         builder.connect_signals(SusiAppWindow.Handler(self))
         self.window.set_default_size(300, 600)
         self.window.set_resizable(False)
-        logger.debug("SusiAppWindow leaving __init__")
 
     def show_window(self):
         self.window.show_all()
@@ -101,7 +98,7 @@ class SusiAppWindow(Renderer):
 
         def on_delete(self, *args):
             self.app_window.exit_window()
-            os.kill(os.getppid(), signal.SIGHUP)
+            os.kill(os.getpid(), signal.SIGHUP)
 
         def on_mic_button_clicked(self, button):
             Promise(
