@@ -57,7 +57,7 @@ class SusiStateMachine():
         # https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst
         # it seems that True is actually better!
         recognizer.dynamic_energy_threshold = True
-        recognizer.energy_threshold = 1000
+        recognizer.energy_threshold = 2000
         self.recognizer = recognizer
         self.microphone = Microphone()
         self.susi = susi
@@ -219,6 +219,8 @@ class SusiStateMachine():
             except sr.WaitTimeoutError:
                 logger.debug("timeout reached waiting for voice command")
                 self.deal_with_error('ListenTimeout')
+                logger.debug("delaying idle setting for 0.05s")
+                Timer(interval=0.05, function=self.set_idle).start()
                 return
         if GPIO:
             GPIO.output(22, False)
