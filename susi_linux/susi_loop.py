@@ -251,6 +251,7 @@ class SusiLoop():
 
     def set_idle(self):
         logger.debug("Switching to idle mode")
+        self.notify_renderer('idle')
         self.idle = True
 
     def __speak(self, text):
@@ -351,8 +352,8 @@ class SusiLoop():
 
             if GPIO:
                 GPIO.output(27, True)
-            if self.renderer is not None:
-                self.notify_renderer('speaking', payload={'susi_reply': reply})
+
+            self.notify_renderer('speaking', payload={'susi_reply': reply})
 
             if 'planned_actions' in reply.keys():
                 logger.debug("planning action: ")
