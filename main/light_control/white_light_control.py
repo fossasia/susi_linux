@@ -2,6 +2,6 @@
 on the ReSpeaker and also to add custom light animations in the future
 """
 
-from ..states.lights import lights
+from ..lights import lights
 
 lights.off()

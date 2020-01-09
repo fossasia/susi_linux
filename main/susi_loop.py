@@ -18,10 +18,10 @@ from speech_recognition import Recognizer, Microphone
 import susi_python as susi
 from .lights import lights
 from .internet_test import internet_on
-from ..scheduler import ActionScheduler
-from ..player import player
-from ..config import susi_config
-from ..speech import TTS
+from .scheduler import ActionScheduler
+from .player import player
+from .config import susi_config
+from .speech import TTS
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +31,7 @@ except ImportError:
     logger.warning("This device doesn't have GPIO port")
     GPIO = None
 
-# needed for backward compatibility with import statements
-class Components():
-    """Dummy class necessary for backward compatibility with old code"""
-    pass
-
-class SusiStateMachine():
+class SusiLoop():
     """Actually not a state machine, but we keep the name for now"""
 
     def __init__(self, renderer=None):
@@ -87,21 +82,21 @@ class SusiStateMachine():
                 logger.error('Some error occurred in login. Check you login details in config.json.\n%s', e)
 
         if self.config['hotword_engine'] == 'Snowboy':
-            from ..hotword_engine.snowboy_detector import SnowboyDetector
+            from .hotword_engine.snowboy_detector import SnowboyDetector
             hotword_model = "susi.pmdl"
             if self.config['hotword_model']:
                 logger.debug("Using configured hotword model: " + self.config['hotword_model'])
                 hotword_model = self.config['hotword_model']
             self.hotword_detector = SnowboyDetector(model=hotword_model)
         else:
-            from ..hotword_engine.sphinx_detector import PocketSphinxDetector
+            from .hotword_engine.sphinx_detector import PocketSphinxDetector
             self.hotword_detector = PocketSphinxDetector()
 
         if self.config['WakeButton'] == 'enabled':
             logger.info("Susi has the wake button enabled")
             if self.config['Device'] == 'RaspberryPi':
                 logger.info("Susi runs on a RaspberryPi")
-                from ..hardware_components import RaspberryPiWakeButton
+                from .hardware_components import RaspberryPiWakeButton
                 self.wake_button = RaspberryPiWakeButton()
             else:
                 logger.warning("Susi is not running on a RaspberryPi")
@@ -154,12 +149,21 @@ class SusiStateMachine():
                 continue
 
 
-    def start(self):
+    def start(self, background = False):
         """ start processing of audio events """
         hotword_thread = Thread(target=self.hotword_listener, name="HotwordDetectorThread")
         hotword_thread.daemon = True
         hotword_thread.start()
 
+        if background:
+            queue_loop_thread = Thread(target=self.queue_loop, name="QueueLoopThread")
+            queue_loop_thread.daemon = True
+            queue_loop_thread.start()
+        else:
+            self.queue_loop()
+
+    
+    def queue_loop(self):
         while True:
             # block until events are available
             ev = self.event_queue.get(block = True)

@@ -5,7 +5,7 @@ import argparse
 
 import colorlog
 
-from . import SusiStateMachine
+from . import SusiLoop
 from .player import player
 
 
@@ -63,6 +63,7 @@ if __name__ == '__main__':
         logging.root.handlers = []
         logging.root.addHandler(handler)
 
+    susi_loop = SusiLoop()
     startup_sound()
-    susiStateMachine = SusiStateMachine()
-    susiStateMachine.start()
+    susi_loop.start()
+
