@@ -46,7 +46,7 @@ class SusiStateMachine():
             except RuntimeError as e:
                 logger.error(e)
 
-        thread1 = Thread(target=self.server_checker, name="Thread1")
+        thread1 = Thread(target=self.server_checker, name="ServerCheckerThread")
         thread1.daemon = True
         thread1.start()
 
