@@ -9,7 +9,7 @@ from . import SusiLoop
 from .player import player
 
 
-parser = argparse.ArgumentParser(prog='python3 -m main',
+parser = argparse.ArgumentParser(prog='python3 -m susi_linux',
                                  description='SUSI Linux main program')
 
 

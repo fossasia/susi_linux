@@ -1,4 +1,4 @@
-from main.ui import SusiAppWindow
+from susi_linux.ui import SusiAppWindow
 
 print("GENERATING WINDOW")
 window = SusiAppWindow()
