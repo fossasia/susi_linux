@@ -8,7 +8,7 @@ class Renderer(ABC):
         super().__init__()
         self.subject = Subject()
         self.susi_state_machine = SusiStateMachine(self)
-        self.susi_state_machine.start()
+        self.susi_state_machine.start(background = True)
 
     @abstractclassmethod
     def receive_message(self, message_type, payload=None):

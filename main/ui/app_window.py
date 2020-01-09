@@ -98,7 +98,7 @@ class SusiAppWindow(Renderer):
 
         def on_delete(self, *args):
             self.app_window.exit_window()
-            os.kill(os.getppid(), signal.SIGHUP)
+            os.kill(os.getpid(), signal.SIGHUP)
 
         def on_mic_button_clicked(self, button):
             Promise(

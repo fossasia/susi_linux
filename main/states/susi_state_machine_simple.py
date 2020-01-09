@@ -154,12 +154,21 @@ class SusiStateMachine():
                 continue
 
 
-    def start(self):
+    def start(self, background = False):
         """ start processing of audio events """
         hotword_thread = Thread(target=self.hotword_listener, name="HotwordDetectorThread")
         hotword_thread.daemon = True
         hotword_thread.start()
 
+        if background:
+            queue_loop_thread = Thread(target=self.queue_loop, name="QueueLoopThread")
+            queue_loop_thread.daemon = True
+            queue_loop_thread.start()
+        else:
+            self.queue_loop()
+
+    
+    def queue_loop(self):
         while True:
             # block until events are available
             ev = self.event_queue.get(block = True)
@@ -247,6 +256,7 @@ class SusiStateMachine():
 
     def set_idle(self):
         logger.debug("Switching to idle mode")
+        self.notify_renderer('idle')
         self.idle = True
 
     def __speak(self, text):
@@ -347,8 +357,8 @@ class SusiStateMachine():
 
             if GPIO:
                 GPIO.output(27, True)
-            if self.renderer is not None:
-                self.notify_renderer('speaking', payload={'susi_reply': reply})
+
+            self.notify_renderer('speaking', payload={'susi_reply': reply})
 
             if 'planned_actions' in reply.keys():
                 logger.debug("planning action: ")
