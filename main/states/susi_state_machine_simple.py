@@ -3,9 +3,11 @@ Processing logic of susi_linux
 """
 import time
 import os
+import re
 import logging
 import queue
 from threading import Thread, Timer, current_thread
+from datetime import datetime
 from urllib.parse import urljoin
 import speech_recognition as sr
 import requests
@@ -350,12 +352,18 @@ class SusiStateMachine():
                 logger.debug("planning action: ")
                 for plan in reply['planned_actions']:
                     logger.debug("plan = " + str(plan))
-                    # TODO TODO
-                    # plan_delay is wrong, it is 0, we need to use
+                    # plan answers look like this:
                     # plan = {'language': 'en', 'answer': 'ALARM', 'plan_delay': 0,
                     #         'plan_date': '2019-12-30T13:36:05.458Z'}
-                    # plan_date !!!!!
-                    self.action_schduler.add_event(int(plan['plan_delay']) / 1000, plan)
+                    # we use time.time as timefunc for scheduler, so we need to convert the
+                    # delay and absolute time to the same format, that is float of sec since epoch
+                    # Unfortunately, Python is tooooooo stupid to provide ISO standard confirm standard
+                    # library. datetime.fromisoformat sounds like perfectly made, only that it doesn't
+                    # parse the Z postfix, congratulations.
+                    # https://discuss.python.org/t/parse-z-timezone-suffix-in-datetime/2220
+                    # Replace it manually with +00:00
+                    plan_date_sec = datetime.fromisoformat(re.sub('Z$', '+00:00', plan['plan_date'])).timestamp()
+                    self.action_schduler.add_event(int(plan['plan_delay']) / 1000, plan_date_sec, plan)
 
             # first responses WITHOUT answer key!
 

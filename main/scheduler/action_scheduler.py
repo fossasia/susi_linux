@@ -17,8 +17,11 @@ class ActionScheduler(Thread):
     def on_detected(self, reply):
         self.subject.on_next(reply)
 
-    def add_event(self, time, reply):
-        self.events[self.counter + 1] = self.scheduler.enter(time, 0, self.on_detected, argument=(reply,))
+    def add_event(self, delay, time, reply):
+        if delay > 0:
+            self.events[self.counter + 1] = self.scheduler.enter(delay, 0, self.on_detected, argument=(reply,))
+        else:
+            self.events[self.counter + 1] = self.scheduler.enterabs(time, 0, self.on_detected, argument=(reply,))
         self.counter += 1
 
     def run(self):
