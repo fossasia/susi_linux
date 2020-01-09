@@ -32,7 +32,8 @@ except ImportError:
     GPIO = None
 
 class SusiLoop():
-    """Actually not a state machine, but we keep the name for now"""
+    """The main SUSI loop dealing with hotword detection, voice recognition,
+    server communication, action processing, etc"""
 
     def __init__(self, renderer=None):
         if GPIO:
