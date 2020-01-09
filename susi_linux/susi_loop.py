@@ -16,7 +16,7 @@ from speech_recognition import Recognizer, Microphone
 # from requests.exceptions import ConnectionError
 
 import susi_python as susi
-from .lights import lights
+from .hardware_components.lights import lights
 from .internet_test import internet_on
 from .action_scheduler import ActionScheduler
 from .player import player
@@ -96,7 +96,7 @@ class SusiLoop():
             logger.info("Susi has the wake button enabled")
             if self.config['Device'] == 'RaspberryPi':
                 logger.info("Susi runs on a RaspberryPi")
-                from .hardware_components import RaspberryPiWakeButton
+                from .hardware_components.rpi_wake_button import RaspberryPiWakeButton
                 self.wake_button = RaspberryPiWakeButton()
             else:
                 logger.warning("Susi is not running on a RaspberryPi")
