@@ -18,7 +18,7 @@ from speech_recognition import Recognizer, Microphone
 import susi_python as susi
 from .lights import lights
 from .internet_test import internet_on
-from .scheduler import ActionScheduler
+from .action_scheduler import ActionScheduler
 from .player import player
 from .config import susi_config
 from .speech import TTS
