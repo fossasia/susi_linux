@@ -355,8 +355,8 @@ class SusiStateMachine():
                 for plan in reply['planned_actions']:
                     logger.debug("plan = " + str(plan))
                     # plan answers look like this:
-                    # plan = {'language': 'en', 'answer': 'ALARM', 'plan_delay': 0,
-                    #         'plan_date': '2019-12-30T13:36:05.458Z'}
+                    # plan = {'planned_actions': [{'language': 'en', 'answer': 'ALARM', 'plan_delay': 300001,
+                    #   'plan_date': '2020-01-09T02:05:10.377Z'}], 'language': 'en', 'answer': 'alarm set for in 5 minutes'}
                     # we use time.time as timefunc for scheduler, so we need to convert the
                     # delay and absolute time to the same format, that is float of sec since epoch
                     # Unfortunately, Python is tooooooo stupid to provide ISO standard confirm standard
@@ -364,6 +364,8 @@ class SusiStateMachine():
                     # parse the Z postfix, congratulations.
                     # https://discuss.python.org/t/parse-z-timezone-suffix-in-datetime/2220
                     # Replace it manually with +00:00
+                    # We send both the delay and absolute time in case one of the two is missing
+                    # the scheduler prefers the delay value
                     plan_date_sec = datetime.fromisoformat(re.sub('Z$', '+00:00', plan['plan_date'])).timestamp()
                     self.action_schduler.add_event(int(plan['plan_delay']) / 1000, plan_date_sec, plan)
 
