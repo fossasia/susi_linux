@@ -138,12 +138,12 @@ In development, you may want to see more logs, to help debugging. You can switch
 - Use Terminal, _cd_ to `susi_linux` directory and run
 
 ```
-python3 -m main -v
+python3 -m susi_linux -v
 ```
 or repeat `v` to increase verbosity:
 
 ```
-python3 -m main -vv
+python3 -m susi_linux -vv
 ```
 
 2. Change command run by `systemd`
@@ -151,7 +151,7 @@ python3 -m main -vv
 - Edit the _/lib/systemd/system/ss-susi-linux.service_ and change the command in `ExecStart` parameter:
 
 ```ini
-ExecStart=/usr/bin/python3 -m main -v --short-log
+ExecStart=/usr/bin/python3 -m susi_linux -v --short-log
 ```
 - Reload systemd daemon: `sudo systemctl daemon-reload`
 - Restart the servive: `sudo systemctl restart ss-susi-linux`

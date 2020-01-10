@@ -1,14 +1,14 @@
 from abc import ABC, abstractclassmethod
 from rx.subject import Subject
-from .. import SusiStateMachine
+from .. import SusiLoop
 
 
 class Renderer(ABC):
     def __init__(self):
         super().__init__()
         self.subject = Subject()
-        self.susi_state_machine = SusiStateMachine(self)
-        self.susi_state_machine.start(background = True)
+        self.susi_loop = SusiLoop(self)
+        self.susi_loop.start(background = True)
 
     @abstractclassmethod
     def receive_message(self, message_type, payload=None):

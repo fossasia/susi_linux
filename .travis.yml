@@ -25,5 +25,5 @@ jobs:
 #        pip3 install -U pep8
 #    - stage: test # runs after the first stop has finished
 #      script: |
-#        pep8 main --ignore E501 --exclude=main/hotword_engine/snowboy_detector.py
+#        pep8 susi_linux --ignore E501 --exclude=susi_linux/hotword_engine/snowboy_detector.py
 #        python3 -m pytest tests/

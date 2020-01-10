@@ -16,12 +16,12 @@ from speech_recognition import Recognizer, Microphone
 # from requests.exceptions import ConnectionError
 
 import susi_python as susi
-from .lights import lights
+from .hardware_components.lights import lights
 from .internet_test import internet_on
-from ..scheduler import ActionScheduler
-from ..player import player
-from ..config import susi_config
-from ..speech import TTS
+from .action_scheduler import ActionScheduler
+from .player import player
+from .config import susi_config
+from .speech import TTS
 
 logger = logging.getLogger(__name__)
 
@@ -31,13 +31,9 @@ except ImportError:
     logger.warning("This device doesn't have GPIO port")
     GPIO = None
 
-# needed for backward compatibility with import statements
-class Components():
-    """Dummy class necessary for backward compatibility with old code"""
-    pass
-
-class SusiStateMachine():
-    """Actually not a state machine, but we keep the name for now"""
+class SusiLoop():
+    """The main SUSI loop dealing with hotword detection, voice recognition,
+    server communication, action processing, etc"""
 
     def __init__(self, renderer=None):
         if GPIO:
@@ -87,21 +83,21 @@ class SusiStateMachine():
                 logger.error('Some error occurred in login. Check you login details in config.json.\n%s', e)
 
         if self.config['hotword_engine'] == 'Snowboy':
-            from ..hotword_engine.snowboy_detector import SnowboyDetector
+            from .hotword_engine.snowboy_detector import SnowboyDetector
             hotword_model = "susi.pmdl"
             if self.config['hotword_model']:
                 logger.debug("Using configured hotword model: " + self.config['hotword_model'])
                 hotword_model = self.config['hotword_model']
             self.hotword_detector = SnowboyDetector(model=hotword_model)
         else:
-            from ..hotword_engine.sphinx_detector import PocketSphinxDetector
+            from .hotword_engine.sphinx_detector import PocketSphinxDetector
             self.hotword_detector = PocketSphinxDetector()
 
         if self.config['WakeButton'] == 'enabled':
             logger.info("Susi has the wake button enabled")
             if self.config['Device'] == 'RaspberryPi':
                 logger.info("Susi runs on a RaspberryPi")
-                from ..hardware_components import RaspberryPiWakeButton
+                from .hardware_components.rpi_wake_button import RaspberryPiWakeButton
                 self.wake_button = RaspberryPiWakeButton()
             else:
                 logger.warning("Susi is not running on a RaspberryPi")
