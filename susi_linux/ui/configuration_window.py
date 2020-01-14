@@ -1,14 +1,14 @@
 import os
 import logging
-import json_config
 import gi
 gi.require_version('Gtk', '3.0')  # nopep8
 from pathlib import Path
 from gi.repository import Gtk
 from .login_window import LoginWindow
+from susi_config import SusiConfig
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
-config = json_config.connect('config.json')
+susicfg = SusiConfig()
 
 
 class WatsonCredentialsDialog(Gtk.Dialog):
@@ -101,7 +101,7 @@ class ConfigurationWindow:
         Gtk.main_quit()
 
     def init_tts_combobox(self):
-        default_tts = config['default_tts']
+        default_tts = susicfg.config['default_tts']
         if default_tts == 'google':
             self.tts_combobox.set_active(0)
         elif default_tts == 'flite':
@@ -110,10 +110,10 @@ class ConfigurationWindow:
             self.tts_combobox.set_active(2)
         else:
             self.tts_combobox.set_active(0)
-            config['default_tts'] = 'google'
+            susicfg.config['default_tts'] = 'google'
 
     def init_stt_combobox(self):
-        default_stt = config['default_stt']
+        default_stt = susicfg.config['default_stt']
         if default_stt == 'google':
             self.stt_combobox.set_active(0)
         elif default_stt == 'watson':
@@ -124,10 +124,10 @@ class ConfigurationWindow:
             self.stt_combobox.set_active(3)
         else:
             self.tts_combobox.set_active(0)
-            config['default_tts'] = 'google'
+            susicfg.config['default_tts'] = 'google'
 
     def init_auth_switch(self):
-        usage_mode = config['usage_mode']
+        usage_mode = susicfg.config['usage_mode']
         if usage_mode == 'authenticated':
             self.auth_switch.set_active(True)
         else:
@@ -138,8 +138,8 @@ class ConfigurationWindow:
             import snowboy
         except ImportError:
             self.snowboy_switch.set_sensitive(False)
-            config['hotword_engine'] = 'PocketSphinx'
-        if config['hotword_engine'] == 'Snowboy':
+            susicfg.config['hotword_engine'] = 'PocketSphinx'
+        if susicfg.config['hotword_engine'] == 'Snowboy':
             self.snowboy_switch.set_active(True)
         else:
             self.snowboy_switch.set_active(False)
@@ -147,7 +147,7 @@ class ConfigurationWindow:
     def init_wake_button_switch(self):
         try:
             import RPi.GPIO
-            if config['WakeButton'] == 'enabled':
+            if susicfg.config['WakeButton'] == 'enabled':
                 self.wake_button_switch.set_active(True)
             else:
                 self.wake_button_switch.set_active(False)
@@ -167,7 +167,7 @@ class ConfigurationWindow:
             selection = combo.get_active()
 
             if selection == 0:
-                config['default_stt'] = 'google'
+                susicfg.config['default_stt'] = 'google'
 
             elif selection == 1:
                 credential_dialog = WatsonCredentialsDialog(
@@ -177,9 +177,9 @@ class ConfigurationWindow:
                 if response == Gtk.ResponseType.OK:
                     username = credential_dialog.username_field.get_text()
                     password = credential_dialog.password_field.get_text()
-                    config['default_stt'] = 'watson'
-                    config['watson_stt_config']['username'] = username
-                    config['watson_stt_config']['password'] = password
+                    susicfg.config['default_stt'] = 'watson'
+                    susicfg.config['watson_stt_config']['username'] = username
+                    susicfg.config['watson_stt_config']['password'] = password
                 else:
                     self.config_window.init_stt_combobox()
 
@@ -192,8 +192,8 @@ class ConfigurationWindow:
 
                 if response == Gtk.ResponseType.OK:
                     api_key = credential_dialog.api_key_field.get_text()
-                    config['default_stt'] = 'bing'
-                    config['bing_speech_api_key']['username'] = api_key
+                    susicfg.config['default_stt'] = 'bing'
+                    susicfg.config['bing_speech_api_key']['username'] = api_key
                 else:
                     self.config_window.init_stt_combobox()
 
@@ -203,10 +203,10 @@ class ConfigurationWindow:
             selection = combo.get_active()
 
             if selection == 0:
-                config['default_tts'] = 'google'
+                susicfg.config['default_tts'] = 'google'
 
             elif selection == 1:
-                config['default_tts'] = 'flite'
+                susicfg.config['default_tts'] = 'flite'
 
             elif selection == 2:
                 credential_dialog = WatsonCredentialsDialog(
@@ -216,10 +216,10 @@ class ConfigurationWindow:
                 if response == Gtk.ResponseType.OK:
                     username = credential_dialog.username_field.get_text()
                     password = credential_dialog.password_field.get_text()
-                    config['default_tts'] = 'watson'
-                    config['watson_tts_config']['username'] = username
-                    config['watson_tts_config']['password'] = password
-                    config['watson_tts_config']['voice'] = 'en-US_AllisonVoice'
+                    susicfg.config['default_tts'] = 'watson'
+                    susicfg.config['watson_tts_config']['username'] = username
+                    susicfg.config['watson_tts_config']['password'] = password
+                    susicfg.config['watson_tts_config']['voice'] = 'en-US_AllisonVoice'
                 else:
                     self.config_window.init_tts_combobox()
                 credential_dialog.destroy()
@@ -228,19 +228,19 @@ class ConfigurationWindow:
             if switch.get_active():
                 login_window = LoginWindow()
                 login_window.show_window()
-                if config['usage_mode'] == 'authenticated':
+                if susicfg.config['usage_mode'] == 'authenticated':
                     switch.set_active(True)
                 else:
                     switch.set_active(False)
 
         def on_snowboy_switch_active_notify(self, switch, gparam):
             if switch.get_active():
-                config['hotword_engine'] = 'Snowboy'
+                susicfg.config['hotword_engine'] = 'Snowboy'
             else:
-                config['hotword_engine'] = 'PocketSphinx'
+                susicfg.config['hotword_engine'] = 'PocketSphinx'
 
         def on_wake_button_switch_active_notify(self, switch, gparam):
             if switch.get_active():
-                config['wake_button'] = 'enabled'
+                susicfg.config['wake_button'] = 'enabled'
             else:
-                config['wake_button'] = 'disabled'
+                susicfg.config['wake_button'] = 'disabled'

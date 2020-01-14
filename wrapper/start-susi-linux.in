@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. @INSTALL_DIR@/common-script-start
-
+PYTHONPATH=@PYTHONMODS@:$PYTHONPATH
+export PYTHONPATH
 exec python3 -m susi_linux -v --short-log
 

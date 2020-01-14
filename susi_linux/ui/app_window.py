@@ -2,7 +2,6 @@ import os
 import signal
 import logging
 import gi
-import json_config
 from . import ConfigurationWindow
 gi.require_version('Gtk', '3.0')  # nopep8
 from async_promises import Promise
@@ -11,7 +10,6 @@ from .renderer import Renderer
 from gi.repository import Gtk
 
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
-config = json_config.connect('config.json')
 logger = logging.getLogger(__name__)
 
 

@@ -20,7 +20,7 @@ from .hardware_components.lights import lights
 from .internet_test import internet_on
 from .action_scheduler import ActionScheduler
 from .player import player
-from .config import susi_config
+from susi_config import SusiConfig
 from .speech import TTS
 
 logger = logging.getLogger(__name__)
@@ -73,29 +73,29 @@ class SusiLoop():
         except ConnectionError as e:
             logger.error(e)
 
-        self.config = json_config.connect('config.json')
+        self.susi_config = SusiConfig()
 
-        if self.config['usage_mode'] == 'authenticated':
+        if self.susi_config.config['usage_mode'] == 'authenticated':
             try:
-                susi.sign_in(email=self.config['login_credentials']['email'],
-                             password=self.config['login_credentials']['password'])
+                susi.sign_in(email=self.susi_config.config['login_credentials']['email'],
+                             password=self.susi_config.config['login_credentials']['password'])
             except Exception as e:
-                logger.error('Some error occurred in login. Check you login details in config.json.\n%s', e)
+                logger.error('Some error occurred in login. Check you login details with susi-config.\n%s', e)
 
-        if self.config['hotword_engine'] == 'Snowboy':
+        if self.susi_config.config['hotword_engine'] == 'Snowboy':
             from .hotword_engine.snowboy_detector import SnowboyDetector
             hotword_model = "susi.pmdl"
-            if self.config['hotword_model']:
-                logger.debug("Using configured hotword model: " + self.config['hotword_model'])
-                hotword_model = self.config['hotword_model']
+            if self.susi_config.config['hotword_model']:
+                logger.debug("Using configured hotword model: " + self.susi_config.config['hotword_model'])
+                hotword_model = self.susi_config.config['hotword_model']
             self.hotword_detector = SnowboyDetector(model=hotword_model)
         else:
             from .hotword_engine.sphinx_detector import PocketSphinxDetector
             self.hotword_detector = PocketSphinxDetector()
 
-        if self.config['WakeButton'] == 'enabled':
+        if self.susi_config.config['WakeButton'] == 'enabled':
             logger.info("Susi has the wake button enabled")
-            if self.config['Device'] == 'RaspberryPi':
+            if self.susi_config.config['Device'] == 'RaspberryPi':
                 logger.info("Susi runs on a RaspberryPi")
                 from .hardware_components.rpi_wake_button import RaspberryPiWakeButton
                 self.wake_button = RaspberryPiWakeButton()
@@ -210,8 +210,8 @@ class SusiLoop():
         self.idle = False
 
         # beep
-        player.beep(os.path.abspath(os.path.join(self.config['data_base_dir'],
-                                                 self.config['detection_bell_sound'])))
+        player.beep(os.path.abspath(os.path.join(self.susi_config.config['data_base_dir'],
+                                                 self.susi_config.config['detection_bell_sound'])))
         if GPIO:
             GPIO.output(22, True)
         audio = None
@@ -257,51 +257,51 @@ class SusiLoop():
 
     def __speak(self, text):
         """Method to set the default TTS for the Speaker"""
-        if self.config['default_tts'] == 'google':
+        if self.susi_config.config['default_tts'] == 'google':
             TTS.speak_google_tts(text)
-        if self.config['default_tts'] == 'flite':
+        if self.susi_config.config['default_tts'] == 'flite':
             logger.info("Using flite for TTS")  # indication for using an offline music player
             TTS.speak_flite_tts(text)
-        elif self.config['default_tts'] == 'watson':
+        elif self.susi_config.config['default_tts'] == 'watson':
             TTS.speak_watson_tts(text)
 
     def recognize_audio(self, recognizer, audio):
         """Use the configured STT method to convert spoken audio to text"""
         logger.info("Trying to recognize audio with %s in language: %s",
-                    self.config['default_stt'], susi_config["language"])
-        if self.config['default_stt'] == 'google':
-            return recognizer.recognize_google(audio, language=susi_config["language"])
+                    self.susi_config.config['default_stt'], self.susi_config.config["language"])
+        if self.susi_config.config['default_stt'] == 'google':
+            return recognizer.recognize_google(audio, language=self.susi_config.config["language"])
 
-        elif self.config['default_stt'] == 'watson':
-            username = self.config['watson_stt_config']['username']
-            password = self.config['watson_stt_config']['password']
+        elif self.susi_config.config['default_stt'] == 'watson':
+            username = self.susi_config.config['watson_stt_config']['username']
+            password = self.susi_config.config['watson_stt_config']['password']
             return recognizer.recognize_ibm(
                 username=username,
                 password=password,
-                language=susi_config["language"],
+                language=self.susi_config.config["language"],
                 audio_data=audio)
 
-        elif self.config['default_stt'] == 'pocket_sphinx':
-            lang = susi_config["language"].replace("_", "-")
+        elif self.susi_config.config['default_stt'] == 'pocket_sphinx':
+            lang = self.susi_config.config["language"].replace("_", "-")
             if internet_on():
-                self.config['default_stt'] = 'google'
+                self.susi_config.config['default_stt'] = 'google'
                 return recognizer.recognize_google(audio, language=lang)
             else:
                 return recognizer.recognize_sphinx(audio, language=lang)
 
-        elif self.config['default_stt'] == 'bing':
-            api_key = self.config['bing_speech_api_key']
+        elif self.susi_config.config['default_stt'] == 'bing':
+            api_key = self.susi_config.config['bing_speech_api_key']
             return recognizer.recognize_bing(audio_data=audio, key=api_key,
-                                             language=susi_config["language"])
+                                             language=self.susi_config.config["language"])
 
-        elif self.config['default_stt'] == 'deepspeech-local':
-            lang = susi_config["language"].replace("_", "-")
+        elif self.susi_config.config['default_stt'] == 'deepspeech-local':
+            lang = self.susi_config.config["language"].replace("_", "-")
             return recognizer.recognize_deepspeech(audio, language=lang)
 
         else:
-            logger.error("Unknown STT setting: " + self.config['default_stt'])
+            logger.error("Unknown STT setting: " + self.susi_config.config['default_stt'])
             logger.error("Using Google!")
-            return recognizer.recognize_google(audio, language=susi_config["language"])
+            return recognizer.recognize_google(audio, language=self.susi_config.config["language"])
 
 
 
@@ -311,13 +311,13 @@ class SusiLoop():
             logger.debug("ErrorState Recognition Error")
             self.notify_renderer('error', 'recognition')
             lights.speak()
-            player.say(os.path.abspath(os.path.join(self.config['data_base_dir'],
-                                                    self.config['recognition_error_sound'])))
+            player.say(os.path.abspath(os.path.join(self.susi_config.config['data_base_dir'],
+                                                    self.susi_config.config['recognition_error_sound'])))
             lights.off()
         elif payload == 'ConnectionError':
             self.notify_renderer('error', 'connection')
-            susi_config['default_tts'] = 'flite'
-            susi_config['default_stt'] = 'pocket_sphinx'
+            self.susi_config.config['default_tts'] = 'flite'
+            self.susi_config.config['default_stt'] = 'pocket_sphinx'
             print("Internet Connection not available")
             lights.speak()
             lights.off()
@@ -326,16 +326,16 @@ class SusiLoop():
         elif payload == 'ListenTimeout':
             self.notify_renderer('error', 'timeout')
             lights.speak()
-            player.say(os.path.abspath(os.path.join(self.config['data_base_dir'],
-                                                    self.config['timeout_error_sound'])))
+            player.say(os.path.abspath(os.path.join(self.susi_config.config['data_base_dir'],
+                                                    self.susi_config.config['timeout_error_sound'])))
             lights.off()
 
         else:
             print("Error: {} \n".format(payload))
             self.notify_renderer('error')
             lights.speak()
-            player.say(os.path.abspath(os.path.join(self.config['data_base_dir'],
-                                                    self.config['problem_sound'])))
+            player.say(os.path.abspath(os.path.join(self.susi_config.config['data_base_dir'],
+                                                    self.susi_config.config['problem_sound'])))
             lights.off()
 
 
@@ -381,8 +381,8 @@ class SusiLoop():
             if 'volume' in reply.keys():
                 no_answer_needed = True
                 player.volume(reply['volume'])
-                player.say(os.path.abspath(os.path.join(self.config['data_base_dir'],
-                                                        self.config['detection_bell_sound'])))
+                player.say(os.path.abspath(os.path.join(self.susi_config.config['data_base_dir'],
+                                                        self.susi_config.config['detection_bell_sound'])))
 
             if 'media_action' in reply.keys():
                 action = reply['media_action']
@@ -429,10 +429,10 @@ class SusiLoop():
 
             if 'language' in reply.keys():
                 answer_lang = reply['language']
-                if answer_lang != susi_config["language"]:
+                if answer_lang != self.susi_config.config["language"]:
                     logger.info("Switching language to: %s", answer_lang)
                     # switch language
-                    susi_config["language"] = answer_lang
+                    self.susi_config.config["language"] = answer_lang
 
             # answer to "play ..."
             # {'identifier': 'ytd-04854XqcfCY', 'answer': 'Playing Queen -  We Are The Champions (Official Video)'}
