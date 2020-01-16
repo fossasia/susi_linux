@@ -22,9 +22,7 @@ The whole SUSI.AI ecosystem consists of the following parts:
  |_ susi_iOS           (iOS application which is a client for the susi_server at https://api.susi.ai)
  
  * Content Management System for the SUSI.AI Skills - Home of the SUSI.AI community
- |_ accounts.susi.ai   (React Application, User Account Management for the CMS)
- |_ chat.susi.ai       (React Application, a client for the susi_server at https://api.susi.ai)
- |_ susi_skill_cms     (React Application, the content management system for susi skills)
+ |_ susi.ai   (React Application, User Account Management for the CMS, a client for the susi_server at https://api.susi.ai the content management system for susi skills)
  
  * Smart Speaker - Software to turn a Raspberry Pi into a Personal Assistant
  | Several sub-projects come together in this device
@@ -33,6 +31,7 @@ The whole SUSI.AI ecosystem consists of the following parts:
  |_ susi_server        (The same server as on api.susi.ai, hosted locally for maximum privacy. No cloud needed)
  |_ susi_skill_data    (The skills as provided by susi_server on api.susi.ai; pulled from the git repository automatically)
  |_ susi_linux         (a state machine in python which uses susi_python, Speech-to-text and Text-to-speech functions)
+ |_ susi.ai            (React Application, the local web front-end with User Account Management, a client for the local deployment of the susi_server, the content management system for susi skills)
 ```
 
 This project provides the following functionality:
