@@ -1,0 +1,25 @@
+#!/bin/sh
+# Start the SUSI.AI main program
+
+# this wrapper is installed as follows:
+# user mode
+#   .../SUSI.AI/bin/
+#   .../SUSI.AI/pythonmods/
+# system mode
+#   prefix/bin/
+#   prefix/lib/SUSI.AI/pythonmods
+
+DIR="$(dirname "$(readlink -f "$0")")"
+PMA="$(readlink -m "$DIR/../pythonmods")"
+PMB="$(readlink -m "$DIR/../lib/SUSI.AI/pythonmods")"
+if [ -d "$PMA" ] && [ -r "$PMA/susi_linux" ] ; then
+    PYTHONPATH="$PMA":$PYTHONPATH
+    export PYTHONPATH
+elif [ -d "$PMB" ] && [ -r "$PMB/susi_linux" ] ; then
+    PYTHONPATH="$PMB":$PYTHONPATH
+    export PYTHONPATH
+else
+    echo "Cannot find SUSI.AI pythonmods, trying without it" >&2
+fi
+exec python3 -m susi_linux -v --short-log
+

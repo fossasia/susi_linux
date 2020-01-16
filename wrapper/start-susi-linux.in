@@ -1,6 +1,0 @@
-#!/bin/sh
-
-PYTHONPATH=@PYTHONMODS@:$PYTHONPATH
-export PYTHONPATH
-exec python3 -m susi_linux -v --short-log
-

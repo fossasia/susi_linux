@@ -1,6 +1,0 @@
-#!/bin/sh
-
-PYTHONPATH=@PYTHONMODS@:$PYTHONPATH
-export PYTHONPATH
-exec python3 @INSTALL_DIR@/configure.py "$@"
-
