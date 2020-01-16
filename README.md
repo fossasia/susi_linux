@@ -1,4 +1,4 @@
-# SUSI AI on Linux
+# SUSI.AI on Linux
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/167b701c744841c5a05269d06b863732)](https://app.codacy.com/app/fossasia/susi_linux?utm_source=github.com&utm_medium=referral&utm_content=fossasia/susi_linux&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/fossasia/susi_linux.svg?branch=master)](https://travis-ci.org/fossasia/susi_linux)
@@ -9,8 +9,11 @@ SUSI.AI Linux an implementation of SUSI.AI capable to run on Linux computers and
 
 ## Project Overview 
 
-The whole SUSI.AI ecosystem consists of the following parts:
+The SUSI.AI ecosystem consists of the following parts:
 ```
+ * Web Client and Content Management System for the SUSI.AI Skills - Home of the SUSI.AI community
+ |_ susi.ai   (React Application, User Account Management for the CMS, a client for the susi_server at https://api.susi.ai the content management system for susi skills)
+ 
  * server back-end
  |_ susi_server        (the brain of the infrastructure, a server which computes answers from queries)
  |_ susi_skill_data    (the knowledge of the brain, a large collection of skills provided by the SUSI.AI community)
@@ -20,9 +23,6 @@ The whole SUSI.AI ecosystem consists of the following parts:
  
  * iOS front-end
  |_ susi_iOS           (iOS application which is a client for the susi_server at https://api.susi.ai)
- 
- * Content Management System for the SUSI.AI Skills - Home of the SUSI.AI community
- |_ susi.ai   (React Application, User Account Management for the CMS, a client for the susi_server at https://api.susi.ai the content management system for susi skills)
  
  * Smart Speaker - Software to turn a Raspberry Pi into a Personal Assistant
  | Several sub-projects come together in this device
