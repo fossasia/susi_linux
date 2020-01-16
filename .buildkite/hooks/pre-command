@@ -1,8 +1,0 @@
-#!/bin/bash
-set -eu
-
-pull_request="$BUILDKITE_PULL_REQUEST"
-if [[ "$BUILDKITE_PULL_REQUEST" == "false" ]]; then
-	pull_request=$(echo "$BUILDKITE_MESSAGE" | ./.buildkite/extract_pull_request_id.awk)
-fi
-export SUSI_PULL_REQUEST=$pull_request
