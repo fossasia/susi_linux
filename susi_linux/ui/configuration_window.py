@@ -138,8 +138,8 @@ class ConfigurationWindow:
             import snowboy
         except ImportError:
             self.snowboy_switch.set_sensitive(False)
-            susicfg.set('hotword.program', 'PocketSphinx')
-        if susicfg.get('hotword.program') == 'Snowboy':
+            susicfg.set('hotword.engine', 'PocketSphinx')
+        if susicfg.get('hotword.engine') == 'Snowboy':
             self.snowboy_switch.set_active(True)
         else:
             self.snowboy_switch.set_active(False)
@@ -235,9 +235,9 @@ class ConfigurationWindow:
 
         def on_snowboy_switch_active_notify(self, switch, gparam):
             if switch.get_active():
-                susicfg.set('hotword.program', 'Snowboy')
+                susicfg.set('hotword.engine', 'Snowboy')
             else:
-                susicfg.set('hotword.program', 'PocketSphinx')
+                susicfg.set('hotword.engine', 'PocketSphinx')
 
         def on_wake_button_switch_active_notify(self, switch, gparam):
             if switch.get_active():

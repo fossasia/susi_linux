@@ -95,7 +95,7 @@ class SusiLoop():
             except Exception as e:
                 logger.error('Some error occurred in login. Check you login details with susi-config.\n%s', e)
 
-        if self.susi_config.get('hotword.program') == 'Snowboy':
+        if self.susi_config.get('hotword.engine') == 'Snowboy':
             from .hotword_engine.snowboy_detector import SnowboyDetector
             hotword_model = "susi.pmdl"
             if self.susi_config.get('hotword.model'):
