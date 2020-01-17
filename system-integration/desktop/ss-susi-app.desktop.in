@@ -2,7 +2,7 @@
 Name=SUSI.AI Personal Assistant - Application Window
 GenericName=SUSI Personal Assistant Application Window
 Comment=Privacy aware personal assistant
-Exec=@BINDIR@/susi-linux-app
+Exec=@SUSIDIR@/bin/susi-linux-app
 StartupNotify=false
 Terminal=false
 Type=Application
