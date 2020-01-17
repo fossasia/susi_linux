@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 susicfg = SusiConfig()
 
 text_to_speech = TextToSpeechV1(
-    username=susicfg.config['watson_tts_config']['username'],
-    password=susicfg.config['watson_tts_config']['password'])
+    username=susicfg.get('watson.tts.user'),
+    password=susicfg.get('watson.tts.pass'))
 
 
 def speak_flite_tts(text):
@@ -32,7 +32,7 @@ def speak_flite_tts(text):
             f.write(text)
         # Call flite tts to reply the response by Susi
         flite_speech_file = os.path.join(
-            susicfg.config['data_base_dir'], susicfg.config['flite_speech_file_path'])
+            susicfg.get('path.base'), susicfg.get('path.flite_speech'))
         logger.debug(
             'flite -voice file://%s -f %s', flite_speech_file, filename)
         fdout, wav_output = tempfile.mkstemp(suffix='.wav', dir=tmpdirname)
@@ -47,25 +47,26 @@ def speak_watson_tts(text):
     :param text: Text which is needed to be spoken
     :return: None
     """
-    if "voice" in susicfg.config['watson_tts_config']:
-        voice = susicfg.config['watson_tts_config']['voice']
-    elif susicfg.config["language"][0:2] == "en":
-        voice = "en-US_AllisonVoice"
-    elif susicfg.config["language"][0:2] == "de":
-        voice = "de-DE_BirgitVoice"
-    elif susicfg.config["language"][0:2] == "es":
-        voice = "es-ES_LauraVoice"
-    elif susicfg.config["language"][0:2] == "fr":
-        voice = "fr-FR_ReneeVoice"
-    elif susicfg.config["language"][0:2] == "it":
-        voice = "it-IT_FrancescaVoice"
-    elif susicfg.config["language"][0:2] == "ja":
-        voice = "ja-JP_EmiVoice"
-    elif susicfg.config["language"][0:2] == "pt":
-        voice = "pt-BR_IsabelaVoice"
-    else:
-        # switch to English as default
-        voice = "en-US_AllisonVoice"
+    voice = susicfg.get('watson.tts.voice')
+    if (voice == ''):
+        lang = susicfg.get("language")[0:2]
+        if lang == "en":
+            voice = "en-US_AllisonVoice"
+        elif lang == "de":
+            voice = "de-DE_BirgitVoice"
+        elif lang == "es":
+            voice = "es-ES_LauraVoice"
+        elif lang == "fr":
+            voice = "fr-FR_ReneeVoice"
+        elif lang == "it":
+            voice = "it-IT_FrancescaVoice"
+        elif lang == "ja":
+            voice = "ja-JP_EmiVoice"
+        elif lang == "pt":
+            voice = "pt-BR_IsabelaVoice"
+        else:
+            # switch to English as default
+            voice = "en-US_AllisonVoice"
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         fd, wav_output = tempfile.mkstemp(suffix='.wav', dir=tmpdirname)
@@ -84,7 +85,7 @@ def speak_google_tts(text):
     """
     with tempfile.TemporaryDirectory() as tmpdirname:
         fd, mpiii = tempfile.mkstemp(suffix='.mp3', dir=tmpdirname)
-        Speech(text=text, lang=susicfg.config["language"]).save(mpiii)
+        Speech(text=text, lang=susicfg.get("language")).save(mpiii)
         player.say(mpiii)
 
     # sox_effects = ("tempo", "1.2", "pitch", "2", "speed", "1")
