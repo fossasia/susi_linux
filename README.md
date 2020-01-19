@@ -54,46 +54,58 @@ the `config.json` file.
 ## Setting up and configuring Susi on Linux / RaspberryPi
 
 Configuration is done via the file [config.json](config.json) which normally
-resides in `$HOME/SUSI.AI/config.json`.
+resides in `$HOME/.config/SUSI.AI/config.json`.
 
-If correctly installed, `susi-linux-configure` provides a GUI interface to the configuration
-of `susi_linux`, while `susi-linux-config-generator` provides a CLI interface:
+The script `$HOME/SUSI.AI/bin/susi-config` is best used to query, set, and
+change configuration of `susi_linux`. There is also a GUI interface to the
+configuration in `$HOME/SUSI.AI/bin/susi-linux-configure`.
+
+The possible keys and values are given by running `$HOME/SUSI.AI/bin/susi-config keys`
+
+Some important keys and possible values:
+
 ```
-susi-linux-config-generator <stt> <tts> <hotword_detection> <wake_button>
-```
-where
 - `stt` is the speech to text service, one of the following choices:
     - `google` - use Google STT service
-    - `ibm` - IBM/Watson STT
-    - `sphinx` - PocketSphinx STT system, working offline
+    - `watson` - IBM/Watson STT
+    - `bing` - MS Bing STT
+    - `pocketsphinx` - PocketSphinx STT system, working offline
+    - `deepspeech-local` - DeepSpeech STT system, offline, WORK IN PROGRESS
 - `tts` is the text to speech service, one of the following choices:
     - `google` - use Google TTS
-    - `ibm`  - IBM/Watson TTS (login credential necessary)
+    - `watson` - IBM/Watson TTS (login credential necessary)
     - `flite` - flite TTS service working offline
-- `hotword_detection` is the choice if you want to use snowboy detector as the hotword detection or not
-    - `y` to use snowboy
-    - `n` to use pocket sphinx
-- `wake_button` is the choice if you want to use an external wake button or not
-    - `y` to use an external wake button
-    - `n` to disable the external wake button
+- `hotword.engine` is the choice if you want to use snowboy detector as the hotword detection or not
+    - `Snowboy` to use snowboy
+    - `PocketSphinx` to use Pocket Sphinx
+- `wakebutton` is the choice if you want to use an external wake button or not
+    - `enabled` to use an external wake button
+    - `disabled` to disable the external wake button
+    - `not available` for systems without dedicated wake button
 
 Other interfaces for configuration are available for Android and iOS.
 
-Manual configuration is possible, the allowed keys in [`config.json`](config.json) are
-- `Device`: the name of the current device
-- `WakeButton`: whether a wake button is available or not
-- `default_stt`: see above for possible settings
-- `default_tts`: see above for possible settings
-- `data_base_dir`: directory where support files are installed
-- `detection_bell_sound`: sound file that is played when detection starts, relative to `data_base_dir`
-- `problem_sound`: sound file that is played on general errors, relative to `data_base_dir`
-- `recognition_error_sound`: sound file that is played on detection errors, relative to `data_base_dir`
-- `flite_speech_file_path`: flitevox speech file, relative to `data_base_dir`
-- `hotword_engine`: see above for possible settings
-- `usage_mode`: access mode to `accounts.susi.ai`, either `anonymous` or `authenticated`
-- `room_name`: free form description of the room
-- `watson_tts_config`: a JSON array with `username` and `password` as keys, providing the credentials for IBM/Watson
-
+Manual configuration is possible, the allowed keys in [`config.json`](config.json) are currently
+- `device`: the name of the current device
+- `wakebutton`: whether a wake button is available or not
+- `stt`: see above for possible settings
+- `tts`: see above for possible settings
+- `language': language for STT and TTS processing
+- `path.base`: directory where support files are installed
+- `path.sound.detection`: sound file that is played when detection starts, relative to `data_base_dir`
+- `path.sound.problem`: sound file that is played on general errors, relative to `data_base_dir`
+- `path.sound.error.recognition`: sound file that is played on detection errors, relative to `data_base_dir`
+- `path.sound.error.timeout`: sound file that is played when timing out waiting for spoken commands
+- `path.flite_speech`: flitevox speech file, relative to `data_base_dir`
+- `hotword.engine`: see above for possible settings
+- `hotword.model`: (if hotword.engine = Snowboy) selects the model file for the hotword
+- `susi.mode`: access mode to `accounts.susi.ai`, either `anonymous` or `authenticated`
+- `susi.user`: (if susi.mode = authenticated) the user name (email) to be used
+- `susi.pass`: (if susi.mode = authenticated) the password to be used
+- `roomname`: free form description of the room
+- `watson.stt.user`, `watson.stt.pass`, `watson.tts.user`, `watson.tts.pass`: credentials for IBM/Watson server for TTS and STT
+- `watson.tts.voice`: voice name selected for IBM/Watson TTS
+- `bing.api`: Bing STT API key
 
 For details concerning installation, setup, and operation on RaspberryPi, see
 the documentation at [SUSI Installer](https://github.com/fossasia/susi_installer).
