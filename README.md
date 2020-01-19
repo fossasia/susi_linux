@@ -5,7 +5,14 @@
 [![Join the chat at https://gitter.im/fossasia/susi_hardware](https://badges.gitter.im/fossasia/susi_hardware.svg)](https://gitter.im/fossasia/susi_hardware?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Twitter Follow](https://img.shields.io/twitter/follow/susiai_.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/susiai_)
 
-SUSI.AI Linux an implementation of SUSI.AI capable to run on Linux computers and Linux devices in headless mode. It can be installed on smart speakers, desktop PCs, Linux capable IoT devices, car system, washing machines and more.
+This repository contains components to run SUSI.AI on the desktop or a headless smart speaker together with the [SUSI.AI Server](https://github.com/fossasia/susi_server). Functionalities implemented here include using the microphone to collect voice commands, converting speech to text (STT) using components such as Deep Speech, Flite, Pocket Sphinx, IBM Watson or others, controlling the volume with voice commands and providing a simple GTK interface. In order to use the JSON output of the SUSI.AI Server (written in Java) we use a [SUSI.AI API Python Wrapper](https://github.com/fossasia/susi_python). The ultimate goal of the project to enable users to install SUSI.AI anywhere, apart from desktops and smart speakers on  IoT devices, car systems, washing machines and more.
+
+The functionalities of the project are provided as follows:
+
+- Hotword detection works for hotword "Susi"
+- Voice detection for Speech to Text (STT) using with Google Speech API, IBM Watson Speech to Text API
+- Voice output for Text to Speech (TTS) working with Google Voice, IBM Watson TTS, Flite TTS
+- SUSI.AI response working through [SUSI.AI API Python Wrapper](https://github.com/fossasia/susi_python)
 
 ## Project Overview 
 
@@ -33,14 +40,6 @@ The SUSI.AI ecosystem consists of the following parts:
  |_ susi_linux         (a state machine in python which uses susi_python, Speech-to-text and Text-to-speech functions)
  |_ susi.ai            (React Application, the local web front-end with User Account Management, a client for the local deployment of the susi_server, the content management system for susi skills)
 ```
-
-This project provides the following functionality:
-
-- Hotword Detection works for hotword "Susi"
-- Voice Detection working with Google Speech API / IBM Watson Speech to Text API.
-- Voice Output working with Google TTS / IBM Watson TTS / Flite TTS.
-- Susi AI response working through Susi AI [API Python Wrapper](https://github.com/fossasia/susi_python)
-
 
 ## Installation
 
