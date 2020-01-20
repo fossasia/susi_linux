@@ -5,7 +5,7 @@ After=network-online.target ss-susi-server.service
 
 [Service]
 Type=idle
-ExecStart=@SUSIDIR@/bin/start-susi-linux
+ExecStart=@SUSIDIR@/bin/susi-linux-start
 Restart=on-failure
 
 [Install]
