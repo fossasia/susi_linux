@@ -1,16 +1,26 @@
-# SUSI AI on Linux
+# SUSI.AI on Linux
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/167b701c744841c5a05269d06b863732)](https://app.codacy.com/app/fossasia/susi_linux?utm_source=github.com&utm_medium=referral&utm_content=fossasia/susi_linux&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/fossasia/susi_linux.svg?branch=master)](https://travis-ci.org/fossasia/susi_linux)
 [![Join the chat at https://gitter.im/fossasia/susi_hardware](https://badges.gitter.im/fossasia/susi_hardware.svg)](https://gitter.im/fossasia/susi_hardware?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Twitter Follow](https://img.shields.io/twitter/follow/susiai_.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/susiai_)
 
-SUSI.AI Linux an implementation of SUSI.AI capable to run on Linux computers and Linux devices in headless mode. It can be installed on smart speakers, desktop PCs, Linux capable IoT devices, car system, washing machines and more.
+This repository contains components to run SUSI.AI on the desktop or a headless smart speaker together with the [SUSI.AI Server](https://github.com/fossasia/susi_server). Functionalities implemented here include using the microphone to collect voice commands, converting speech to text (STT) using components such as Deep Speech, Flite, Pocket Sphinx, IBM Watson or others, controlling the volume with voice commands and providing a simple GTK interface. In order to use the JSON output of the SUSI.AI Server (written in Java) we use a [SUSI.AI API Python Wrapper](https://github.com/fossasia/susi_python). The ultimate goal of the project to enable users to install SUSI.AI anywhere, apart from desktops and smart speakers on  IoT devices, car systems, washing machines and more.
+
+The functionalities of the project are provided as follows:
+
+- Hotword detection works for hotword "Susi"
+- Voice detection for Speech to Text (STT) using with Google Speech API, IBM Watson Speech to Text API
+- Voice output for Text to Speech (TTS) working with Google Voice, IBM Watson TTS, Flite TTS
+- SUSI.AI response working through [SUSI.AI API Python Wrapper](https://github.com/fossasia/susi_python)
 
 ## Project Overview 
 
-The whole SUSI.AI ecosystem consists of the following parts:
+The SUSI.AI ecosystem consists of the following parts:
 ```
+ * Web Client and Content Management System for the SUSI.AI Skills - Home of the SUSI.AI community
+ |_ susi.ai   (React Application, User Account Management for the CMS, a client for the susi_server at https://api.susi.ai the content management system for susi skills)
+ 
  * server back-end
  |_ susi_server        (the brain of the infrastructure, a server which computes answers from queries)
  |_ susi_skill_data    (the knowledge of the brain, a large collection of skills provided by the SUSI.AI community)
@@ -21,11 +31,6 @@ The whole SUSI.AI ecosystem consists of the following parts:
  * iOS front-end
  |_ susi_iOS           (iOS application which is a client for the susi_server at https://api.susi.ai)
  
- * Content Management System for the SUSI.AI Skills - Home of the SUSI.AI community
- |_ accounts.susi.ai   (React Application, User Account Management for the CMS)
- |_ chat.susi.ai       (React Application, a client for the susi_server at https://api.susi.ai)
- |_ susi_skill_cms     (React Application, the content management system for susi skills)
- 
  * Smart Speaker - Software to turn a Raspberry Pi into a Personal Assistant
  | Several sub-projects come together in this device
  |_ susi_installer     (Framework which can install all parts on a RPi and Desktops, and also is able to create SUSIbian disk images)
@@ -33,15 +38,8 @@ The whole SUSI.AI ecosystem consists of the following parts:
  |_ susi_server        (The same server as on api.susi.ai, hosted locally for maximum privacy. No cloud needed)
  |_ susi_skill_data    (The skills as provided by susi_server on api.susi.ai; pulled from the git repository automatically)
  |_ susi_linux         (a state machine in python which uses susi_python, Speech-to-text and Text-to-speech functions)
+ |_ susi.ai            (React Application, the local web front-end with User Account Management, a client for the local deployment of the susi_server, the content management system for susi skills)
 ```
-
-This project provides the following functionality:
-
-- Hotword Detection works for hotword "Susi"
-- Voice Detection working with Google Speech API / IBM Watson Speech to Text API.
-- Voice Output working with Google TTS / IBM Watson TTS / Flite TTS.
-- Susi AI response working through Susi AI [API Python Wrapper](https://github.com/fossasia/susi_python)
-
 
 ## Installation
 
@@ -56,46 +54,58 @@ the `config.json` file.
 ## Setting up and configuring Susi on Linux / RaspberryPi
 
 Configuration is done via the file [config.json](config.json) which normally
-resides in `$HOME/SUSI.AI/config.json`.
+resides in `$HOME/.config/SUSI.AI/config.json`.
 
-If correctly installed, `susi-linux-configure` provides a GUI interface to the configuration
-of `susi_linux`, while `susi-linux-config-generator` provides a CLI interface:
+The script `$HOME/SUSI.AI/bin/susi-config` is best used to query, set, and
+change configuration of `susi_linux`. There is also a GUI interface to the
+configuration in `$HOME/SUSI.AI/bin/susi-linux-configure`.
+
+The possible keys and values are given by running `$HOME/SUSI.AI/bin/susi-config keys`
+
+Some important keys and possible values:
+
 ```
-susi-linux-config-generator <stt> <tts> <hotword_detection> <wake_button>
-```
-where
 - `stt` is the speech to text service, one of the following choices:
     - `google` - use Google STT service
-    - `ibm` - IBM/Watson STT
-    - `sphinx` - PocketSphinx STT system, working offline
+    - `watson` - IBM/Watson STT
+    - `bing` - MS Bing STT
+    - `pocketsphinx` - PocketSphinx STT system, working offline
+    - `deepspeech-local` - DeepSpeech STT system, offline, WORK IN PROGRESS
 - `tts` is the text to speech service, one of the following choices:
     - `google` - use Google TTS
-    - `ibm`  - IBM/Watson TTS (login credential necessary)
+    - `watson` - IBM/Watson TTS (login credential necessary)
     - `flite` - flite TTS service working offline
-- `hotword_detection` is the choice if you want to use snowboy detector as the hotword detection or not
-    - `y` to use snowboy
-    - `n` to use pocket sphinx
-- `wake_button` is the choice if you want to use an external wake button or not
-    - `y` to use an external wake button
-    - `n` to disable the external wake button
+- `hotword.engine` is the choice if you want to use snowboy detector as the hotword detection or not
+    - `Snowboy` to use snowboy
+    - `PocketSphinx` to use Pocket Sphinx
+- `wakebutton` is the choice if you want to use an external wake button or not
+    - `enabled` to use an external wake button
+    - `disabled` to disable the external wake button
+    - `not available` for systems without dedicated wake button
 
 Other interfaces for configuration are available for Android and iOS.
 
-Manual configuration is possible, the allowed keys in [`config.json`](config.json) are
-- `Device`: the name of the current device
-- `WakeButton`: whether a wake button is available or not
-- `default_stt`: see above for possible settings
-- `default_tts`: see above for possible settings
-- `data_base_dir`: directory where support files are installed
-- `detection_bell_sound`: sound file that is played when detection starts, relative to `data_base_dir`
-- `problem_sound`: sound file that is played on general errors, relative to `data_base_dir`
-- `recognition_error_sound`: sound file that is played on detection errors, relative to `data_base_dir`
-- `flite_speech_file_path`: flitevox speech file, relative to `data_base_dir`
-- `hotword_engine`: see above for possible settings
-- `usage_mode`: access mode to `accounts.susi.ai`, either `anonymous` or `authenticated`
-- `room_name`: free form description of the room
-- `watson_tts_config`: a JSON array with `username` and `password` as keys, providing the credentials for IBM/Watson
-
+Manual configuration is possible, the allowed keys in [`config.json`](config.json) are currently
+- `device`: the name of the current device
+- `wakebutton`: whether a wake button is available or not
+- `stt`: see above for possible settings
+- `tts`: see above for possible settings
+- `language': language for STT and TTS processing
+- `path.base`: directory where support files are installed
+- `path.sound.detection`: sound file that is played when detection starts, relative to `data_base_dir`
+- `path.sound.problem`: sound file that is played on general errors, relative to `data_base_dir`
+- `path.sound.error.recognition`: sound file that is played on detection errors, relative to `data_base_dir`
+- `path.sound.error.timeout`: sound file that is played when timing out waiting for spoken commands
+- `path.flite_speech`: flitevox speech file, relative to `data_base_dir`
+- `hotword.engine`: see above for possible settings
+- `hotword.model`: (if hotword.engine = Snowboy) selects the model file for the hotword
+- `susi.mode`: access mode to `accounts.susi.ai`, either `anonymous` or `authenticated`
+- `susi.user`: (if susi.mode = authenticated) the user name (email) to be used
+- `susi.pass`: (if susi.mode = authenticated) the password to be used
+- `roomname`: free form description of the room
+- `watson.stt.user`, `watson.stt.pass`, `watson.tts.user`, `watson.tts.pass`: credentials for IBM/Watson server for TTS and STT
+- `watson.tts.voice`: voice name selected for IBM/Watson TTS
+- `bing.api`: Bing STT API key
 
 For details concerning installation, setup, and operation on RaspberryPi, see
 the documentation at [SUSI Installer](https://github.com/fossasia/susi_installer).
@@ -138,12 +148,12 @@ In development, you may want to see more logs, to help debugging. You can switch
 - Use Terminal, _cd_ to `susi_linux` directory and run
 
 ```
-python3 -m main -v
+python3 -m susi_linux -v
 ```
 or repeat `v` to increase verbosity:
 
 ```
-python3 -m main -vv
+python3 -m susi_linux -vv
 ```
 
 2. Change command run by `systemd`
@@ -151,7 +161,7 @@ python3 -m main -vv
 - Edit the _/lib/systemd/system/ss-susi-linux.service_ and change the command in `ExecStart` parameter:
 
 ```ini
-ExecStart=/usr/bin/python3 -m main -v --short-log
+ExecStart=/usr/bin/python3 -m susi_linux -v --short-log
 ```
 - Reload systemd daemon: `sudo systemctl daemon-reload`
 - Restart the servive: `sudo systemctl restart ss-susi-linux`

@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# this wrapper is installed as follows:
+# user mode
+#   .../SUSI.AI/bin/
+#   .../SUSI.AI/pythonmods/
+#   .../SUSI.AI/susi_linux/
+# system mode
+#   prefix/bin/
+#   prefix/lib/SUSI.AI/pythonmods
+#   prefix/lib/SUSI.AI/susi_linux/
+
+DIR="$(dirname "$(readlink -f "$0")")"
+SUSIDIR_USER="$(readlink -m "$DIR/..")"
+SUSIDIR_SYSTEM="$(readlink -m "$DIR/../lib/SUSI.AI")"
+if [ -d "$SUSIDIR_USER" ] && [ -r "$SUSIDIR_USER/pythonmods/susi_linux" ] ; then
+    PYTHONPATH="$SUSIDIR_USER/pythonmods":$PYTHONPATH
+    export PYTHONPATH
+    SUSILINUX="$SUSIDIR_USER/susi_linux"
+elif [ -d "$SUSIDIR_SYSTEM" ] && [ -r "$SUSIDIR_SYSTEM/pythonmods/susi_linux" ] ; then
+    PYTHONPATH="$SUSIDIR_SYSTEM/pythonmods":$PYTHONPATH
+    export PYTHONPATH
+    SUSILINUX="$SUSIDIR_SYSTEM/susi_linux"
+else
+    echo "Cannot find SUSI.AI susi_linux folder" >&2
+    exit 1
+fi
+exec python3 "$SUSILINUX/configure.py" "$@"
+

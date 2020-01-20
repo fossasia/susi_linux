@@ -8,7 +8,7 @@ requirements.txt
 /susi_python
 /hwmixer
 /vlcplayer
-main/hotword_engine/snowboy/_snowboydetect.so
-main/hotword_engine/snowboy/snowboydetect.py
+susi_linux/hotword_engine/snowboy/_snowboydetect.so
+susi_linux/hotword_engine/snowboy/snowboydetect.py
 /extras/output.wav
 /snowboy/

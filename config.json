@@ -7,6 +7,7 @@
   "detection_bell_sound": "extras/detection-bell.wav",
   "problem_sound": "extras/problem.wav",
   "recognition_error_sound": "extras/recognition-error.wav",
+  "timeout_error_sound": "extras/error-tada.wav",
   "flite_speech_file_path": "extras/cmu_us_slt.flitevox",
   "hotword_engine": "Snowboy",
   "usage_mode": "anonymous",
