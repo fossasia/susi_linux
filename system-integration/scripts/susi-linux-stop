@@ -1,6 +1,0 @@
-#!/bin/sh
-# Stop the SUSI.AI main program
-
-# not the best idea, but difficult otherwise
-pkill -f susi_linux
-

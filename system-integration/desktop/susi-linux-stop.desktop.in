@@ -2,7 +2,7 @@
 Name=Stop SUSI.AI Personal Assistant
 GenericName=Stop SUSI Personal Assistant
 Comment=Stop the Privacy aware personal assistant
-Exec=@SUSIDIR@/bin/susi-linux-stop
+Exec=@SUSIDIR@/bin/susi-linux stop
 StartupNotify=false
 Terminal=false
 Type=Application
