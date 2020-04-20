@@ -55,7 +55,6 @@ class SusiLoop():
         recognizer.dynamic_energy_threshold = True
         recognizer.energy_threshold = 2000
         self.recognizer = recognizer
-        self.microphone = Microphone()
         self.susi = susi
         self.renderer = renderer
         self.server_url = "https://127.0.0.1:4000"
@@ -118,6 +117,12 @@ class SusiLoop():
         else:
             logger.warning("Susi has the wake button disabled")
             self.wake_button = None
+
+
+        if self.susi_config.get('stt') == 'deepspeech-local':
+            self.microphone = Microphone(sample_rate=16000)
+        else:
+            self.microphone = Microphone()
 
         if self.hotword_detector is not None:
             self.hotword_detector.subject.subscribe(
