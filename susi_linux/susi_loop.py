@@ -12,6 +12,7 @@ from urllib.parse import urljoin
 import speech_recognition as sr
 import requests
 import json_config
+import speech_recognition
 from speech_recognition import Recognizer, Microphone
 # from requests.exceptions import ConnectionError
 
@@ -62,6 +63,7 @@ class SusiLoop():
         self.action_schduler.start()
         self.event_queue = queue.Queue()
         self.idle = True
+        self.supported_languages = None
 
         try:
             res = requests.get('http://ip-api.com/json').json()
@@ -118,6 +120,22 @@ class SusiLoop():
             logger.warning("Susi has the wake button disabled")
             self.wake_button = None
 
+
+        stt = self.susi_config.get('stt')
+        if stt == 'google' or stt == 'watson' or stt == 'bing':
+            # for internet based services we assume any language supported
+            self.supported_languages = None
+        elif stt == 'pocketsphinx':
+            ps_data_dir = os.path.join(os.path.dirname(os.path.realpath(speech_recognition.__file__)), "pocketsphinx-data")
+            self.supported_languages = [ f.name for f in os.scandir(ps_data_dir) if f.is_dir() ]
+            logger.debug(f"Found supported languages for PocketSphinx: {self.supported_languages}")
+        elif stt == 'deepspeech-local':
+            ps_data_dir = os.path.join(os.path.dirname(os.path.realpath(speech_recognition.__file__)), "deepspeech-data")
+            self.supported_languages = [ f.name for f in os.scandir(ps_data_dir) if f.is_dir() ]
+            logger.debug(f"Found supported languages for DeepSpeech: {self.supported_languages}")
+        else:
+            self.supported_languages = None
+            logger.warn(f"Unknown stt setting: {stt}")
 
         if self.susi_config.get('stt') == 'deepspeech-local':
             self.microphone = Microphone(sample_rate=16000)
@@ -290,6 +308,31 @@ class SusiLoop():
         """Use the configured STT method to convert spoken audio to text"""
         stt = self.susi_config.get('stt')
         lang = self.susi_config.get('language')
+        # Try to adjust language to what is available
+        # None indicates any language supported, so use it as is
+        if self.supported_languages is not None:
+            if len(self.supported_languages) == 0:
+                raise ValueError(f"No supported language for the current STT {stt}")
+            if "en-US" in self.supported_languages:
+                default = "en-US"
+            else:
+                default = self.supported_languages[0]
+            if lang not in self.supported_languages:
+                if len(lang) < 2:
+                    logger.warn(f"Unsupported language code {lang}, using {default}")
+                    lang = default
+                else:
+                    langshort = lang[0:2].lower()
+                    for l in self.supported_languages:
+                        if langshort == l[0:2].lower():
+                            logger.debug(f"Using language code {l} instead of {lang}")
+                            lang = l
+                            break
+            # We should now have a proper language code in lang, if not, warn and reset
+            if lang not in self.supported_languages:
+                logger.warn(f"Unsupported langauge code {lang}, using {default}")
+                lang = default
+
         logger.info("Trying to recognize audio with %s in language: %s", stt, lang)
         if stt == 'google':
             return recognizer.recognize_google(audio, language=lang)
@@ -301,26 +344,19 @@ class SusiLoop():
                 username=username, password=password, language=lang, audio_data=audio)
 
         elif stt == 'pocket_sphinx':
-            langshort = lang.replace("_", "-")
-            if internet_on():
-                # switch to googl e if the internet is on
-                self.susi_config.set('stt', 'google')
-                return recognizer.recognize_google(audio, language=langshort)
-            else:
-                return recognizer.recognize_sphinx(audio, language=lang)
+            return recognizer.recognize_sphinx(audio, language=lang)
 
         elif stt == 'bing':
             api_key = self.susi_config.get('bing.api')
             return recognizer.recognize_bing(audio_data=audio, key=api_key, language=lang)
 
         elif stt == 'deepspeech-local':
-            langshort = lang.replace("_", "-")
-            return recognizer.recognize_deepspeech(audio, language=langshort)
+            return recognizer.recognize_deepspeech(audio, language=lang)
 
         else:
             logger.error(f"Unknown STT setting: {stt}")
-            logger.error("Using Google!")
-            return recognizer.recognize_google(audio, language=lang)
+            logger.error("Using DeepSpeech!")
+            return recognizer.recognize_deepspeech(audio, language=lang)
 
 
 
