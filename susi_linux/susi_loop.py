@@ -103,9 +103,13 @@ class SusiLoop():
                 logger.debug("Using configured hotword model: " + self.susi_config.get('hotword.model'))
                 hotword_model = self.susi_config.get('hotword_model')
             self.hotword_detector = SnowboyDetector(model=hotword_model)
-        else:
+        elif self.susi_config.get('hotword.engine') == 'PocketSphinx':
             from .hotword_engine.sphinx_detector import PocketSphinxDetector
             self.hotword_detector = PocketSphinxDetector()
+        elif self.susi_config.get('hotword.engine') == 'None':
+            self.hotword_detector = None
+        else:
+            raise ValueError(f"Unrecognized value for hotword.engine: {self.susi_config.get('hotword.engine')}")
 
         if self.susi_config.get('wakebutton') == 'enabled':
             logger.info("Susi has the wake button enabled")
@@ -188,9 +192,10 @@ class SusiLoop():
 
     def start(self, background = False):
         """ start processing of audio events """
-        hotword_thread = Thread(target=self.hotword_listener, name="HotwordDetectorThread")
-        hotword_thread.daemon = True
-        hotword_thread.start()
+        if self.hotword_detector is not None:
+            hotword_thread = Thread(target=self.hotword_listener, name="HotwordDetectorThread")
+            hotword_thread.daemon = True
+            hotword_thread.start()
 
         if background:
             queue_loop_thread = Thread(target=self.queue_loop, name="QueueLoopThread")
