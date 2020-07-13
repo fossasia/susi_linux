@@ -3,6 +3,7 @@ Name=SUSI.AI Personal Assistant - Configuration
 GenericName=SUSI Personal Assistant Configuration
 Comment=Privacy aware personal assistant - configuration
 Exec=@SUSIDIR@/bin/susi-linux-configure
+Icon=susi-ai
 StartupNotify=false
 Terminal=false
 Type=Application
