@@ -10,6 +10,9 @@
     </columns>
     <data>
       <row>
+        <col id="0" translatable="yes">Deepspeech</col>
+      </row>
+      <row>
         <col id="0" translatable="yes">Google</col>
       </row>
       <row>
@@ -27,13 +30,30 @@
     </columns>
     <data>
       <row>
-        <col id="0">Google Translate TTS</col>
-      </row>
-      <row>
         <col id="0" translatable="yes">Flite TTS</col>
       </row>
       <row>
+        <col id="0">Google Translate TTS</col>
+      </row>
+      <row>
         <col id="0" translatable="yes">IBM Watson</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="hotword_liststore">
+    <columns>
+      <!-- column-name Text -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Snowboy</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">PocketSphinx</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">None</col>
       </row>
     </data>
   </object>
@@ -220,7 +240,7 @@
                 <property name="can_focus">False</property>
                 <property name="margin_top">10</property>
                 <property name="margin_bottom">10</property>
-                <property name="label" translatable="yes">Use Snowboy for Hotword Detection</property>
+                <property name="label" translatable="yes">Hotword Detection System</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -229,10 +249,20 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSwitch" id="snowboy_switch">
+              <object class="GtkComboBox" id="hotword_combobox">
+                <property name="width_request">200</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <signal name="notify::active" handler="on_snowboy_switch_active_notify" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="model">hotword_liststore</property>
+                <property name="active">0</property>
+                <property name="id_column">1</property>
+                <signal name="changed" handler="on_hotword_combobox_changed" swapped="no"/>
+                <child>
+                  <object class="GtkCellRendererText"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>

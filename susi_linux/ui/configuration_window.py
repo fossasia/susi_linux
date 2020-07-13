@@ -10,6 +10,22 @@ from susi_config import SusiConfig
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
 susicfg = SusiConfig()
 
+#
+# WARNING!!!!
+# This order needs to be synced with glade_files/configure.glade
+# which defines the actual strings and entries in the list!!!!
+STT_DEEPSPEECH=0
+STT_GOOGLE=1
+STT_WATSON=2
+STT_BING=2
+
+TTS_FLITE=0
+TTS_GOOGLE=1
+TTS_WATSON=2
+
+HOTWORD_SNOWBOY=0
+HOTWORD_POCKETSPHINX=1
+HOTWORD_NONE=2
 
 class WatsonCredentialsDialog(Gtk.Dialog):
     def __init__(self, parent):
@@ -80,7 +96,7 @@ class ConfigurationWindow:
         self.stt_combobox = builder.get_object("stt_combobox")
         self.tts_combobox = builder.get_object("tts_combobox")
         self.auth_switch = builder.get_object("auth_switch")
-        self.snowboy_switch = builder.get_object("snowboy_switch")
+        self.hotword_combobox = builder.get_object("hotword_combobox")
         self.wake_button_switch = builder.get_object("wake_button_switch")
 
         self.init_auth_switch()
@@ -103,28 +119,28 @@ class ConfigurationWindow:
     def init_tts_combobox(self):
         default_tts = susicfg.get('tts')
         if default_tts == 'google':
-            self.tts_combobox.set_active(0)
+            self.tts_combobox.set_active(TTS_GOOGLE)
         elif default_tts == 'flite':
-            self.tts_combobox.set_active(1)
+            self.tts_combobox.set_active(TTS_FLITE)
         elif default_tts == 'watson':
-            self.tts_combobox.set_active(2)
+            self.tts_combobox.set_active(TTS_WATSON)
         else:
-            self.tts_combobox.set_active(0)
-            susicfg.set('tts', 'google')
+            self.tts_combobox.set_active(TTS_FLITE)
+            susicfg.set('tts', 'flite')
 
     def init_stt_combobox(self):
         default_stt = susicfg.get('stt')
         if default_stt == 'google':
-            self.stt_combobox.set_active(0)
+            self.stt_combobox.set_active(STT_GOOGLE)
         elif default_stt == 'watson':
-            self.stt_combobox.set_active(1)
+            self.stt_combobox.set_active(STT_WATSON)
         elif default_stt == 'bing':
-            self.stt_combobox.set_active(2)
+            self.stt_combobox.set_active(STT_BING)
         elif default_stt == 'deepspeech-local':
-            self.stt_combobox.set_active(3)
+            self.stt_combobox.set_active(STT_DEEPSPEECH)
         else:
-            self.tts_combobox.set_active(0)
-            susicfg.set('tts', 'google')
+            self.tts_combobox.set_active(STT_DEEPSPEECH)
+            susicfg.set('stt', 'deepspeech-local')
 
     def init_auth_switch(self):
         usage_mode = susicfg.get('susi.mode')
@@ -134,15 +150,21 @@ class ConfigurationWindow:
             self.auth_switch.set_active(False)
 
     def init_hotword_switch(self):
-        try:
-            import snowboy
-        except ImportError:
-            self.snowboy_switch.set_sensitive(False)
-            susicfg.set('hotword.engine', 'PocketSphinx')
-        if susicfg.get('hotword.engine') == 'Snowboy':
-            self.snowboy_switch.set_active(True)
+        default_hotword = susicfg.get('hotword.engine')
+        if default_hotword == 'Snowboy':
+            self.hotword_combobox.set_active(HOTWORD_SNOWBOY)
+        elif default_hotword == 'PocketSphinx':
+            self.hotword_combobox.set_active(HOTWORD_POCKETSPHINX)
+        elif default_hotword == 'None':
+            self.hotword_combobox.set_active(HOTWORD_NONE)
         else:
-            self.snowboy_switch.set_active(False)
+            try:
+                import snowboy
+                self.hotword_combobox.set_active(HOTWORD_SNOWBOY)
+                susicfg.set('hotword.engine', 'Snowboy')
+            except ImportError:
+                self.hotword_combobox.set_active(HOTWORD_POCKETSPHINX)
+                susicfg.set('hotword.engine', 'PocketSphinx')
 
     def init_wake_button_switch(self):
         try:
@@ -166,10 +188,13 @@ class ConfigurationWindow:
         def on_stt_combobox_changed(self, combo: Gtk.ComboBox):
             selection = combo.get_active()
 
-            if selection == 0:
+            if selection == STT_DEEPSPEECH:
+                susicfg.set('stt', 'deepspeech_local')
+
+            elif selection == STT_GOOGLE:
                 susicfg.set('stt', 'google')
 
-            elif selection == 1:
+            elif selection == STT_WATSON:
                 credential_dialog = WatsonCredentialsDialog(
                     self.config_window.window)
                 response = credential_dialog.run()
@@ -185,7 +210,7 @@ class ConfigurationWindow:
 
                 credential_dialog.destroy()
 
-            elif selection == 2:
+            elif selection == STT_BING:
                 credential_dialog = BingCredentialDialog(
                     self.config_window.window)
                 response = credential_dialog.run()
@@ -202,13 +227,13 @@ class ConfigurationWindow:
         def on_tts_combobox_changed(self, combo):
             selection = combo.get_active()
 
-            if selection == 0:
+            if selection == TTS_GOOGLE:
                 susicfg.set('tts', 'google')
 
-            elif selection == 1:
+            elif selection == TTS_FLITE:
                 susicfg.set('tts', 'flite')
 
-            elif selection == 2:
+            elif selection == TTS_WATSON:
                 credential_dialog = WatsonCredentialsDialog(
                     self.config_window.window)
                 response = credential_dialog.run()
@@ -233,11 +258,16 @@ class ConfigurationWindow:
                 else:
                     switch.set_active(False)
 
-        def on_snowboy_switch_active_notify(self, switch, gparam):
-            if switch.get_active():
+        def on_hotword_combobox_changed(self, combo: Gtk.ComboBox):
+            selection = combo.get_active()
+
+            if selection == HOTWORD_SNOWBOY:
                 susicfg.set('hotword.engine', 'Snowboy')
-            else:
+            elif selection == HOTWORD_POCKETSPHINX:
                 susicfg.set('hotword.engine', 'PocketSphinx')
+            elif selection == HOTWORD_NONE:
+                susicfg.set('hotword.engine', 'None')
+
 
         def on_wake_button_switch_active_notify(self, switch, gparam):
             if switch.get_active():
