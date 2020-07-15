@@ -4,7 +4,7 @@ google_speech
 json_config
 pafy
 pocketsphinx==0.1.15
-pyalsaaudio
+pyalsaaudio==0.8.4
 pyaudio
 python-Levenshtein
 python-vlc
