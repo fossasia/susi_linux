@@ -13,7 +13,6 @@ rx>=3.0.0a0
 service_identity
 snowboy==1.3.0
 speechRecognition==3.8.1.fossasia-3
-#spidev
 watson-developer-cloud
 websocket-server
 youtube-dl>=2019.6.21
