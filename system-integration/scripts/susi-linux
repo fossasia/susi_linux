@@ -9,21 +9,28 @@
 #   prefix/bin/
 #   prefix/lib/SUSI.AI/pythonmods
 
+DIR="$(dirname "$(readlink -f "$0")")"
+PMA="$(readlink -m "$DIR/../pythonmods")"
+PMB="$(readlink -m "$DIR/../lib/SUSI.AI/pythonmods")"
+if [ -d "$PMA" ] && [ -r "$PMA/susi_linux" ] ; then
+    LOGDIR="$(readlink -m "$DIR/../logs")"
+    PYTHONPATH="$PMA":$PYTHONPATH
+    export PYTHONPATH
+elif [ -d "$PMB" ] && [ -r "$PMB/susi_linux" ] ; then
+    LOGDIR=$HOME/.susi.ai/logs
+    PYTHONPATH="$PMB":$PYTHONPATH
+    export PYTHONPATH
+else
+    echo "Cannot find SUSI.AI pythonmods, trying without it" >&2
+fi
+
+CMD="python3 -m susi_linux -v --short-log"
 
 do_start() {
-    DIR="$(dirname "$(readlink -f "$0")")"
-    PMA="$(readlink -m "$DIR/../pythonmods")"
-    PMB="$(readlink -m "$DIR/../lib/SUSI.AI/pythonmods")"
-    if [ -d "$PMA" ] && [ -r "$PMA/susi_linux" ] ; then
-        PYTHONPATH="$PMA":$PYTHONPATH
-        export PYTHONPATH
-    elif [ -d "$PMB" ] && [ -r "$PMB/susi_linux" ] ; then
-        PYTHONPATH="$PMB":$PYTHONPATH
-        export PYTHONPATH
-    else
-        echo "Cannot find SUSI.AI pythonmods, trying without it" >&2
-    fi
-    exec python3 -m susi_linux -v --short-log
+    mkdir -p "$LOGDIR"
+    python3 -m susi_linux -v --short-log > "$LOGDIR/susi-linux.log" 2>&1 &
+    sleep 3
+    echo "susi-linux has started, logging to $LOGDIR/susi-linux.log"
 }
 
 do_stop() {
