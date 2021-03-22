@@ -140,7 +140,7 @@ class SusiLoop():
         elif stt == 'vosk':
             vosk_data_dir = os.path.join(os.path.dirname(os.path.realpath(speech_recognition.__file__)), "vosk-data")
             self.vosk_base_model_dir = vosk_data_dir
-            self.supported_languages = [ f.name for f in os.scandir(vsok_data_dir) if f.is_dir() ]
+            self.supported_languages = [ f.name for f in os.scandir(vosk_data_dir) if f.is_dir() ]
             logger.debug(f"Found supported languages for Vosk: {self.supported_languages}")
         else:
             self.supported_languages = None
@@ -364,8 +364,8 @@ class SusiLoop():
             return recognizer.recognize_deepspeech(audio, language=lang)
 
         elif stt == 'vosk':
-            self.vosk_model = f"{self.vosk_base_model_dir}/{lang}"
-            print(f"Setting vosk_model to {self.vosk_model}")
+            recognizer.vosk_model = f"{self.vosk_base_model_dir}/{lang}"
+            print(f"Setting vosk_model to {recognizer.vosk_model}")
             return recognizer.recognize_vosk(audio, language=lang)
 
         else:
