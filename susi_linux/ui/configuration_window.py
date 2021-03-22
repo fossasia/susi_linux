@@ -15,9 +15,10 @@ susicfg = SusiConfig()
 # This order needs to be synced with glade_files/configure.glade
 # which defines the actual strings and entries in the list!!!!
 STT_DEEPSPEECH=0
-STT_GOOGLE=1
-STT_WATSON=2
-STT_BING=2
+STT_VOSK=1
+STT_GOOGLE=2
+STT_WATSON=3
+STT_BING=4
 
 TTS_FLITE=0
 TTS_GOOGLE=1
@@ -138,6 +139,8 @@ class ConfigurationWindow:
             self.stt_combobox.set_active(STT_BING)
         elif default_stt == 'deepspeech-local':
             self.stt_combobox.set_active(STT_DEEPSPEECH)
+        elif default_stt == 'vosk':
+            self.stt_combobox.set_active(STT_VOSK)
         else:
             self.tts_combobox.set_active(STT_DEEPSPEECH)
             susicfg.set('stt', 'deepspeech-local')
@@ -190,6 +193,9 @@ class ConfigurationWindow:
 
             if selection == STT_DEEPSPEECH:
                 susicfg.set('stt', 'deepspeech_local')
+
+            elif selection == STT_VOSK:
+                susicfg.set('stt', 'vosk')
 
             elif selection == STT_GOOGLE:
                 susicfg.set('stt', 'google')

@@ -134,9 +134,14 @@ class SusiLoop():
             self.supported_languages = [ f.name for f in os.scandir(ps_data_dir) if f.is_dir() ]
             logger.debug(f"Found supported languages for PocketSphinx: {self.supported_languages}")
         elif stt == 'deepspeech-local':
-            ps_data_dir = os.path.join(os.path.dirname(os.path.realpath(speech_recognition.__file__)), "deepspeech-data")
-            self.supported_languages = [ f.name for f in os.scandir(ps_data_dir) if f.is_dir() ]
+            ds_data_dir = os.path.join(os.path.dirname(os.path.realpath(speech_recognition.__file__)), "deepspeech-data")
+            self.supported_languages = [ f.name for f in os.scandir(ds_data_dir) if f.is_dir() ]
             logger.debug(f"Found supported languages for DeepSpeech: {self.supported_languages}")
+        elif stt == 'vosk':
+            vosk_data_dir = os.path.join(os.path.dirname(os.path.realpath(speech_recognition.__file__)), "vosk-data")
+            self.vosk_base_model_dir = vosk_data_dir
+            self.supported_languages = [ f.name for f in os.scandir(vsok_data_dir) if f.is_dir() ]
+            logger.debug(f"Found supported languages for Vosk: {self.supported_languages}")
         else:
             self.supported_languages = None
             logger.warn(f"Unknown stt setting: {stt}")
@@ -357,6 +362,11 @@ class SusiLoop():
 
         elif stt == 'deepspeech-local':
             return recognizer.recognize_deepspeech(audio, language=lang)
+
+        elif stt == 'vosk':
+            self.vosk_model = f"{self.vosk_base_model_dir}/{lang}"
+            print(f"Setting vosk_model to {self.vosk_model}")
+            return recognizer.recognize_vosk(audio, language=lang)
 
         else:
             logger.error(f"Unknown STT setting: {stt}")

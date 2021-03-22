@@ -13,6 +13,9 @@
         <col id="0" translatable="yes">Deepspeech</col>
       </row>
       <row>
+        <col id="0" translatable="yes">Vosk</col>
+      </row>
+      <row>
         <col id="0" translatable="yes">Google</col>
       </row>
       <row>
