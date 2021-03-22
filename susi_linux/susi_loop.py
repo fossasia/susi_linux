@@ -12,6 +12,7 @@ from urllib.parse import urljoin
 import speech_recognition as sr
 import requests
 import json_config
+import json
 import speech_recognition
 from speech_recognition import Recognizer, Microphone
 # from requests.exceptions import ConnectionError
@@ -75,6 +76,7 @@ class SusiLoop():
             logger.error(e)
 
         self.susi_config = SusiConfig()
+        self.lang = self.susi_config.get('language')
         self.path_base = self.susi_config.get('path.base')
         self.sound_detection = os.path.abspath(
                                    os.path.join(self.path_base,
@@ -142,6 +144,10 @@ class SusiLoop():
             self.vosk_base_model_dir = vosk_data_dir
             self.supported_languages = [ f.name for f in os.scandir(vosk_data_dir) if f.is_dir() ]
             logger.debug(f"Found supported languages for Vosk: {self.supported_languages}")
+            if (not self.lang in self.supported_languages):
+                self.lang = "en"
+            from vosk import Model
+            self.vosk_model = Model(f"{vosk_data_dir}/{self.lang}")
         else:
             self.supported_languages = None
             logger.warn(f"Unknown stt setting: {stt}")
@@ -364,9 +370,15 @@ class SusiLoop():
             return recognizer.recognize_deepspeech(audio, language=lang)
 
         elif stt == 'vosk':
-            recognizer.vosk_model = f"{self.vosk_base_model_dir}/{lang}"
-            print(f"Setting vosk_model to {recognizer.vosk_model}")
-            return recognizer.recognize_vosk(audio, language=lang)
+            # TODO language support not implemented, we always use
+            # the first language
+            recognizer.vosk_model = self.vosk_model
+            ret = json.loads(recognizer.recognize_vosk(audio, language=lang))
+            if ("text" in ret):
+                return ret["text"]
+            else:
+                logger.error("Cannot detect text")
+                return ""
 
         else:
             logger.error(f"Unknown STT setting: {stt}")
