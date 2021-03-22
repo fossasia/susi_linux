@@ -511,6 +511,9 @@ class SusiLoop():
                     logger.info("Switching language to: %s", answer_lang)
                     # switch language
                     self.susi_config.set('language', answer_lang)
+                    # TODO
+                    # for vosk we need to update self.vosk_model = Model(f"{self.vosk_model_base}/{answer_lang}")
+                    # given that the language is supported!
 
             # answer to "play ..."
             # {'identifier': 'ytd-04854XqcfCY', 'answer': 'Playing Queen -  We Are The Champions (Official Video)'}
